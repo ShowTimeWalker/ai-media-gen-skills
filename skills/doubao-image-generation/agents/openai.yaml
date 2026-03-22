@@ -1,4 +1,4 @@
 interface:
-  display_name: "豆包生图"
-  short_description: "调用豆包文生图和图生图脚本，支持本地图片与自动模型降级"
-  default_prompt: "Use $doubao-image-generation 按当前项目已验证的流程执行豆包文生图或图生图。"
+  display_name: "Doubao Image"
+  short_description: "Run Doubao Seedream text-to-image and image-to-image scripts with OpenClaw-managed ARK_API_KEY."
+  default_prompt: "Use $doubao-image-generation to run the workspace Doubao image scripts with the user's prompt, source image, size, and output path requirements."

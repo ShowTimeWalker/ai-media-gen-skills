@@ -1,66 +1,59 @@
 ---
 name: doubao-image-generation
-description: 使用豆包模型执行文生图和图生图。适用于需要在当前项目中调用豆包 Seedream 模型生成图片、基于本地图片或图片 URL 做图像编辑、需要无水印输出、或在额度不足时自动降级模型的场景。用户提到豆包、文生图、图生图、本地图片生成、Seedream、图片编辑、图片生成脚本时使用此 skill。
+description: Generate and edit images with Doubao Seedream via uv run --project. Use when this skill should call Ark image APIs with ARK_API_KEY.
+metadata: {"openclaw":{"requires":{"bins":["uv"],"env":["ARK_API_KEY"]},"primaryEnv":"ARK_API_KEY"}}
 ---
 
 # 豆包生图
 
-## 快速入口
+使用 `{baseDir}/scripts/doubao_text_to_image.py` 执行文生图，使用 `{baseDir}/scripts/doubao_image_to_image.py` 执行图生图。
 
-根据任务类型选择脚本：
+始终从项目根目录运行 `uv run --project`，不要直接调用系统 `python`。
 
-- 文生图：运行 [scripts/doubao_text_to_image.py](./scripts/doubao_text_to_image.py)
-- 图生图：运行 [scripts/doubao_image_to_image.py](./scripts/doubao_image_to_image.py)
+## 快速调用
 
-始终从项目根目录使用 `uv run --project` 执行，不要直接调用系统 `python`。
-
-PowerShell 示例：
+文生图：
 
 ```powershell
 uv run --project C:\Users\Noah\Documents\vscode `
-  C:\Users\Noah\Documents\vscode\skills\doubao-image-generation\scripts\doubao_text_to_image.py `
-  --prompt "一张写实风格的户外登山海报"
+  {baseDir}\scripts\doubao_text_to_image.py `
+  --prompt "一张电影感写实摄影风格的户外品牌海报"
 ```
 
+图生图：
+
 ```powershell
 uv run --project C:\Users\Noah\Documents\vscode `
-  C:\Users\Noah\Documents\vscode\skills\doubao-image-generation\scripts\doubao_image_to_image.py `
+  {baseDir}\scripts\doubao_image_to_image.py `
   --image C:\Users\Noah\Documents\vscode\resources\images\climb1.jpeg `
-  --prompt "保持主体姿态不变，调整为日落暖光的写实摄影风格"
+  --prompt "保留主体姿态，仅调整为日落暖光的电影感写实摄影风格"
 ```
+
+## 密钥与配置
+
+- 在 OpenClaw 中优先使用 `skills.entries.doubao-image-generation.env.ARK_API_KEY` 或 `skills.entries.doubao-image-generation.apiKey` 注入密钥。
+- 该 skill 已声明 `metadata.openclaw.primaryEnv` 为 `ARK_API_KEY`，OpenClaw 会在 agent run 开始时把配置注入到进程环境。
+- 当前脚本仍保留项目内回退逻辑：如果 `ARK_API_KEY` 不存在，会读取 `api_key/doubao.json`。这个回退仅适合当前项目里的直接脚本调试，不应作为 OpenClaw 的主要配置方式。
+- 输出目录默认写入 `outputs/doubao/text_to_image/` 或 `outputs/doubao/image_to_image/`。
 
 ## 工作流程
 
-1. 先确认项目依赖已通过 `uv` 安装。
-2. 优先使用项目内现成资源：`api_key/doubao.json`、`resources/images/`、`outputs/doubao/`。
-3. 文生图时只传提示词、尺寸、可选模型和输出路径。
-4. 图生图时优先传本地图片路径；如果用户给的是 URL，也可以直接传。
-5. 如果接口提示额度不足，脚本会按 `5.0 -> 4.5 -> 4.0` 自动降级。
-6. 默认关闭水印，不需要额外传参。
+1. 确认 `uv` 可用，且当前项目依赖已安装。
+2. 根据任务类型选择文生图或图生图脚本。
+3. 传入提示词、尺寸和可选输出路径。
+4. 需要图生图时，优先传本地图片路径；如果用户给的是 URL，也可以直接传入。
+5. 如果首选模型额度不足，脚本会按 `5.0 -> 4.5 -> 4.0` 自动降级。
 
-## 配置约定
+## 常用参数
 
-- API Key 优先读取环境变量 `ARK_API_KEY`
-- 如果环境变量未设置，则读取当前项目的 `api_key/doubao.json`
-- 输出目录默认写入当前项目的 `outputs/doubao/text_to_image/` 或 `outputs/doubao/image_to_image/`
-- 图生图默认输入图片为当前项目的 `resources/images/climb1.jpeg`
-
-如果项目目录结构变了，先阅读 [references/usage.md](./references/usage.md)，再调整脚本中的路径定位逻辑。
-
-## 参数说明
-
-### 文生图
-
-常用参数：
+文生图：
 
 - `--prompt`：提示词
 - `--model`：首选模型 ID，默认 `doubao-seedream-5-0-260128`
 - `--size`：输出尺寸，默认 `2K`
 - `--output`：输出文件路径
 
-### 图生图
-
-常用参数：
+图生图：
 
 - `--image`：本地图片路径或图片 URL
 - `--prompt`：编辑提示词
@@ -70,11 +63,7 @@ uv run --project C:\Users\Noah\Documents\vscode `
 
 ## 注意事项
 
-- 图生图脚本会把本地图片自动转成 `data:` URL 后再提交给接口。
-- 如果接口返回敏感内容错误，优先改提示词或换输入图，不要误判成脚本故障。
-- 当前脚本固定 `watermark=False`，只控制生成结果是否加 AI 水印，不能移除输入原图自带的水印。
-- 该 skill 面向当前项目目录结构设计，不是通用多项目模板。
-
-## 参考资料
-
-- 使用细节与目录假设：查看 [references/usage.md](./references/usage.md)
+- 图生图脚本会先把本地图片编码成 `data:` URL，再提交给接口。
+- 当前脚本固定传 `watermark=False`，这只控制生成结果不额外添加 AI 水印，不能去除输入原图自带的水印。
+- 如果接口返回额度不足错误，会自动尝试降级模型；如果是敏感内容或参数错误，需要调整提示词或输入图。
+- 如果目录结构或 OpenClaw 配置有变动，先阅读 [references/usage.md](./references/usage.md)。
