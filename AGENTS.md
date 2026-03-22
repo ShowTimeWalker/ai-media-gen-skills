@@ -32,6 +32,9 @@
 2. skill 的 `name` 使用英文。
 3. 其他可见内容尽量使用中文，包括说明文本、注释、提示词和脚本内说明。
 4. 注意你在创建skill时严禁直接引用字面量
+5. 创建 skill 时必须遵循 OpenClaw 的规范，不要只按本项目内部习惯自行定义结构或配置。
+6. 创建或配置 skill 之前，先阅读 `https://docs.openclaw.ai/tools/skills-config`，确认 OpenClaw 的 skill 配置方式。
+7. 如果用户要求将 skill 添加到 OpenClaw，需要按上述文档更新 OpenClaw 配置，使 skill 被正确加载。
 
 ## 执行原则
 
