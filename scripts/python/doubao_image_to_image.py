@@ -10,29 +10,33 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from doubao_common import create_client, default_output_path, save_image_payload
+from doubao_common import (
+    PROJECT_ROOT,
+    create_client,
+    default_output_path,
+    generate_image_with_fallback,
+    resolve_image_source,
+    save_image_payload,
+)
 
 DEFAULT_MODEL = "doubao-seedream-5-0-260128"
-DEFAULT_IMAGE_URL = (
-    "https://ark-project.tos-cn-beijing.volces.com/doc_image/"
-    "seedream4_5_imageToimage.png"
-)
+DEFAULT_IMAGE_PATH = PROJECT_ROOT / "resources" / "images" / "climb1.jpeg"
 DEFAULT_PROMPT = (
-    "保持模特姿势和液态服装的流动形状不变。"
-    "将服装材质从银色金属改为完全透明的清水或玻璃。"
-    "透过液态水流，可以看到模特的皮肤细节。"
-    "光影从反射变为折射。"
+    "保持人物主体和攀岩动作不变。"
+    "将整体画面调整为日落时分的自然暖光效果。"
+    "服装改成更有层次感的户外冲锋衣，岩壁纹理更清晰。"
+    "整体风格保持写实摄影。"
 )
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="豆包图生图测试脚本")
     parser.add_argument("--prompt", default=DEFAULT_PROMPT, help="图生图提示词")
-    parser.add_argument("--model", default=DEFAULT_MODEL, help="模型 ID")
+    parser.add_argument("--model", default=DEFAULT_MODEL, help="首选模型 ID")
     parser.add_argument(
-        "--image-url",
-        default=DEFAULT_IMAGE_URL,
-        help="输入图片 URL，默认使用文档示例图",
+        "--image",
+        default=str(DEFAULT_IMAGE_PATH),
+        help="输入图片路径或 URL，默认使用 resources/images/ 里的本地示例图",
     )
     parser.add_argument("--size", default="2K", help="输出尺寸，默认 2K")
     parser.add_argument(
@@ -47,17 +51,20 @@ def main() -> None:
     args = parse_args()
     client = create_client()
     output_path = args.output or default_output_path("image_to_image")
+    image_source = resolve_image_source(args.image)
 
-    response = client.images.generate(
+    response, used_model = generate_image_with_fallback(
+        client,
         model=args.model,
         prompt=args.prompt,
-        image=args.image_url,
+        image=image_source,
         size=args.size,
         response_format="b64_json",
         watermark=False,
     )
 
     saved_path = save_image_payload(response.data[0], output_path)
+    print(f"使用模型: {used_model}")
     print(f"已保存到: {saved_path}")
 
 
