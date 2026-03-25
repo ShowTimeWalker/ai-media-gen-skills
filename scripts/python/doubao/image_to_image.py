@@ -10,7 +10,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from doubao_common import (
+from common import (
     PROJECT_ROOT,
     create_client,
     default_output_path,

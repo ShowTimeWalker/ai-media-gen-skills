@@ -10,7 +10,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from doubao_common import create_client, default_output_path, generate_image_with_fallback, save_image_payload
+from common import create_client, default_output_path, generate_image_with_fallback, save_image_payload
 
 DEFAULT_MODEL = "doubao-seedream-5-0-260128"
 DEFAULT_PROMPT = (

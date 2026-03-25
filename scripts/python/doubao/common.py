@@ -12,7 +12,7 @@ from typing import Any, Sequence
 from volcenginesdkarkruntime import Ark
 
 BASE_URL = "https://ark.cn-beijing.volces.com/api/v3"
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_CONFIG_PATH = PROJECT_ROOT / "api_key" / "doubao.json"
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "outputs" / "doubao"
 
