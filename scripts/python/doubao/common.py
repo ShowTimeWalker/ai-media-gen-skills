@@ -15,6 +15,7 @@ BASE_URL = "https://ark.cn-beijing.volces.com/api/v3"
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_CONFIG_PATH = PROJECT_ROOT / "api_key" / "doubao.json"
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "outputs" / "doubao"
+OUTPUTS_ROOT = PROJECT_ROOT / "outputs"
 
 IMAGE_MODEL_FALLBACKS = [
     "doubao-seedream-5-0-260128",
@@ -42,13 +43,13 @@ def load_api_key(config_path: Path = DEFAULT_CONFIG_PATH) -> str:
 
     if not config_path.exists():
         raise RuntimeError(
-            f"未找到 ARK_API_KEY 环境变量，且缺少配置文件：{config_path}"
+            f"未找到 ARK_API_KEY 环境变量，且缺少配置文件: {config_path}"
         )
 
     config = json.loads(config_path.read_text(encoding="utf-8"))
     api_key = config.get("api_key")
     if not api_key:
-        raise RuntimeError(f"配置文件中缺少 api_key：{config_path}")
+        raise RuntimeError(f"配置文件中缺少 api_key: {config_path}")
     return api_key
 
 
@@ -59,15 +60,22 @@ def create_client(api_key: str | None = None) -> Ark:
     )
 
 
-def ensure_output_dir(subdir: str) -> Path:
-    target_dir = DEFAULT_OUTPUT_DIR / subdir
+def ensure_output_dir(*parts: str) -> Path:
+    target_dir = DEFAULT_OUTPUT_DIR.joinpath(*parts)
     target_dir.mkdir(parents=True, exist_ok=True)
     return target_dir
 
 
-def default_output_path(subdir: str, suffix: str = ".png") -> Path:
+def default_output_path(*parts: str, suffix: str = ".png") -> Path:
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    return ensure_output_dir(subdir) / f"{timestamp}{suffix}"
+    return ensure_output_dir(*parts) / f"{timestamp}{suffix}"
+
+
+def default_qiniu_object_key(local_path: Path) -> str:
+    try:
+        return local_path.resolve().relative_to(OUTPUTS_ROOT.resolve()).as_posix()
+    except ValueError:
+        return f"doubao/images/generated/{local_path.name}"
 
 
 def resolve_image_source(image_source: str | Path) -> str:

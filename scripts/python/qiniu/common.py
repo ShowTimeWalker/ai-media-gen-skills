@@ -5,6 +5,7 @@ import hashlib
 import hmac
 import json
 import mimetypes
+import os
 import time
 from pathlib import Path
 from urllib.parse import quote
@@ -14,17 +15,32 @@ DEFAULT_UPLOAD_DOMAIN = "https://upload-z2.qiniup.com"
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_CONFIG_PATH = PROJECT_ROOT / "api_key" / "qiniu.json"
+ENV_FIELD_MAP = {
+    "access_key": "QINIU_ACCESS_KEY",
+    "secret_key": "QINIU_SECRET_KEY",
+    "bucket": "QINIU_BUCKET",
+    "public_domain": "QINIU_PUBLIC_DOMAIN",
+}
 
 
 def load_config(config_path: Path = DEFAULT_CONFIG_PATH) -> dict[str, str]:
-    if not config_path.exists():
-        raise RuntimeError(f"未找到七牛配置文件：{config_path}")
+    file_config: dict[str, str] = {}
+    if config_path.exists():
+        file_config = json.loads(config_path.read_text(encoding="utf-8"))
 
-    config = json.loads(config_path.read_text(encoding="utf-8"))
-    required_fields = ("access_key", "secret_key", "bucket", "public_domain")
-    missing = [field for field in required_fields if not str(config.get(field, "")).strip()]
+    config: dict[str, str] = {}
+    missing: list[str] = []
+    for field, env_name in ENV_FIELD_MAP.items():
+        value = os.getenv(env_name, "").strip() or str(file_config.get(field, "")).strip()
+        if value:
+            config[field] = value
+        else:
+            missing.append(field)
+
     if missing:
-        raise RuntimeError(f"七牛配置缺少字段：{', '.join(missing)}")
+        raise RuntimeError(
+            f"七牛配置缺少字段: {', '.join(missing)}，请设置环境变量或填写 {config_path}"
+        )
     return config
 
 

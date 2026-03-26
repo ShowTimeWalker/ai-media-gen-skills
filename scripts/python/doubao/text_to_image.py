@@ -8,9 +8,28 @@
 from __future__ import annotations
 
 import argparse
+import json
+import sys
 from pathlib import Path
 
-from common import create_client, default_output_path, generate_image_with_fallback, save_image_payload
+CURRENT_DIR = Path(__file__).resolve().parent
+PYTHON_DIR = CURRENT_DIR.parent
+
+if str(PYTHON_DIR) not in sys.path:
+    sys.path.insert(0, str(PYTHON_DIR))
+
+from common import (  # type: ignore[import-not-found]
+    create_client,
+    default_output_path,
+    default_qiniu_object_key,
+    generate_image_with_fallback,
+    save_image_payload,
+)
+from qiniu.common import (  # type: ignore[import-not-found]
+    build_public_url,
+    load_config as load_qiniu_config,
+    upload_file,
+)
 
 DEFAULT_MODEL = "doubao-seedream-5-0-260128"
 DEFAULT_PROMPT = (
@@ -28,7 +47,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--output",
         type=Path,
-        help="输出文件路径，默认写入 outputs/doubao/text_to_image/",
+        help="输出文件路径，默认写入 outputs/doubao/images/text_to_image/",
     )
     return parser.parse_args()
 
@@ -36,7 +55,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     client = create_client()
-    output_path = args.output or default_output_path("text_to_image")
+    output_path = args.output or default_output_path("images", "text_to_image")
 
     response, used_model = generate_image_with_fallback(
         client,
@@ -48,8 +67,22 @@ def main() -> None:
     )
 
     saved_path = save_image_payload(response.data[0], output_path)
-    print(f"使用模型: {used_model}")
-    print(f"已保存到: {saved_path}")
+    object_key = default_qiniu_object_key(saved_path)
+    upload_response = upload_file(file_path=saved_path, object_key=object_key)
+    qiniu_config = load_qiniu_config()
+    public_url = build_public_url(qiniu_config["public_domain"], object_key)
+
+    result = {
+        "type": "image",
+        "scene": "text_to_image",
+        "used_model": used_model,
+        "local_path": str(saved_path),
+        "bucket": qiniu_config["bucket"],
+        "object_key": object_key,
+        "upload_response": upload_response,
+        "url": public_url,
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

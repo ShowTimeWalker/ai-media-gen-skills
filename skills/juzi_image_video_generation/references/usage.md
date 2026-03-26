@@ -1,74 +1,32 @@
 # 使用说明
 
-## 目录假设
+## 适用范围
 
-当前 skill 默认位于：
+`juzi_image_video_generation` 只负责橘子侧能力：
 
-`skills/juzi_image_video_generation/`
+- 创建图片任务
+- 创建视频任务
+- 轮询任务进度
+- 下载生成结果到本地
 
-skill 内脚本会按当前项目目录结构推导这些路径：
+它不负责七牛上传，不生成分享链接。
 
-- `api_key/juzi.json`
-- `api_key/qiniu.json`
-- `outputs/juzi/images/`
-- `outputs/juzi/videos/`
-- `skills/juzi_image_video_generation/scripts/`
+## 运行方式
 
-如果你移动了 skill 目录，先检查脚本中的路径推导逻辑是否仍然成立。
-
-## OpenClaw 配置方式
-
-`SKILL.md` 已声明：
-
-- `metadata.openclaw.requires.bins = ["uv"]`
-- `metadata.openclaw.requires.anyBins = ["python", "python3", "py"]`
-- `metadata.openclaw.requires.env = ["JUZI_API_KEY", "QINIU_ACCESS_KEY", "QINIU_SECRET_KEY", "QINIU_BUCKET", "QINIU_PUBLIC_DOMAIN"]`
-- `metadata.openclaw.primaryEnv = "JUZI_API_KEY"`
-
-推荐在 `~/.openclaw/openclaw.json` 中这样配置：
-
-```json
-{
-  "skills": {
-    "entries": {
-      "juzi_image_video_generation": {
-        "enabled": true,
-        "env": {
-          "JUZI_API_KEY": "YOUR_JUZI_API_KEY",
-          "QINIU_ACCESS_KEY": "YOUR_QINIU_ACCESS_KEY",
-          "QINIU_SECRET_KEY": "YOUR_QINIU_SECRET_KEY",
-          "QINIU_BUCKET": "noah-ai-generate",
-          "QINIU_PUBLIC_DOMAIN": "http://your-download-domain"
-        }
-      }
-    }
-  }
-}
+```powershell
+uv run --no-project --python python scripts/python/workflows/run_juzi_image_pipeline.py --prompt "..."
+uv run --no-project --python python scripts/python/workflows/run_juzi_video_pipeline.py --prompt "..."
+uv run --no-project --python python scripts/python/juzi/query_image_status.py --juzi-id <ID>
+uv run --no-project --python python scripts/python/juzi/query_video_status.py --juzi-id <ID>
 ```
 
-OpenClaw 会在每次 agent run 开始时，把这些值注入到进程环境。
+## 目录约定
 
-## 当前脚本的回退行为
+- 图片下载目录：`outputs/juzi/images/`
+- 视频下载目录：`outputs/juzi/videos/`
 
-当前脚本读取配置的顺序是：
+## 环境变量
 
-1. OpenClaw 注入的环境变量
-2. `api_key/juzi.json` 或 `api_key/qiniu.json`
+- `JUZI_API_KEY`
 
-第二项只是当前项目里的本地调试回退，不是 OpenClaw 规范下的首选方式。
-
-## 输出策略
-
-- 图片默认下载到 `outputs/juzi/images/`
-- 视频默认下载到 `outputs/juzi/videos/`
-- 七牛对象 key 默认写入：
-  - `juzi/images/...`
-  - `juzi/videos/...`
-- 默认返回 10 分钟有效的分享链接
-
-## 运行建议
-
-- 一律使用 `uv run --no-project --python python`
-- 如果用户已经提供 `juzi_id`，优先使用状态查询脚本，不要重复创建任务
-- 如果空间是公开空间，时效链接只是“可分享链接”；如果需要真正过期失效，应切回私有空间
-- 如果在 OpenClaw 中更新了 `SKILL.md` 或 `openclaw.json`，新开一个 session 再测试，确保技能快照刷新
+本地调试时仍可从 `api_key/juzi.json` 回退读取。

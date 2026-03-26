@@ -1,4 +1,4 @@
 interface:
-  display_name: "Doubao Image"
-  short_description: "Run Doubao Seedream text-to-image and image-to-image scripts with OpenClaw-managed ARK_API_KEY."
-  default_prompt: "Use $doubao-image-generation to run the workspace Doubao image scripts with the user's prompt, source image, size, and output path requirements."
+  display_name: "Doubao Image Generation"
+  short_description: "Generate or edit Doubao images, upload them to Qiniu, and return the image URL."
+  default_prompt: "Use $doubao-image-generation to generate or edit an image with Doubao, upload the result to Qiniu, and return the final image URL."

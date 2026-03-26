@@ -1,94 +1,35 @@
 # 使用说明
 
-## 目录假设
+## 适用范围
 
-当前 skill 默认位于：
+`doubao-image-generation` 只负责两件事：
 
-`skills/doubao-image-generation/`
+1. 调用豆包图片生成或编辑接口。
+2. 将生成结果上传到七牛并返回图片 URL。
 
-skill 内脚本会按当前项目目录结构推导这些路径：
+它不负责视频生成，也不负责通用文件管理。
 
-- `api_key/doubao.json`
-- `resources/images/`
-- `outputs/doubao/`
-- `skills/doubao-image-generation/scripts/`
+## 运行方式
 
-如果你移动了 skill 目录，先检查脚本中的路径推导逻辑是否仍然成立。
+从项目根目录执行：
 
-## OpenClaw 配置方式
-
-`SKILL.md` 已声明：
-
-- `metadata.openclaw.requires.bins = ["uv"]`
-- `metadata.openclaw.requires.env = ["ARK_API_KEY"]`
-- `metadata.openclaw.primaryEnv = "ARK_API_KEY"`
-
-推荐在 `~/.openclaw/openclaw.json` 中这样配置：
-
-```json
-{
-  "skills": {
-    "entries": {
-      "doubao-image-generation": {
-        "enabled": true,
-        "env": {
-          "ARK_API_KEY": "YOUR_ARK_API_KEY"
-        }
-      }
-    }
-  }
-}
+```powershell
+uv run --no-project --python python scripts/python/doubao/text_to_image.py --prompt "..."
+uv run --no-project --python python scripts/python/doubao/image_to_image.py --image resources/images/climb1.jpeg --prompt "..."
 ```
 
-如果你使用 OpenClaw 的密钥管理能力，也可以改成：
+## 目录约定
 
-```json
-{
-  "skills": {
-    "entries": {
-      "doubao-image-generation": {
-        "enabled": true,
-        "apiKey": {
-          "source": "env",
-          "provider": "default",
-          "id": "ARK_API_KEY"
-        }
-      }
-    }
-  }
-}
-```
+- 文生图本地文件：`outputs/doubao/images/text_to_image/`
+- 图生图本地文件：`outputs/doubao/images/image_to_image/`
+- 七牛对象 key 默认映射为 `doubao/images/...`
 
-OpenClaw 会在每次 agent run 开始时，把这里配置的值注入到进程环境中的 `ARK_API_KEY`。
+## 环境变量
 
-## 当前脚本的回退行为
+- `ARK_API_KEY`
+- `QINIU_ACCESS_KEY`
+- `QINIU_SECRET_KEY`
+- `QINIU_BUCKET`
+- `QINIU_PUBLIC_DOMAIN`
 
-当前脚本读取密钥的顺序是：
-
-1. `ARK_API_KEY`
-2. `api_key/doubao.json`
-
-第二项只是当前项目里的本地调试回退，不是 OpenClaw 规范下的首选方式。
-
-## 模型策略
-
-首选模型和降级顺序如下：
-
-1. `doubao-seedream-5-0-260128`
-2. `doubao-seedream-4-5-251128`
-3. `doubao-seedream-4-0-250828`
-
-只有在额度不足、余额不足、`credit`、`quota`、`resource exhausted` 等错误时，才会自动降级。
-
-## 输出策略
-
-- 默认关闭新增 AI 水印
-- 文生图输出到 `outputs/doubao/text_to_image/`
-- 图生图输出到 `outputs/doubao/image_to_image/`
-- 默认文件名使用时间戳
-
-## 运行建议
-
-- 一律使用 `uv run --project <项目根目录>`
-- 缺依赖时优先使用 `uv add`
-- 如果在 OpenClaw 中更新了 `SKILL.md` 或 `openclaw.json`，新开一个 session 再测试，确保技能快照刷新
+本地调试时仍可从 `api_key/doubao.json` 与 `api_key/qiniu.json` 回退读取。

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Juzi Image Video Deprecated"
+  short_description: "Deprecated combined Juzi and Qiniu workflow."
+  default_prompt: "This deprecated skill should not be used. Prefer juzi_image_video_generation and qiniu_object_storage."

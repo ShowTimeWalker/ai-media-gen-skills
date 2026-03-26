@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import mimetypes
+import os
 import time
 from pathlib import Path
 from typing import Any
@@ -19,6 +20,10 @@ API_KEY = ""
 
 
 def load_api_key(config_path: Path = DEFAULT_CONFIG_PATH) -> str:
+    env_api_key = os.getenv("JUZI_API_KEY", "").strip()
+    if env_api_key:
+        return env_api_key
+
     if API_KEY:
         return API_KEY
 
