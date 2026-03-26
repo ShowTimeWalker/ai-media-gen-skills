@@ -2,12 +2,18 @@
 
 ## 适用范围
 
-`doubao-image-generation` 只负责两件事：
+`doubao-image-generation` 只负责：
 
-1. 调用豆包图片生成或编辑接口。
-2. 将生成结果上传到七牛并返回图片 URL。
+1. 调用豆包图片生成接口
+2. 调用豆包图片编辑接口
+3. 将结果保存到本地
 
-它不负责视频生成，也不负责通用文件管理。
+它不负责：
+
+- 视频生成
+- 对象存储上传
+- 返回公网 URL
+- 工作流编排
 
 ## 运行方式
 
@@ -18,18 +24,23 @@ uv run --no-project --python python scripts/python/doubao/text_to_image.py --pro
 uv run --no-project --python python scripts/python/doubao/image_to_image.py --image resources/images/climb1.jpeg --prompt "..."
 ```
 
-## 目录约定
+## 输出约定
 
-- 文生图本地文件：`outputs/doubao/images/text_to_image/`
-- 图生图本地文件：`outputs/doubao/images/image_to_image/`
-- 七牛对象 key 默认映射为 `doubao/images/...`
+- 文生图目录：`outputs/doubao/images/text_to_image/`
+- 图生图目录：`outputs/doubao/images/image_to_image/`
+- 输出字段：
+  - `provider=doubao`
+  - `scene`
+  - `used_model`
+  - `local_path`
 
 ## 环境变量
 
 - `ARK_API_KEY`
-- `QINIU_ACCESS_KEY`
-- `QINIU_SECRET_KEY`
-- `QINIU_BUCKET`
-- `QINIU_PUBLIC_DOMAIN`
 
-本地调试时仍可从 `api_key/doubao.json` 与 `api_key/qiniu.json` 回退读取。
+本地调试时仍可从 `api_key/doubao.json` 回退读取。
+
+## 与其他 skill 的关系
+
+- 若需要交付 URL，应再调用 `qiniu_object_storage`
+- 若用户只表达“帮我生成图片”而未指定供应商，优先由工作流或 `media-gen` Agent 决定是否命中本 skill

@@ -1,4 +1,4 @@
 interface:
   display_name: "Doubao Image Generation"
-  short_description: "Generate or edit Doubao images, upload them to Qiniu, and return the image URL."
-  default_prompt: "Use $doubao-image-generation to generate or edit an image with Doubao, upload the result to Qiniu, and return the final image URL."
+  short_description: "Generate or edit images with Doubao and save the result locally."
+  default_prompt: "Use $doubao-image-generation when the user explicitly wants Doubao image generation or when a workflow needs a Doubao image provider."

@@ -15,7 +15,6 @@ BASE_URL = "https://ark.cn-beijing.volces.com/api/v3"
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_CONFIG_PATH = PROJECT_ROOT / "api_key" / "doubao.json"
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "outputs" / "doubao"
-OUTPUTS_ROOT = PROJECT_ROOT / "outputs"
 
 IMAGE_MODEL_FALLBACKS = [
     "doubao-seedream-5-0-260128",
@@ -69,13 +68,6 @@ def ensure_output_dir(*parts: str) -> Path:
 def default_output_path(*parts: str, suffix: str = ".png") -> Path:
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     return ensure_output_dir(*parts) / f"{timestamp}{suffix}"
-
-
-def default_qiniu_object_key(local_path: Path) -> str:
-    try:
-        return local_path.resolve().relative_to(OUTPUTS_ROOT.resolve()).as_posix()
-    except ValueError:
-        return f"doubao/images/generated/{local_path.name}"
 
 
 def resolve_image_source(image_source: str | Path) -> str:

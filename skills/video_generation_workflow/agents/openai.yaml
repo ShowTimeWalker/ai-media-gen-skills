@@ -1,0 +1,4 @@
+interface:
+  display_name: "Video Generation Workflow"
+  short_description: "Coordinate video generation and default delivery without binding to a specific provider."
+  default_prompt: "Use $video_generation_workflow when the user wants a video generated and expects a final deliverable, letting the media-gen agent choose providers and default delivery behavior."
