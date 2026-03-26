@@ -17,7 +17,7 @@ DEFAULT_CONFIG_PATH = PROJECT_ROOT / "api_key" / "hailuo.json"
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "outputs" / "hailuo"
 
 # 测试阶段可直接把 API Key 填在这里。
-API_KEY = ""
+API_KEY = "sk-api-432cr4VyyPwhY6GVZvFt_CSjkGtq-Vegwa4dWVOHvQeS9aKJa_ZzVw4H-crHrRbf4EX6lmnZ1fIMYuyLieJJYvEjb1p9_zh_koVk4Ma8aZvDYYAKhY2pWEw"
 
 
 def load_api_key(config_path: Path = DEFAULT_CONFIG_PATH) -> str:

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Juzi Image Video"
+  short_description: "Run Juzi image/video generation workflows and return Qiniu share links with OpenClaw-managed env vars."
+  default_prompt: "Use $juzi_image_video_generation to run the Juzi image or video pipeline, poll task status, download the result, upload it to Qiniu, and return a 10-minute share link."
