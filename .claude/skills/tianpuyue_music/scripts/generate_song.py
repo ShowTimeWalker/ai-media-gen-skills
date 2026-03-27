@@ -1,0 +1,85 @@
+# /// script
+# requires-python = ">=3.14"
+# ///
+
+from __future__ import annotations
+
+import argparse
+import json
+
+from common import (
+    PROJECT_ROOT,
+    create_song_task,
+    default_output_path,
+    download_file,
+    extract_audio_url,
+    pretty_json,
+    wait_for_song_task,
+)
+
+DEFAULT_MODEL = "TemPolor v4.5"
+DEFAULT_PROMPT = (
+    "中文流行抒情歌曲，中慢速节奏（70-85 BPM），钢琴与柔和合成器开场，"
+    "副歌加入弦乐与鼓组增强情绪。旋律有记忆点，副歌朗朗上口。"
+)
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="天谱乐歌曲生成并下载到本地")
+    parser.add_argument("--prompt", default=DEFAULT_PROMPT, help="音乐描述提示词")
+    parser.add_argument("--model", default=DEFAULT_MODEL, help="模型名称")
+    parser.add_argument("--lyrics", default=None, help="自定义歌词（为空时自动生成）")
+    parser.add_argument("--voice-id", default=None, help="演唱声音 ID")
+    parser.add_argument(
+        "--poll-interval",
+        type=int,
+        default=15,
+        help="轮询间隔秒数，默认 15",
+    )
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=900,
+        help="超时秒数，默认 900",
+    )
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+    create_response = create_song_task(
+        prompt=args.prompt,
+        model=args.model,
+        lyrics=args.lyrics,
+        voice_id=args.voice_id,
+    )
+    item_id = create_response["data"]["item_ids"][0]
+    print(f"歌曲任务已创建: {item_id}")
+
+    item = wait_for_song_task(
+        item_id,
+        poll_interval=args.poll_interval,
+        timeout=args.timeout,
+    )
+    audio_url = extract_audio_url(item)
+    local_path = default_output_path("songs", item_id, ".mp3")
+    download_file(audio_url, local_path)
+
+    result = {
+        "type": "song",
+        "provider": "tianpuyue",
+        "item_id": item_id,
+        "local_path": str(local_path.relative_to(PROJECT_ROOT)),
+        "source_url": audio_url,
+        "title": item.get("title", ""),
+        "style": item.get("style", ""),
+        "duration": item.get("duration"),
+        "model": item.get("model", ""),
+        "lyrics": item.get("lyrics", ""),
+        "task_info": item,
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+
+
+if __name__ == "__main__":
+    main()
