@@ -1,4 +1,0 @@
-interface:
-  display_name: "Doubao Image Generation"
-  short_description: "Generate or edit images with Doubao and save the result locally."
-  default_prompt: "Use $doubao-image-generation when the user explicitly wants Doubao image generation or when a workflow needs a Doubao image provider."

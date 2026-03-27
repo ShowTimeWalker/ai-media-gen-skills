@@ -4,7 +4,11 @@
       "Bash(ffmpeg -version)",
       "Bash(ffprobe -version)",
       "Bash(where.exe ffmpeg:*)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Bash(uv run:*)",
+      "Bash(git submodule:*)",
+      "Bash(git -C C:/Users/Noah/Documents/vscode/temp/openclaw-skills sparse-checkout list)",
+      "Bash(git -C C:/Users/Noah/Documents/vscode/temp/openclaw-skills ls-tree -r HEAD --name-only)"
     ]
   }
 }
