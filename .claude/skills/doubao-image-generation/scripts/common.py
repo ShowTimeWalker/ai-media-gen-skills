@@ -17,7 +17,6 @@ DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "outputs" / "doubao"
 IMAGE_MODEL_FALLBACKS = [
     "doubao-seedream-5-0-260128",
     "doubao-seedream-4-5-251128",
-    "doubao-seedream-4-0-250828",
 ]
 
 QUOTA_ERROR_KEYWORDS = (
@@ -30,6 +29,10 @@ QUOTA_ERROR_KEYWORDS = (
     "欠费",
     "用量",
     "resource exhausted",
+    "ratelimit",
+    "rate limit",
+    "setlimitexceeded",
+    "429",
 )
 
 
