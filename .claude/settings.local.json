@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ffmpeg -version)",
+      "Bash(ffprobe -version)",
+      "Bash(where.exe ffmpeg:*)"
+    ]
+  }
+}

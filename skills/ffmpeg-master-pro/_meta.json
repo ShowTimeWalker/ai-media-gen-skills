@@ -1,0 +1,22 @@
+{
+  "owner": "aqbjqtd",
+  "slug": "ffmpeg-master-pro",
+  "displayName": "Ffmpeg Master Pro",
+  "latest": {
+    "version": "2.3.1",
+    "publishedAt": 1774315845244,
+    "commit": "https://github.com/openclaw/skills/commit/7b972212259f8317dd904cbe1df0b60bdf5d6745"
+  },
+  "history": [
+    {
+      "version": "2.2.2",
+      "publishedAt": 1773841493701,
+      "commit": "https://github.com/openclaw/skills/commit/758f4250eb3169aaaf7a1400fe390d85ca7934cc"
+    },
+    {
+      "version": "1.1.0",
+      "publishedAt": 1773760452534,
+      "commit": "https://github.com/openclaw/skills/commit/6de32be4526e4a12bbba21470aa4fc51aea5d7a5"
+    }
+  ]
+}
