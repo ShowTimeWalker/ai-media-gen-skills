@@ -8,6 +8,7 @@ import mimetypes
 import os
 import time
 from pathlib import Path
+from typing import Any
 from urllib.parse import quote
 from urllib.request import Request, urlopen
 
@@ -21,14 +22,35 @@ ENV_FIELD_MAP = {
     "bucket": "QINIU_BUCKET",
     "public_domain": "QINIU_PUBLIC_DOMAIN",
 }
+OPTIONAL_ENV_FIELD_MAP = {
+    "is_private": "QINIU_IS_PRIVATE",
+}
 
 
-def load_config(config_path: Path = DEFAULT_CONFIG_PATH) -> dict[str, str]:
-    file_config: dict[str, str] = {}
+def parse_bool(value: Any, *, default: bool = False) -> bool:
+    if value is None:
+        return default
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)):
+        return bool(value)
+    if isinstance(value, str):
+        normalized = value.strip().lower()
+        if not normalized:
+            return default
+        if normalized in {"1", "true", "yes", "y", "on"}:
+            return True
+        if normalized in {"0", "false", "no", "n", "off"}:
+            return False
+    raise RuntimeError("七牛配置字段 is_private 只能是布尔值或可识别的 true/false 字符串")
+
+
+def load_config(config_path: Path = DEFAULT_CONFIG_PATH) -> dict[str, Any]:
+    file_config: dict[str, Any] = {}
     if config_path.exists():
         file_config = json.loads(config_path.read_text(encoding="utf-8"))
 
-    config: dict[str, str] = {}
+    config: dict[str, Any] = {}
     missing: list[str] = []
     for field, env_name in ENV_FIELD_MAP.items():
         value = os.getenv(env_name, "").strip() or str(file_config.get(field, "")).strip()
@@ -41,6 +63,14 @@ def load_config(config_path: Path = DEFAULT_CONFIG_PATH) -> dict[str, str]:
         raise RuntimeError(
             f"七牛配置缺少字段: {', '.join(missing)}，请设置环境变量或填写 {config_path}"
         )
+
+    config["public_domain"] = normalize_domain(config["public_domain"])
+    is_private_env = os.getenv(OPTIONAL_ENV_FIELD_MAP["is_private"])
+    if is_private_env is None:
+        is_private_raw = file_config.get("is_private", False)
+    else:
+        is_private_raw = is_private_env
+    config["is_private"] = parse_bool(is_private_raw, default=False)
     return config
 
 
@@ -75,6 +105,21 @@ def build_private_download_url(
     encoded_sign = urlsafe_base64_encode(digest)
     token = f"{access_key}:{encoded_sign}"
     return f"{signing_url}&token={token}"
+
+
+def resolve_access_mode(
+    *,
+    is_private_bucket: bool,
+    prefer_private: bool = False,
+    prefer_public: bool = False,
+) -> str:
+    if prefer_private and prefer_public:
+        raise ValueError("--private-url 和 --public-url 不能同时使用")
+    if prefer_private:
+        return "private"
+    if prefer_public:
+        return "public"
+    return "private" if is_private_bucket else "public"
 
 
 def build_upload_token(

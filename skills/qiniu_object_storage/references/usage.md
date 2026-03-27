@@ -5,16 +5,23 @@
 `qiniu_object_storage` 只负责：
 
 - 上传本地文件到七牛
-- 返回公网 URL
-- 生成带时效的私有下载链接
+- 根据空间可见性返回交付链接
+- 为私有空间生成带时效的签名下载链接
 
 它不负责任何图片或视频生成。
+
+## 默认返回规则
+
+- 当 `api_key/qiniu.json` 中存在 `"is_private": true`，或环境变量 `QINIU_IS_PRIVATE=true` 时，默认返回签名链接
+- 当空间是公开的，默认返回公网链接
+- 如需覆盖默认行为，可显式传 `--private-url` 或 `--public-url`
 
 ## 运行方式
 
 ```powershell
 uv run --no-project --python python scripts/python/qiniu/upload_file.py --file <本地文件>
 uv run --no-project --python python scripts/python/qiniu/upload_file.py --file <本地文件> --private-url --expires-in 600
+uv run --no-project --python python scripts/python/qiniu/upload_file.py --file <本地文件> --public-url
 uv run --no-project --python python scripts/python/qiniu/generate_private_download_url.py --key <对象key> --expires-in 600
 ```
 
@@ -28,10 +35,14 @@ uv run --no-project --python python scripts/python/qiniu/generate_private_downlo
 - `storage_provider=qiniu`
 - `bucket`
 - `object_key`
-- `public_url`
+- `access_mode`
+- `delivery_url`
+- 可选 `public_url`
 - 可选 `private_url`
+- 可选 `base_url`
+- 私有链接场景可带 `expires_in`
 
 ## 与其他 skill 的关系
 
 - 它通常被图片/视频 workflow 或 `media-gen` Agent 在交付阶段调用
-- 它不应决定生成供应商
+- 它不应决定内容生成供应商

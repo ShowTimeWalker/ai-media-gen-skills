@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 
 from common import build_private_download_url, build_public_url, load_config
 
@@ -13,7 +14,7 @@ DEFAULT_EXPIRES_IN = 600
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="生成七牛私有下载链接")
+    parser = argparse.ArgumentParser(description="生成七牛私有下载签名链接")
     parser.add_argument(
         "--key",
         default=DEFAULT_OBJECT_KEY,
@@ -34,20 +35,34 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    if args.expires_in <= 0:
+        raise ValueError("--expires-in 必须大于 0")
+
     config = load_config()
-    domain = args.domain or config["public_domain"]
-    public_url = build_public_url(domain, args.key)
-    signed_url = build_private_download_url(
+    base_url = build_public_url(args.domain or config["public_domain"], args.key)
+    private_url = build_private_download_url(
         access_key=config["access_key"],
         secret_key=config["secret_key"],
-        base_url=public_url,
+        base_url=base_url,
         expires_in=args.expires_in,
     )
 
-    print(f"bucket: {config['bucket']}")
-    print(f"key: {args.key}")
-    print(f"expires_in: {args.expires_in}")
-    print(signed_url)
+    print(
+        json.dumps(
+            {
+                "storage_provider": "qiniu",
+                "bucket": config["bucket"],
+                "object_key": args.key,
+                "access_mode": "private",
+                "base_url": base_url,
+                "private_url": private_url,
+                "delivery_url": private_url,
+                "expires_in": args.expires_in,
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
 
 
 if __name__ == "__main__":
