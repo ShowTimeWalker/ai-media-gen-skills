@@ -8,7 +8,11 @@
       "Bash(uv run:*)",
       "Bash(git submodule:*)",
       "Bash(git -C C:/Users/Noah/Documents/vscode/temp/openclaw-skills sparse-checkout list)",
-      "Bash(git -C C:/Users/Noah/Documents/vscode/temp/openclaw-skills ls-tree -r HEAD --name-only)"
+      "Bash(git -C C:/Users/Noah/Documents/vscode/temp/openclaw-skills ls-tree -r HEAD --name-only)",
+      "Bash(mv \"C:/Users/Noah/Documents/vscode/scripts/python/doubao/common.py\" \"C:/Users/Noah/Documents/vscode/.claude/skills/doubao-image-generation/scripts/common.py\")",
+      "Bash(mv \"C:/Users/Noah/Documents/vscode/scripts/python/doubao/text_to_image.py\" \"C:/Users/Noah/Documents/vscode/.claude/skills/doubao-image-generation/scripts/text_to_image.py\")",
+      "Bash(mv \"C:/Users/Noah/Documents/vscode/scripts/python/doubao/image_to_image.py\" \"C:/Users/Noah/Documents/vscode/.claude/skills/doubao-image-generation/scripts/image_to_image.py\")",
+      "Bash(python -c \"from pathlib import Path; p = Path\\(''.claude/skills/doubao-image-generation/scripts/common.py''\\).resolve\\(\\); print\\(''script:'', p\\); print\\(''parents[4]:'', p.parents[4]\\); print\\(''exists:'', p.parents[4].exists\\(\\)\\)\")"
     ]
   }
 }
