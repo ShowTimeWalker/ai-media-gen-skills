@@ -3,7 +3,8 @@
     "allow": [
       "Bash(ffmpeg -version)",
       "Bash(ffprobe -version)",
-      "Bash(where.exe ffmpeg:*)"
+      "Bash(where.exe ffmpeg:*)",
+      "Bash(cp:*)"
     ]
   }
 }
