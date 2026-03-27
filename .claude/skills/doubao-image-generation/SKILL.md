@@ -1,6 +1,6 @@
 ---
 name: doubao-image-generation
-description: 使用豆包（火山引擎 Ark）生成或编辑图片，将结果保存到本地。当用户提到"豆包生图""豆包图片""Doubao""火山引擎图片"时引用；当工作流选择豆包作为图片生成供应商时引用；支持文生图和图生图两种场景。
+description: 使用豆包（火山引擎 Ark）生成或编辑图片，将结果保存到本地。当用户提到"豆包生图""豆包图片""Doubao""火山引擎图片"时引用；当工作流选择豆包作为图片生成供应商时引用；支持文生图和图生图两种场景。当用户同时提到"工作流""流水线""编排"时，不应直接引用此 skill，应优先让 content_generation_workflow 统一调度。
 metadata:
   openclaw:
     requires:

@@ -1,6 +1,6 @@
 ---
 name: juzi_image_video_generation
-description: 使用橘子 AI 生成图片或视频，将结果保存到本地。当用户需要生成图片或视频时引用；当用户提到"橘子""Juzi""juzi"时引用；当用户已有 juzi_id 需要查询任务进度或下载结果时引用。
+description: 使用橘子 AI 生成图片或视频，将结果保存到本地。当用户需要生成图片或视频时引用；当用户提到"橘子""Juzi""juzi"时引用；当用户已有 juzi_id 需要查询任务进度或下载结果时引用。当用户同时提到"工作流""流水线""编排"时，不应直接引用此 skill，应优先让 content_generation_workflow 统一调度。
 metadata:
   openclaw:
     requires:
