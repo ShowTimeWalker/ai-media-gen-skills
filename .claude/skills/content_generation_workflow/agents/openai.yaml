@@ -1,0 +1,4 @@
+interface:
+  display_name: "Content Generation Workflow"
+  short_description: "统一内容生成工作流，编排图片、视频、音乐等多种内容的生成与交付。"
+  default_prompt: "Use $content_generation_workflow when the user wants to generate any content (image, video, music, song, lyrics) and expects a final deliverable. The workflow handles provider selection, generation, and optional delivery via object storage."

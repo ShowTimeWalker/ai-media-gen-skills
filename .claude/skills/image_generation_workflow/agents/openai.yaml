@@ -1,4 +1,0 @@
-interface:
-  display_name: "Image Generation Workflow"
-  short_description: "Coordinate image generation and default delivery without binding to a specific provider."
-  default_prompt: "Use $image_generation_workflow when the user wants an image generated and expects a final deliverable, letting the media-gen agent choose providers and default delivery behavior."
