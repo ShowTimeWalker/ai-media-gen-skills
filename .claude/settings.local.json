@@ -18,7 +18,8 @@
       "Bash(python -c \"from pathlib import Path; p = Path\\(''.claude/skills/doubao-image-generation/scripts/common.py''\\).resolve\\(\\); print\\(''script:'', p\\); print\\(''parents[4]:'', p.parents[4]\\); print\\(''exists:'', p.parents[4].exists\\(\\)\\)\")",
       "Bash(SKILL_BASE=\"/c/Users/Noah/Documents/vscode/.claude/skills/doubao-image-generation\")",
       "Bash(mkdir -p skills/juzi_image_video_generation/scripts)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "WebSearch"
     ]
   }
 }
