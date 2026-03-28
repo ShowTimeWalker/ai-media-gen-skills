@@ -4,3 +4,4 @@ __pycache__/
 outputs/
 Aetherion/
 .claude/settings.local.json
+prompts/test/

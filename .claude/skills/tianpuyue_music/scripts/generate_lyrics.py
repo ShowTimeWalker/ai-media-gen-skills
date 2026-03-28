@@ -8,7 +8,9 @@ import argparse
 import json
 
 from common import (
+    PROJECT_ROOT,
     create_lyrics_task,
+    default_output_path,
     pretty_json,
     wait_for_lyrics_task,
 )
@@ -53,12 +55,19 @@ def main() -> None:
         timeout=args.timeout,
     )
 
+    title = item.get("title", "")
+    lyric = item.get("lyric", "")
+
+    local_path = default_output_path("lyrics", item_id, ".md")
+    local_path.write_text(f"# {title}\n\n{lyric}", encoding="utf-8")
+
     result = {
         "type": "lyrics",
         "provider": "tianpuyue",
         "item_id": item_id,
-        "title": item.get("title", ""),
-        "lyric": item.get("lyric", ""),
+        "local_path": str(local_path.relative_to(PROJECT_ROOT)),
+        "title": title,
+        "lyric": lyric,
         "task_info": item,
     }
     print(json.dumps(result, ensure_ascii=False, indent=2))

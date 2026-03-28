@@ -85,6 +85,7 @@ metadata:
   - `type` — `lyrics`
   - `provider` — `tianpuyue`
   - `item_id`
+  - `local_path`
   - `title`
   - `lyric`
 

@@ -93,7 +93,7 @@ Step 3: 下载
 - 失败：`"failed"`
 - 结果提取：
   - 音乐/歌曲 URL：`item.audio_url`
-  - 歌词文本：`item.lyric`（无文件下载）
+  - 歌词文本：`item.lyric`（同时保存 .md 到 `outputs/tianpuyue/lyrics/`）
 
 ### 用户通知
 
@@ -129,7 +129,7 @@ Step 3: 下载
 |--------|--------|------|--------|--------|-------|----------|
 | 1 | tianpuyue | 异步 | instrumental | ✓ | ✓ | ✓ |
 | 1 | tianpuyue | 异步 | song | ✓ | ✓ | ✓ |
-| 1 | tianpuyue | 异步 | lyrics | ✓ | ✓ | — |
+| 1 | tianpuyue | 异步 | lyrics | ✓ | ✓ | ✓ |
 
 ### 对象存储
 
