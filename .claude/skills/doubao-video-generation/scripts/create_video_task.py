@@ -1,0 +1,193 @@
+# /// script
+# requires-python = ">=3.14"
+# dependencies = [
+#   "volcengine-python-sdk[ark]",
+# ]
+# ///
+
+from __future__ import annotations
+
+import argparse
+import json
+import time
+from typing import Any
+
+from common import (
+    PROJECT_ROOT,
+    create_client,
+    create_video_task,
+    default_output_path,
+    download_file,
+    extract_video_url,
+    query_video_task,
+    wait_for_video_task,
+)
+
+DEFAULT_MODEL = "doubao-seedance-1-5-pro-251215"
+DEFAULT_PROMPT = "小猫对着镜头打哈欠，镜头缓缓拉出"
+DEFAULT_RATIO = "16:9"
+DEFAULT_DURATION = 5
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="豆包 Seedance 视频生成")
+    parser.add_argument("--prompt", default=DEFAULT_PROMPT, help="提示词")
+    parser.add_argument("--model", default=DEFAULT_MODEL, help="模型 ID")
+    parser.add_argument(
+        "--image-url",
+        action="append",
+        dest="image_urls",
+        help="图片 URL，可多次传；配合 --role 使用",
+    )
+    parser.add_argument(
+        "--role",
+        default="first_frame",
+        choices=["first_frame", "last_frame", "reference_image"],
+        help="图片角色（需配合 --image-url）",
+    )
+    parser.add_argument("--ratio", default=DEFAULT_RATIO, help="宽高比")
+    parser.add_argument("--duration", type=int, default=DEFAULT_DURATION, help="视频时长（秒）")
+    parser.add_argument("--resolution", help="分辨率：480p, 720p, 1080p")
+    parser.add_argument("--seed", type=int, help="随机种子")
+    parser.add_argument(
+        "--generate-audio",
+        action="store_true",
+        default=False,
+        help="生成有声视频（仅 1.5 pro）",
+    )
+    parser.add_argument("--watermark", action="store_true", default=False, help="添加水印")
+    parser.add_argument(
+        "--draft",
+        action="store_true",
+        default=False,
+        help="生成样片（仅 1.5 pro）",
+    )
+    parser.add_argument(
+        "--service-tier",
+        choices=["default", "flex"],
+        help="推理模式：default（在线）/ flex（离线）",
+    )
+    parser.add_argument(
+        "--poll",
+        action="store_true",
+        default=False,
+        help="创建后自动轮询并下载",
+    )
+    parser.add_argument(
+        "--poll-interval",
+        type=int,
+        default=10,
+        help="轮询间隔秒数，默认 10",
+    )
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=900,
+        help="轮询超时秒数，默认 900",
+    )
+    return parser.parse_args()
+
+
+def build_content(
+    prompt: str,
+    image_urls: list[str] | None = None,
+    role: str = "first_frame",
+) -> list[dict[str, Any]]:
+    """Build the content array for the API request."""
+    content: list[dict[str, Any]] = [
+        {"type": "text", "text": prompt}
+    ]
+    if image_urls:
+        for url in image_urls:
+            item: dict[str, Any] = {
+                "type": "image_url",
+                "image_url": {"url": url},
+            }
+            if role:
+                item["role"] = role
+            content.append(item)
+    return content
+
+
+def determine_scene(image_urls: list[str] | None) -> str:
+    if image_urls:
+        return "image_to_video"
+    return "text_to_video"
+
+
+def main() -> None:
+    args = parse_args()
+    client = create_client()
+    content = build_content(args.prompt, args.image_urls, args.role)
+    scene = determine_scene(args.image_urls)
+
+    # Build optional kwargs
+    kwargs: dict[str, Any] = {
+        "ratio": args.ratio,
+        "duration": args.duration,
+        "watermark": args.watermark,
+    }
+    if args.resolution:
+        kwargs["resolution"] = args.resolution
+    if args.seed is not None:
+        kwargs["seed"] = args.seed
+    if args.generate_audio:
+        kwargs["generate_audio"] = True
+    if args.draft:
+        kwargs["draft"] = True
+    if args.service_tier:
+        kwargs["service_tier"] = args.service_tier
+
+    print(f"创建视频任务: model={args.model}")
+    result = create_video_task(client, model=args.model, content=content, **kwargs)
+
+    task_id = result.get("id", "")
+    status = result.get("status", "unknown")
+    print(f"任务已创建: {task_id}, 状态: {status}")
+
+    create_output = {
+        "type": "video",
+        "scene": scene,
+        "provider": "doubao",
+        "task_id": task_id,
+        "status": status,
+    }
+    print(json.dumps(create_output, ensure_ascii=False, indent=2))
+
+    if not args.poll:
+        return
+
+    # Poll until completion
+    print(f"\n开始轮询任务: {task_id}")
+    final = wait_for_video_task(
+        client,
+        task_id,
+        poll_interval=args.poll_interval,
+        timeout=args.timeout,
+    )
+
+    video_url = extract_video_url(final)
+    print(f"视频生成成功，开始下载...")
+
+    output_path = default_output_path("videos", scene, suffix=".mp4")
+    # Use task_id as part of filename for traceability
+    output_path = output_path.with_stem(f"{output_path.stem}_{task_id[:12]}")
+    download_file(video_url, output_path)
+
+    poll_output = {
+        "type": "video",
+        "scene": scene,
+        "provider": "doubao",
+        "task_id": task_id,
+        "used_model": args.model,
+        "local_path": str(output_path.relative_to(PROJECT_ROOT)),
+        "source_url": video_url,
+        "resolution": final.get("resolution", ""),
+        "ratio": final.get("ratio", ""),
+        "duration": final.get("duration", ""),
+    }
+    print(json.dumps(poll_output, ensure_ascii=False, indent=2))
+
+
+if __name__ == "__main__":
+    main()

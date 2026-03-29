@@ -121,7 +121,15 @@ Step 3: 下载
 
 | 优先级 | 供应商 | 模式 | 子类型 | create | query | download |
 |--------|--------|------|--------|--------|-------|----------|
-| 1 | juzi | 异步 | text_to_video | ✓ | ✓ | ✓ |
+| 1 | doubao | 异步 | text_to_video | ✓ | ✓ | ✓ |
+| 1 | doubao | 异步 | image_to_video | ✓ | ✓ | ✓ |
+| 2 | juzi | 异步 | text_to_video | ✓ | ✓ | ✓ |
+
+**Doubao 视频（Seedance）完成判定：**
+- 状态字段：`status`
+- 成功：`"succeeded"`
+- 失败：`"failed"`
+- 结果提取：`content.video_url`
 
 ### 音乐 (music)
 
@@ -176,6 +184,7 @@ Step 3: 下载
 | 生成图片、画一张图 | image | text_to_image |
 | 根据这张图生成、图生图 | image | image_to_image |
 | 生成视频 | video | text_to_video |
+| 根据图片生成视频、首帧生视频 | video | image_to_video |
 | 生成音乐、BGM、背景音乐 | music | instrumental |
 | 生成歌曲、带人声的 | music | song |
 | 写歌词、生成歌词 | music | lyrics |
