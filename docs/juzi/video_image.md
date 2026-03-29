@@ -264,7 +264,8 @@
 | model | nano-banana-2 | string | 是 | 支持模型
 sora-image
 gpt-image-1.5
-nano-banana-fast |
+nano-banana-fast
+nano-banana-2 |
 | prompt | 性感不失大度的女人 | string | 是 | 提示词 |
 | ratio | 16:9 | string | 否 | sora-image、gpt-image-1.5尺寸可选："auto"、"1:1"、"3:2"、"2:3"
 其它模型尺寸可选  auto 1:1 16:9 9:16 4:3 3:4 3:2 2:3 5:4 4:5 21:9 |

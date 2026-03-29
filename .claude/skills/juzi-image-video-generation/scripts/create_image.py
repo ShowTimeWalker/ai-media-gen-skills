@@ -8,7 +8,7 @@ import argparse
 
 from common import create_image_task, pretty_json
 
-DEFAULT_MODEL = "nano-banana-fast"
+DEFAULT_MODEL = "nano-banana-2"
 DEFAULT_PROMPT = "一只戴着飞行员护目镜的柴犬，3D卡通风格，背景简洁。"
 DEFAULT_RATIO = "1:1"
 

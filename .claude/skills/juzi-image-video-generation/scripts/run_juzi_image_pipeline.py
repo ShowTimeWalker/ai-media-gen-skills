@@ -15,7 +15,7 @@ from common import (
     wait_for_image_task,
 )
 
-DEFAULT_MODEL = "nano-banana-fast"
+DEFAULT_MODEL = "nano-banana-2"
 DEFAULT_PROMPT = "一只戴着飞行员护目镜的哈士奇，写实风格，背景简洁。"
 DEFAULT_RATIO = "1:1"
 DEFAULT_POLL_INTERVAL = 5
