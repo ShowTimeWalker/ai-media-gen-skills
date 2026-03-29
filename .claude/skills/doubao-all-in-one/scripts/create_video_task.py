@@ -22,6 +22,7 @@ from common import (
     download_file,
     extract_video_url,
     query_video_task,
+    resolve_image_source,
     wait_for_video_task,
 )
 
@@ -71,7 +72,11 @@ def parse_args() -> argparse.Namespace:
         "--image-url",
         action="append",
         dest="image_urls",
-        help="图片 URL，可多次传；配合 --role 使用",
+        help="图片 URL 或本地路径，可多次传；配合 --role 使用",
+    )
+    parser.add_argument(
+        "--last-frame-url",
+        help="尾帧图片 URL 或本地路径（用于首尾帧图生视频场景）",
     )
     parser.add_argument(
         "--role",
@@ -121,7 +126,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--service-tier",
         choices=["default", "flex"],
-        help="推理模式：default（在线）/ flex（离线，50% 价格）",
+        help="推理模式：default（在线）/ flex（离线，50%% 价格）",
     )
     parser.add_argument(
         "--poll",
@@ -151,6 +156,7 @@ def parse_args() -> argparse.Namespace:
 def build_content(
     prompt: str,
     image_urls: list[str] | None = None,
+    last_frame_url: str | None = None,
     role: str = "first_frame",
 ) -> list[dict[str, Any]]:
     """Build the content array for the API request."""
@@ -161,25 +167,40 @@ def build_content(
         for url in image_urls:
             item: dict[str, Any] = {
                 "type": "image_url",
-                "image_url": {"url": url},
+                "image_url": {"url": resolve_image_source(url)},
             }
             if role:
                 item["role"] = role
             content.append(item)
+    if last_frame_url:
+        item: dict[str, Any] = {
+            "type": "image_url",
+            "image_url": {"url": resolve_image_source(last_frame_url)},
+            "role": "last_frame",
+        }
+        content.append(item)
     return content
 
 
-def determine_scene(image_urls: list[str] | None) -> str:
-    if image_urls:
-        return "image_to_video"
-    return "text_to_video"
+def determine_scene(
+    image_urls: list[str] | None,
+    role: str | None = None,
+    last_frame_url: str | None = None,
+) -> str:
+    if not image_urls and not last_frame_url:
+        return "text_to_video"
+    if role == "reference_image":
+        return "reference_image_to_video"
+    if last_frame_url or role == "last_frame" or (len(image_urls) > 1):
+        return "first_last_frame_to_video"
+    return "first_frame_to_video"
 
 
 def main() -> None:
     args = parse_args()
     client = create_client()
-    content = build_content(args.prompt, args.image_urls, args.role)
-    scene = determine_scene(args.image_urls)
+    content = build_content(args.prompt, args.image_urls, args.last_frame_url, args.role)
+    scene = determine_scene(args.image_urls, args.role, args.last_frame_url)
 
     # Build optional kwargs
     kwargs: dict[str, Any] = {
