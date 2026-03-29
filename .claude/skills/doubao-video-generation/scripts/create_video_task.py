@@ -9,6 +9,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import socket
 import time
 from typing import Any
 
@@ -27,6 +29,38 @@ DEFAULT_MODEL = "doubao-seedance-1-5-pro-251215"
 DEFAULT_PROMPT = "小猫对着镜头打哈欠，镜头缓缓拉出"
 DEFAULT_RATIO = "16:9"
 DEFAULT_DURATION = 5
+DEFAULT_CALLBACK_PORT = 8888
+
+
+def get_local_ip() -> str:
+    """Get the local network IP address."""
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except OSError:
+        return "127.0.0.1"
+
+
+def resolve_callback_url(manual_url: str | None) -> str | None:
+    """Resolve callback URL: manual > env var > auto-detect local IP."""
+    if manual_url:
+        return manual_url
+    base = os.getenv("VIDEO_CALLBACK_BASE_URL")
+    if base:
+        return f"{base.rstrip('/')}/webhook/callback"
+    # Auto-detect: check if webhook server is running on default port
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(1)
+        s.connect(("127.0.0.1", DEFAULT_CALLBACK_PORT))
+        s.close()
+        ip = get_local_ip()
+        return f"http://{ip}:{DEFAULT_CALLBACK_PORT}/webhook/callback"
+    except OSError:
+        return None
 
 
 def parse_args() -> argparse.Namespace:
@@ -45,17 +79,29 @@ def parse_args() -> argparse.Namespace:
         choices=["first_frame", "last_frame", "reference_image"],
         help="图片角色（需配合 --image-url）",
     )
-    parser.add_argument("--ratio", default=DEFAULT_RATIO, help="宽高比")
-    parser.add_argument("--duration", type=int, default=DEFAULT_DURATION, help="视频时长（秒）")
-    parser.add_argument("--resolution", help="分辨率：480p, 720p, 1080p")
+    parser.add_argument("--ratio", default=DEFAULT_RATIO, help="宽高比：16:9, 4:3, 1:1, 3:4, 9:16, 21:9, adaptive")
+    parser.add_argument("--duration", type=int, default=DEFAULT_DURATION, help="视频时长（秒）：2~12，默认 5")
+    parser.add_argument("--resolution", default="480p", help="分辨率：480p, 720p, 1080p")
     parser.add_argument("--seed", type=int, help="随机种子")
     parser.add_argument(
         "--generate-audio",
         action="store_true",
         default=False,
-        help="生成有声视频（仅 1.5 pro）",
+        help="生成有声视频（仅 1.5 pro 支持，API 默认 true）",
     )
     parser.add_argument("--watermark", action="store_true", default=False, help="添加水印")
+    parser.add_argument(
+        "--camera-fixed",
+        action="store_true",
+        default=False,
+        help="固定摄像头（参考图场景不支持）",
+    )
+    parser.add_argument(
+        "--return-last-frame",
+        action="store_true",
+        default=False,
+        help="返回生成视频的尾帧图像",
+    )
     parser.add_argument(
         "--draft",
         action="store_true",
@@ -63,9 +109,19 @@ def parse_args() -> argparse.Namespace:
         help="生成样片（仅 1.5 pro）",
     )
     parser.add_argument(
+        "--execution-expires-after",
+        type=int,
+        help="任务超时时间（秒），范围 [3600, 259200]，默认 172800（48小时）",
+    )
+    parser.add_argument(
+        "--frames",
+        type=int,
+        help="生成视频帧数，格式 25+4n，范围 [29, 289]（1.5 pro 暂不支持）",
+    )
+    parser.add_argument(
         "--service-tier",
         choices=["default", "flex"],
-        help="推理模式：default（在线）/ flex（离线）",
+        help="推理模式：default（在线）/ flex（离线，50% 价格）",
     )
     parser.add_argument(
         "--poll",
@@ -84,6 +140,10 @@ def parse_args() -> argparse.Namespace:
         type=int,
         default=900,
         help="轮询超时秒数，默认 900",
+    )
+    parser.add_argument(
+        "--callback-url",
+        help="Webhook 回调地址；不传时自动检测：先读环境变量 VIDEO_CALLBACK_BASE_URL，再探测本地 8888 端口并获取本机 IP",
     )
     return parser.parse_args()
 
@@ -129,14 +189,31 @@ def main() -> None:
     }
     if args.resolution:
         kwargs["resolution"] = args.resolution
+    else:
+        kwargs["resolution"] = "480p"
     if args.seed is not None:
         kwargs["seed"] = args.seed
     if args.generate_audio:
         kwargs["generate_audio"] = True
+    if args.camera_fixed:
+        kwargs["camera_fixed"] = True
+    if args.return_last_frame:
+        kwargs["return_last_frame"] = True
     if args.draft:
         kwargs["draft"] = True
+    if args.execution_expires_after is not None:
+        kwargs["execution_expires_after"] = args.execution_expires_after
+    if args.frames is not None:
+        kwargs["frames"] = args.frames
     if args.service_tier:
         kwargs["service_tier"] = args.service_tier
+    if args.callback_url:
+        kwargs["callback_url"] = args.callback_url
+    else:
+        callback_url = resolve_callback_url(None)
+        if callback_url:
+            kwargs["callback_url"] = callback_url
+            print(f"自动检测到回调地址: {callback_url}")
 
     print(f"创建视频任务: model={args.model}")
     result = create_video_task(client, model=args.model, content=content, **kwargs)

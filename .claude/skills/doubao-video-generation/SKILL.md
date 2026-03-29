@@ -33,32 +33,47 @@ metadata:
 
 - 创建视频任务：`uv run --python python $DOUBAO_VIDEO_SKILL_DIR/scripts/create_video_task.py`
 - 查询视频任务：`uv run --python python $DOUBAO_VIDEO_SKILL_DIR/scripts/query_video_task.py`
+- 批量查询任务：`uv run --python python $DOUBAO_VIDEO_SKILL_DIR/scripts/list_video_tasks.py`
+- 取消/删除任务：`uv run --python python $DOUBAO_VIDEO_SKILL_DIR/scripts/delete_video_task.py`
 - 下载视频：`uv run --python python $DOUBAO_VIDEO_SKILL_DIR/scripts/download_video.py`
+- Webhook 回调服务器：`uv run --python python $DOUBAO_VIDEO_SKILL_DIR/scripts/webhook_server.py`
 
 ## 快速调用
 
 文生视频（创建 + 轮询 + 下载一步完成）：
 
-```powershell
-uv run --python python $DOUBAO_VIDEO_SKILL_DIR/scripts/create_video_task.py `
-  --prompt "写实风格，晴朗的蓝天之下，一大片白色的雏菊花田，镜头逐渐拉近，最终定格在一朵雏菊花的特写上，花瓣上有几颗晶莹的露珠" `
+```shell
+uv run --python python $DOUBAO_VIDEO_SKILL_DIR/scripts/create_video_task.py \
+  --prompt "写实风格，晴朗的蓝天之下，一大片白色的雏菊花田，镜头逐渐拉近，最终定格在一朵雏菊花的特写上，花瓣上有几颗晶莹的露珠" \
   --ratio 16:9 --duration 5 --poll
 ```
 
 首帧图生视频：
 
-```powershell
-uv run --python python $DOUBAO_VIDEO_SKILL_DIR/scripts/create_video_task.py `
-  --prompt "女孩抱着狐狸，女孩睁开眼，温柔地看向镜头" `
-  --image-url "https://example.com/first_frame.png" `
+```shell
+uv run --python python $DOUBAO_VIDEO_SKILL_DIR/scripts/create_video_task.py \
+  --prompt "女孩抱着狐狸，女孩睁开眼，温柔地看向镜头" \
+  --image-url "https://example.com/first_frame.png" \
   --role first_frame --ratio adaptive --duration 5 --poll
 ```
 
 仅创建任务（异步工作流场景）：
 
-```powershell
-uv run --python python $DOUBAO_VIDEO_SKILL_DIR/scripts/create_video_task.py `
+```shell
+uv run --python python $DOUBAO_VIDEO_SKILL_DIR/scripts/create_video_task.py \
   --prompt "小猫对着镜头打哈欠" --ratio 16:9 --duration 5
+```
+
+创建任务 + Webhook 回调（替代轮询）：
+
+```shell
+# 先启动 Webhook 服务器
+uv run --python python $DOUBAO_VIDEO_SKILL_DIR/scripts/webhook_server.py
+
+# 再创建任务，传入回调地址
+uv run --python python $DOUBAO_VIDEO_SKILL_DIR/scripts/create_video_task.py \
+  --prompt "小猫对着镜头打哈欠" --ratio 16:9 --duration 5 \
+  --callback-url "http://your-host:8888/webhook/callback"
 ```
 
 ## 输入与输出
@@ -72,16 +87,21 @@ uv run --python python $DOUBAO_VIDEO_SKILL_DIR/scripts/create_video_task.py `
 | `--image-url` | 图片 URL（可多次传），配合 `--role` 使用 | 否 |
 | `--role` | 图片角色：`first_frame` / `last_frame` / `reference_image` | 否 |
 | `--ratio` | 宽高比：16:9, 4:3, 1:1, 3:4, 9:16, 21:9, adaptive | 否，默认 16:9 |
-| `--duration` | 视频时长（秒）：2~12 | 否，默认 5 |
-| `--resolution` | 分辨率：480p, 720p, 1080p | 否，默认 480p |
-| `--seed` | 随机种子 | 否 |
-| `--generate-audio` | 是否生成有声视频（仅 1.5 pro 支持） | 否 |
-| `--watermark` | 是否添加水印 | 否 |
-| `--draft` | 是否生成样片（仅 1.5 pro） | 否 |
+| `--duration` | 视频时长（秒）：2~12（1.5 pro 支持 -1 由模型自选） | 否，默认 5 |
+| `--resolution` | 分辨率：480p, 720p, 1080p（1.0 lite 参考图不支持 1080p） | 否，默认 480p |
+| `--seed` | 随机种子，范围 [-1, 2^32-1] | 否 |
+| `--frames` | 视频帧数，格式 25+4n，范围 [29, 289]（1.5 pro 暂不支持） | 否 |
+| `--generate-audio` | 生成有声视频（仅 1.5 pro，API 默认 true） | 否 |
+| `--watermark` | 添加水印 | 否 |
+| `--camera-fixed` | 固定摄像头（参考图场景不支持） | 否 |
+| `--return-last-frame` | 返回视频尾帧图像（可用于连续视频拼接） | 否 |
+| `--draft` | 生成样片（仅 1.5 pro，固定 480p，不支持离线） | 否 |
+| `--execution-expires-after` | 任务超时秒数，范围 [3600, 259200]，默认 172800（48h） | 否 |
 | `--service-tier` | 推理模式：default（在线）/ flex（离线，50% 价格） | 否 |
 | `--poll` | 创建后自动轮询直到完成并下载 | 否 |
 | `--poll-interval` | 轮询间隔秒数，默认 10 | 否 |
 | `--timeout` | 轮询超时秒数，默认 900 | 否 |
+| `--callback-url` | Webhook 回调地址，任务状态变更时 Ark 主动推送通知，替代轮询 | 否 |
 
 ### 本地输出目录
 
@@ -121,11 +141,21 @@ uv run --python python $DOUBAO_VIDEO_SKILL_DIR/scripts/create_video_task.py `
 ```json
 {
   "task_id": "cgt-2025xxxx",
-  "status": "succeeded",
-  "video_url": "https://...",
   "model": "doubao-seedance-1-5-pro-251215",
+  "status": "succeeded",
+  "created_at": 1743300000,
+  "updated_at": 1743300120,
+  "video_url": "https://...",
+  "last_frame_url": "https://...",
+  "resolution": "480p",
+  "ratio": "16:9",
   "duration": 5,
-  "ratio": "16:9"
+  "seed": 12345,
+  "generate_audio": true,
+  "draft": false,
+  "service_tier": "default",
+  "execution_expires_after": 172800,
+  "usage": {"completion_tokens": 100, "total_tokens": 100}
 }
 ```
 
@@ -179,5 +209,6 @@ uv run --python python $DOUBAO_VIDEO_SKILL_DIR/scripts/create_video_task.py `
 
 - 如果用户只要求视频生成，本 skill 可直接完成任务（使用 `--poll` 模式）
 - 如果使用异步工作流模式，先调用 `create_video_task.py` 创建任务，再定时调用 `query_video_task.py` 轮询，最后用 `download_video.py` 下载
+- 如果使用 Webhook 模式，先启动 `webhook_server.py`（默认端口 8888），创建任务时传入 `--callback-url`，Ark 会在任务状态变更时主动推送通知到回调地址，无需轮询
 - 如果用户还需要公网链接或临时下载链接，应由后续的交付环节（qiniu skill）继续处理
 - 当用户未指定供应商时，是否使用 Doubao 由多媒体内容生成工作流的预设策略决定

@@ -83,7 +83,7 @@ def wait_for_video_task(
     poll_interval: int = 10,
     timeout: int = 900,
 ) -> dict[str, Any]:
-    """Poll a video task until succeeded or failed."""
+    """Poll a video task until succeeded, failed, expired, or cancelled."""
     deadline = __import__("time").monotonic() + timeout
     import time
 
@@ -103,6 +103,10 @@ def wait_for_video_task(
             raise RuntimeError(
                 f"视频任务失败: {json.dumps(error, ensure_ascii=False)}"
             )
+        if status == "expired":
+            raise TimeoutError(f"视频任务已过期，task_id={task_id}")
+        if status == "cancelled":
+            raise RuntimeError(f"视频任务已取消，task_id={task_id}")
 
         time.sleep(poll_interval)
 
@@ -144,3 +148,39 @@ def _to_dict(obj: Any) -> dict[str, Any]:
     if hasattr(obj, "__dict__"):
         return obj.__dict__
     return {"raw": str(obj)}
+
+
+def list_video_tasks(
+    client: Ark,
+    *,
+    page_num: int | None = None,
+    page_size: int | None = None,
+    status: str | None = None,
+    task_ids: list[str] | None = None,
+    model: str | None = None,
+    service_tier: str | None = None,
+) -> dict[str, Any]:
+    """List video generation tasks with optional filters."""
+    params: dict[str, Any] = {}
+    if page_num is not None:
+        params["page_num"] = page_num
+    if page_size is not None:
+        params["page_size"] = page_size
+    if status is not None:
+        params["filter.status"] = status
+    if task_ids is not None:
+        params["filter.task_ids"] = task_ids
+    if model is not None:
+        params["filter.model"] = model
+    if service_tier is not None:
+        params["filter.service_tier"] = service_tier
+    resp = client.content_generation.tasks.list(**params)
+    return _to_dict(resp)
+
+
+def delete_video_task(
+    client: Ark,
+    task_id: str,
+) -> None:
+    """Cancel a queued task or delete a task record."""
+    client.content_generation.tasks.delete(task_id=task_id)
