@@ -9,9 +9,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import time
 from pathlib import Path
 
-from common import PROJECT_ROOT, create_client, default_output_path, generate_image_with_fallback, save_image_results
+from common import PROJECT_ROOT, create_client, default_output_path, generate_image_with_fallback, get_trace_id, log_params, save_image_results, setup_logging
+
+setup_logging()
 
 
 DEFAULT_MODEL = "doubao-seedream-5-0-260128"
@@ -59,7 +62,10 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    pipeline_start = time.monotonic()
     args = parse_args()
+    trace_id = get_trace_id()
+    log_params("文生图开始", model=args.model, size=args.size, prompt=args.prompt)
     client = create_client()
     output_path = args.output or default_output_path("images", "text_to_image")
 
@@ -82,15 +88,20 @@ def main() -> None:
     if args.output_format is not None:
         kwargs["output_format"] = args.output_format
 
+    api_start = time.monotonic()
     response, used_model = generate_image_with_fallback(client, model=args.model, **kwargs)
+    api_elapsed = time.monotonic() - api_start
+    log_params("模型 API 调用完成", model=used_model, elapsed=round(api_elapsed, 3))
 
     # Save all images (group image support)
     results = save_image_results(response.data, output_path)
+    log_params("图片保存完成", count=len(results), path=str(output_path.name))
 
     first_result = {
         "type": "image",
         "scene": "text_to_image",
         "provider": "doubao",
+        "trace_id": trace_id,
         "used_model": used_model,
     }
     # Attach first image's local_path for backward compatibility
@@ -99,10 +110,16 @@ def main() -> None:
         if len(results) > 1:
             first_result["images"] = results
 
+    total_elapsed = time.monotonic() - pipeline_start
+    log_params("文生图完成", total_elapsed=round(total_elapsed, 3))
     output = {
         **first_result,
         "image_count": len(results),
         "generated_images": len([r for r in results if "local_path" in r]),
+        "timing": {
+            "total_elapsed": round(total_elapsed, 3),
+            "api_elapsed": round(api_elapsed, 3),
+        },
         "usage": {
             "generated_images": getattr(response, "usage", None) and getattr(response.usage, "generated_images", 0) or len(results),
             "output_tokens": getattr(response, "usage", None) and getattr(response.usage, "output_tokens", 0) or 0,

@@ -9,8 +9,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import time
 
-from common import create_client, query_video_task
+from common import create_client, get_trace_id, log_params, query_video_task, setup_logging
+
+setup_logging()
 
 
 def parse_args() -> argparse.Namespace:
@@ -20,14 +23,21 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    pipeline_start = time.monotonic()
     args = parse_args()
     client = create_client()
 
+    trace_id = get_trace_id()
+    log_params("查询视频任务", task_id=args.task_id)
+    api_start = time.monotonic()
     result = query_video_task(client, args.task_id)
+    api_elapsed = time.monotonic() - api_start
+    log_params("查询完成", task_id=args.task_id, status=result.get("status", ""), api_elapsed=round(api_elapsed, 3))
     status = result.get("status", "unknown")
     content = result.get("content", {})
 
     output: dict = {
+        "trace_id": trace_id,
         "task_id": args.task_id,
         "model": result.get("model", ""),
         "status": status,
@@ -94,6 +104,11 @@ def main() -> None:
                     "message": getattr(error, "message", ""),
                 }
 
+    total_elapsed = time.monotonic() - pipeline_start
+    output["timing"] = {
+        "total_elapsed": round(total_elapsed, 3),
+        "api_elapsed": round(api_elapsed, 3),
+    }
     print(json.dumps(output, ensure_ascii=False, indent=2, default=str))
 
 

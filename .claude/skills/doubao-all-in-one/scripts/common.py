@@ -9,18 +9,81 @@ from __future__ import annotations
 
 import base64
 import json
+import logging
 import mimetypes
 import os
 import urllib.request
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Sequence
+from uuid import uuid4
 
 from volcenginesdkarkruntime import Ark
 
-BASE_URL = "https://ark.cn-beijing.volces.com/api/v3"
+logger = logging.getLogger("doubao")
+
+
+def log_params(event: str, **kwargs: Any) -> None:
+    """Log an event with a JSON payload after the pipe: 'event | {"key": "value", ...}'."""
+    params_str = json.dumps(kwargs, ensure_ascii=False, default=str)
+    logger.info("%s | %s", event, params_str)
+
+# Per-execution trace ID, generated on first import
+_trace_id: str = ""
+
+
+def generate_trace_id() -> str:
+    """Generate a 32-char unique trace ID for the current execution."""
+    return uuid4().hex
+
+
+def get_trace_id() -> str:
+    """Return the current trace ID, generating one if not yet set."""
+    global _trace_id
+    if not _trace_id:
+        _trace_id = generate_trace_id()
+    return _trace_id
+
+
+class _TraceIdFilter(logging.Filter):
+    """Inject trace_id into every log record."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        record.trace_id = get_trace_id()
+        return True
+
+
 PROJECT_ROOT = Path(__file__).resolve().parents[4]
+BASE_URL = "https://ark.cn-beijing.volces.com/api/v3"
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "outputs" / "doubao"
+LOG_DIR = PROJECT_ROOT / "outputs" / "logs"
+
+
+def setup_logging() -> None:
+    """Configure doubao logger: daily date-stamped log files, no console output."""
+    if logger.handlers:
+        return
+    trace_filter = _TraceIdFilter()
+    log_fmt = "%(asctime)s [%(trace_id)s] %(levelname)s %(message)s"
+    fmt = logging.Formatter(log_fmt, datefmt="%Y-%m-%d %H:%M:%S")
+
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    today = datetime.now().strftime("%Y%m%d")
+
+    # Normal file handler (all levels)
+    file_handler = logging.FileHandler(LOG_DIR / f"{today}.log", encoding="utf-8")
+    file_handler.setFormatter(fmt)
+    file_handler.addFilter(trace_filter)
+    logger.addHandler(file_handler)
+
+    # Error-only file handler
+    error_handler = logging.FileHandler(LOG_DIR / f"{today}.error.log", encoding="utf-8")
+    error_handler.setFormatter(fmt)
+    error_handler.addFilter(trace_filter)
+    error_handler.setLevel(logging.ERROR)
+    logger.addHandler(error_handler)
+
+    logger.setLevel(logging.INFO)
 
 
 # ---------------------------------------------------------------------------
@@ -131,6 +194,7 @@ def generate_image_with_fallback(
 
             next_model = candidates[index + 1]
             print(f"模型 {candidate} 额度不足，自动切换到 {next_model}")
+            logger.warning("模型 %s 额度不足，自动切换到 %s", candidate, next_model)
 
 
 def save_image_payload(image_data: Any, output_path: Path) -> Path:
@@ -246,6 +310,7 @@ def wait_for_video_task(
 
         if status != last_status:
             print(f"视频任务状态: {status}")
+            log_params("视频任务状态", status=status)
             last_status = status
 
         if status == "succeeded":

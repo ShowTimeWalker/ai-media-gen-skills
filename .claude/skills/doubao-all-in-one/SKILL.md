@@ -32,17 +32,17 @@ metadata:
 
 ### 图片
 
-- 文生图：`uv run --python python $DOUBAO_SKILL_DIR/scripts/text_to_image.py`
-- 图生图：`uv run --python python $DOUBAO_SKILL_DIR/scripts/image_to_image.py`
+- 文生图：`uv run python $DOUBAO_SKILL_DIR/scripts/text_to_image.py`
+- 图生图：`uv run python $DOUBAO_SKILL_DIR/scripts/image_to_image.py`
 
 ### 视频
 
-- 创建视频任务：`uv run --python python $DOUBAO_SKILL_DIR/scripts/create_video_task.py`
-- 查询视频任务：`uv run --python python $DOUBAO_SKILL_DIR/scripts/query_video_task.py`
-- 批量查询任务：`uv run --python python $DOUBAO_SKILL_DIR/scripts/list_video_tasks.py`
-- 取消/删除任务：`uv run --python python $DOUBAO_SKILL_DIR/scripts/delete_video_task.py`
-- 下载视频：`uv run --python python $DOUBAO_SKILL_DIR/scripts/download_video.py`
-- Webhook 回调服务器：`uv run --python python $DOUBAO_SKILL_DIR/scripts/webhook_server.py`
+- 创建视频任务：`uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py`
+- 查询视频任务：`uv run python $DOUBAO_SKILL_DIR/scripts/query_video_task.py`
+- 批量查询任务：`uv run python $DOUBAO_SKILL_DIR/scripts/list_video_tasks.py`
+- 取消/删除任务：`uv run python $DOUBAO_SKILL_DIR/scripts/delete_video_task.py`
+- 下载视频：`uv run python $DOUBAO_SKILL_DIR/scripts/download_video.py`
+- Webhook 回调服务器：`uv run python $DOUBAO_SKILL_DIR/scripts/webhook_server.py`
 
 ---
 
@@ -51,14 +51,14 @@ metadata:
 ### 文生图
 
 ```shell
-uv run --python python $DOUBAO_SKILL_DIR/scripts/text_to_image.py \
+uv run python $DOUBAO_SKILL_DIR/scripts/text_to_image.py \
   --prompt "一张电影感写实人像海报，光影强烈，构图干净"
 ```
 
 ### 图生图
 
 ```shell
-uv run --python python $DOUBAO_SKILL_DIR/scripts/image_to_image.py \
+uv run python $DOUBAO_SKILL_DIR/scripts/image_to_image.py \
   --image resources/images/climb1.jpeg \
   --prompt "保留主体动作，改为日落暖光的写实摄影风格"
 ```
@@ -66,7 +66,7 @@ uv run --python python $DOUBAO_SKILL_DIR/scripts/image_to_image.py \
 ### 文生视频（创建 + 轮询 + 下载一步完成）
 
 ```shell
-uv run --python python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
+uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
   --prompt "写实风格，晴朗的蓝天之下，一大片白色的雏菊花田，镜头逐渐拉近，最终定格在一朵雏菊花的特写上，花瓣上有几颗晶莹的露珠" \
   --ratio 16:9 --duration 5 --poll
 ```
@@ -74,7 +74,7 @@ uv run --python python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
 ### 首帧图生视频
 
 ```shell
-uv run --python python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
+uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
   --prompt "女孩抱着狐狸，女孩睁开眼，温柔地看向镜头" \
   --image-url "https://example.com/first_frame.png" \
   --role first_frame --ratio adaptive --duration 5 --poll
@@ -83,7 +83,7 @@ uv run --python python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
 ### 仅创建任务（异步工作流场景）
 
 ```shell
-uv run --python python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
+uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
   --prompt "小猫对着镜头打哈欠" --ratio 16:9 --duration 5
 ```
 
@@ -91,10 +91,10 @@ uv run --python python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
 
 ```shell
 # 先启动 Webhook 服务器
-uv run --python python $DOUBAO_SKILL_DIR/scripts/webhook_server.py
+uv run python $DOUBAO_SKILL_DIR/scripts/webhook_server.py
 
 # 再创建任务，传入回调地址（不传则自动检测本机 8888 端口）
-uv run --python python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
+uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
   --prompt "小猫对着镜头打哈欠" --ratio 16:9 --duration 5
 ```
 
@@ -302,6 +302,11 @@ uv run --python python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
 ## 提示词最佳实践（视频，强制）
 
 调用视频生成脚本前，**必须**先读取 `references/seedance_1_5_pro_prompt_guide.md`，并对照其中的**提示词质量检查清单**审核用户的提示词。
+
+### 参数约束
+
+- **分辨率默认 480p**：除非用户明确要求更高分辨率（如"720p""1080p""高清"），否则**不得**传 `--resolution` 参数，直接使用脚本默认的 480p
+- **宽高比默认 16:9**：除非用户明确要求其他比例（如"竖屏""正方形""9:16""1:1"等），否则**不得**传 `--ratio` 参数，直接使用脚本默认的 16:9。有首帧/尾帧参考图且用户未指定比例时也应使用 16:9，而非 adaptive
 
 ### 执行规则
 

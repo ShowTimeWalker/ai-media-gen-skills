@@ -21,10 +21,15 @@ from common import (
     default_output_path,
     download_file,
     extract_video_url,
+    get_trace_id,
+    log_params,
     query_video_task,
     resolve_image_source,
+    setup_logging,
     wait_for_video_task,
 )
+
+setup_logging()
 
 DEFAULT_MODEL = "doubao-seedance-1-5-pro-251215"
 DEFAULT_PROMPT = "小猫对着镜头打哈欠，镜头缓缓拉出"
@@ -197,10 +202,23 @@ def determine_scene(
 
 
 def main() -> None:
+    pipeline_start = time.monotonic()
     args = parse_args()
     client = create_client()
     content = build_content(args.prompt, args.image_urls, args.last_frame_url, args.role)
     scene = determine_scene(args.image_urls, args.role, args.last_frame_url)
+    image_refs = args.image_urls or []
+    if args.last_frame_url:
+        image_refs.append(args.last_frame_url)
+    log_params(
+        "视频任务开始", scene=scene, model=args.model, prompt=args.prompt,
+        ratio=args.ratio, duration=args.duration, resolution=args.resolution or "480p",
+        generate_audio=args.generate_audio or "(API默认true)",
+        service_tier=args.service_tier or "(API默认default/在线)",
+        draft=args.draft, return_last_frame=args.return_last_frame,
+        images=image_refs or "(无)",
+    )
+    trace_id = get_trace_id()
 
     # Build optional kwargs
     kwargs: dict[str, Any] = {
@@ -237,18 +255,26 @@ def main() -> None:
             print(f"自动检测到回调地址: {callback_url}")
 
     print(f"创建视频任务: model={args.model}")
+    api_start = time.monotonic()
     result = create_video_task(client, model=args.model, content=content, **kwargs)
+    api_elapsed = time.monotonic() - api_start
 
     task_id = result.get("id", "")
     status = result.get("status", "unknown")
     print(f"任务已创建: {task_id}, 状态: {status}")
+    log_params("视频任务创建完成", task_id=task_id, status=status, api_elapsed=round(api_elapsed, 3))
 
     create_output = {
         "type": "video",
         "scene": scene,
         "provider": "doubao",
+        "trace_id": trace_id,
         "task_id": task_id,
         "status": status,
+        "timing": {
+            "total_elapsed": round(time.monotonic() - pipeline_start, 3),
+            "api_elapsed": round(api_elapsed, 3),
+        },
     }
     print(json.dumps(create_output, ensure_ascii=False, indent=2))
 
@@ -257,25 +283,31 @@ def main() -> None:
 
     # Poll until completion
     print(f"\n开始轮询任务: {task_id}")
+    log_params("开始轮询视频任务", task_id=task_id, interval=args.poll_interval, timeout=args.timeout)
+    poll_start = time.monotonic()
     final = wait_for_video_task(
         client,
         task_id,
         poll_interval=args.poll_interval,
         timeout=args.timeout,
     )
+    poll_elapsed = time.monotonic() - poll_start
 
     video_url = extract_video_url(final)
     print(f"视频生成成功，开始下载...")
+    log_params("视频生成成功", task_id=task_id, poll_elapsed=round(poll_elapsed, 3))
 
     output_path = default_output_path("videos", scene, suffix=".mp4")
     # Use task_id as part of filename for traceability
     output_path = output_path.with_stem(f"{output_path.stem}_{task_id[:12]}")
     download_file(video_url, output_path)
+    log_params("视频下载完成", path=str(output_path.name))
 
     poll_output = {
         "type": "video",
         "scene": scene,
         "provider": "doubao",
+        "trace_id": trace_id,
         "task_id": task_id,
         "used_model": args.model,
         "local_path": str(output_path.relative_to(PROJECT_ROOT)),
@@ -283,7 +315,13 @@ def main() -> None:
         "resolution": final.get("resolution", ""),
         "ratio": final.get("ratio", ""),
         "duration": final.get("duration", ""),
+        "timing": {
+            "total_elapsed": round(time.monotonic() - pipeline_start, 3),
+            "api_elapsed": round(api_elapsed, 3),
+            "poll_elapsed": round(poll_elapsed, 3),
+        },
     }
+    log_params("视频任务完成", task_id=task_id, total_elapsed=round(time.monotonic() - pipeline_start, 3))
     print(json.dumps(poll_output, ensure_ascii=False, indent=2))
 
 

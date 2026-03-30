@@ -9,9 +9,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import time
 from pathlib import Path
 
-from common import PROJECT_ROOT, default_output_path, download_file
+from common import PROJECT_ROOT, default_output_path, download_file, get_trace_id, log_params, setup_logging
+
+setup_logging()
 
 
 def parse_args() -> argparse.Namespace:
@@ -23,20 +26,32 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    pipeline_start = time.monotonic()
     args = parse_args()
+    trace_id = get_trace_id()
+    log_params("下载视频开始", url=args.url)
 
     if args.output:
         output_path = Path(args.output)
     else:
         output_path = default_output_path("videos", args.scene, suffix=".mp4")
 
+    download_start = time.monotonic()
     download_file(args.url, output_path)
+    download_elapsed = time.monotonic() - download_start
 
+    total_elapsed = time.monotonic() - pipeline_start
+    log_params("下载视频完成", path=str(output_path.name), download_elapsed=round(download_elapsed, 3))
     result = {
         "type": "video",
         "provider": "doubao",
+        "trace_id": trace_id,
         "local_path": str(output_path.relative_to(PROJECT_ROOT)),
         "source_url": args.url,
+        "timing": {
+            "total_elapsed": round(total_elapsed, 3),
+            "download_elapsed": round(download_elapsed, 3),
+        },
     }
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
