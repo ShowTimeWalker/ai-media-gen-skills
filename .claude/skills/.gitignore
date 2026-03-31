@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Logs
+*.log
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Sensitive files
+*_key*
+*_secret*
+*_credential*
+*.pem
+*.key
+.webhook_token

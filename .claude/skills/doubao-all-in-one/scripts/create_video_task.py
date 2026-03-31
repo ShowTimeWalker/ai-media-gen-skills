@@ -50,13 +50,27 @@ def get_local_ip() -> str:
         return "127.0.0.1"
 
 
+def _read_webhook_token() -> str | None:
+    """Read the webhook token from the file written by webhook_server.py."""
+    token_path = PROJECT_ROOT / "outputs" / "doubao" / ".webhook_token"
+    if token_path.exists():
+        token = token_path.read_text(encoding="utf-8").strip()
+        if token:
+            return token
+    return None
+
+
 def resolve_callback_url(manual_url: str | None) -> str | None:
     """Resolve callback URL: manual > env var > auto-detect local IP."""
     if manual_url:
         return manual_url
     base = os.getenv("VIDEO_CALLBACK_BASE_URL")
     if base:
-        return f"{base.rstrip('/')}/webhook/callback"
+        base = base.rstrip("/")
+        token = _read_webhook_token()
+        if token:
+            return f"{base}/webhook/callback/{token}"
+        return f"{base}/webhook/callback"
     # Auto-detect: check if webhook server is running on default port
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -64,6 +78,9 @@ def resolve_callback_url(manual_url: str | None) -> str | None:
         s.connect(("127.0.0.1", DEFAULT_CALLBACK_PORT))
         s.close()
         ip = get_local_ip()
+        token = _read_webhook_token()
+        if token:
+            return f"http://{ip}:{DEFAULT_CALLBACK_PORT}/webhook/callback/{token}"
         return f"http://{ip}:{DEFAULT_CALLBACK_PORT}/webhook/callback"
     except OSError:
         return None

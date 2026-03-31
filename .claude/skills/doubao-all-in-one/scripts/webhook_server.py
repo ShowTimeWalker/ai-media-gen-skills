@@ -9,22 +9,43 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import sqlite3
 from pathlib import Path
 from typing import Any
+from uuid import uuid4
 
 from flask import Flask, request, jsonify
 
 PROJECT_ROOT = Path(__file__).resolve().parents[4]
 DEFAULT_DB_PATH = PROJECT_ROOT / "outputs" / "doubao" / "video_tasks.db"
+TOKEN_FILE = PROJECT_ROOT / "outputs" / "doubao" / ".webhook_token"
 
 
-def create_app(db_path: Path | str | None = None) -> Flask:
+def _generate_token() -> str:
+    """Generate a random webhook token and persist it."""
+    token = uuid4().hex
+    TOKEN_FILE.parent.mkdir(parents=True, exist_ok=True)
+    TOKEN_FILE.write_text(token, encoding="utf-8")
+    return token
+
+
+def _load_or_generate_token() -> str:
+    """Load existing token from file, or generate a new one."""
+    if TOKEN_FILE.exists():
+        token = TOKEN_FILE.read_text(encoding="utf-8").strip()
+        if token:
+            return token
+    return _generate_token()
+
+
+def create_app(db_path: Path | str | None = None, webhook_token: str | None = None) -> Flask:
     """Create and configure the Flask app."""
     app = Flask(__name__)
     db = str(db_path or DEFAULT_DB_PATH)
     db_path_obj = Path(db)
     db_path_obj.parent.mkdir(parents=True, exist_ok=True)
+    token = webhook_token or _load_or_generate_token()
 
     log_file = db_path_obj.parent / "webhook.log"
     logging.basicConfig(
@@ -59,9 +80,23 @@ def create_app(db_path: Path | str | None = None) -> Flask:
 
     init_db()
 
+    @app.before_request
+    def reject_unauthorized() -> tuple[Any, int] | None:
+        """Block access from non-localhost origins."""
+        if request.remote_addr not in ("127.0.0.1", "::1", "localhost"):
+            logging.warning("Rejected request from %s to %s", request.remote_addr, request.path)
+            return jsonify({"code": 403, "msg": "Forbidden"}), 403
+        return None
+
+    @app.route(f"/webhook/callback/<token_val>", methods=["POST"])
     @app.route("/webhook/callback", methods=["POST"])
-    def video_task_callback() -> tuple[Any, int]:
+    def video_task_callback(token_val: str = "") -> tuple[Any, int]:
         """Core interface for receiving Ark callback."""
+        # Token verification
+        if token_val != token:
+            logging.warning("Callback rejected: invalid token")
+            return jsonify({"code": 403, "msg": "Invalid token"}), 403
+
         try:
             callback_data = request.get_json(force=True, silent=True)
             if not callback_data:
@@ -155,6 +190,8 @@ def create_app(db_path: Path | str | None = None) -> Flask:
         conn.close()
         return jsonify({"code": 200, "data": [dict(r) for r in rows]}), 200
 
+    # Store token on app for external access
+    app.webhook_token = token
     return app
 
 
@@ -162,15 +199,18 @@ def main() -> None:
     import argparse
 
     parser = argparse.ArgumentParser(description="豆包视频生成 Webhook 回调服务器")
-    parser.add_argument("--host", default="0.0.0.0", help="监听地址")
+    parser.add_argument("--host", default="127.0.0.1", help="监听地址")
     parser.add_argument("--port", type=int, default=8888, help="监听端口")
     parser.add_argument("--db", default=None, help="SQLite 数据库路径")
+    parser.add_argument("--token", default=None, help="Webhook 验证 token，不传则自动生成")
     args = parser.parse_args()
 
-    app = create_app(db_path=args.db)
+    app = create_app(db_path=args.db, webhook_token=args.token)
+    token = app.webhook_token
     logging.info(f"Starting webhook server on {args.host}:{args.port}")
     print(f"Webhook server listening on http://{args.host}:{args.port}")
-    print(f"POST /webhook/callback — 接收 Ark 回调")
+    print(f"Webhook token: {token}")
+    print(f"POST /webhook/callback/{token} — 接收 Ark 回调")
     print(f"GET  /tasks/<task_id>  — 查询任务状态")
     print(f"GET  /tasks            — 列出所有任务")
     app.run(host=args.host, port=args.port, debug=False)
