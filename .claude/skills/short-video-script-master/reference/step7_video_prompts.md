@@ -2,7 +2,7 @@
 
 ## 目标
 
-基于 STEP 6 产出的实际关键帧图片，为每个片段编写结构化视频生成指令。STEP 5 的 motion prompt 基于纯文本想象，STEP 7 基于实际生成的首尾帧图片做精炼，并补全声音设计和片段组装信息。
+基于 STEP 6 产出的实际关键帧图片，为每个片段编写结构化视频生成指令。STEP 5 的分镜表提供了画面描述和运动变化的基础信息，STEP 7 基于实际生成的首尾帧图片做精炼，并补全声音设计和片段组装信息。
 
 产出格式是通用的，不绑定具体供应商，由 content-generation-workflow 在实际调用时适配。
 
@@ -11,7 +11,7 @@
 STEP 6 产出的目录结构：
 
 ```
-reference_images/<篇章>/keyframes/E<NN>/
+reference_images/Chapter<序号>_<篇章名>/keyframes/E<NN>/
   C01_first.png          # 独立首帧（跨场景转场等）
   C01_last.png           # 末帧
   C02_last.png           # 无独立首帧 → 复用 C01_last.png
@@ -32,28 +32,28 @@ reference_images/<篇章>/keyframes/E<NN>/
 
 | 校验项 | 依赖来源 | 校验内容 | 不通过时处理 |
 |--------|---------|---------|-------------|
-| 关键帧图片存在 | STEP 6 | `reference_images/<篇章>/keyframes/E<NN>/` 目录下有实际 PNG 图片文件 | 提示用户回到 STEP 6 生成关键帧图片 |
+| 关键帧图片存在 | STEP 6 | `reference_images/Chapter<序号>_<篇章名>/keyframes/E<NN>/` 目录下有实际 PNG 图片文件 | 提示用户回到 STEP 6 生成关键帧图片 |
 | 关键帧图片完整 | STEP 6 | 每集至少有首帧和末帧图片（C01_first.png 或沿用前集末帧 + C01_last.png） | 提示用户回到 STEP 6 补充缺失的关键帧 |
-| 关键帧 prompt 存在 | STEP 6 | `reference_images/<篇章>/E<NN>.md` 对应该篇章所有集数都存在 | 提示用户回到 STEP 6 生成关键帧 prompt |
-| 生产脚本存在 | STEP 5 | `production_scripts/<篇章>/E<NN>.md` 对应该篇章所有集数都存在 | 提示用户回到 STEP 5 生成生产脚本 |
-| 剧本文件存在 | STEP 4 | `screenplays/<篇章>/E<NN>.md` 对应该篇章所有集数都存在 | 提示用户回到 STEP 4 生成剧本 |
+| 关键帧 prompt 存在 | STEP 6 | `reference_images/Chapter<序号>_<篇章名>/E<NN>.md` 对应该篇章所有集数都存在 | 提示用户回到 STEP 6 生成关键帧 prompt |
+| 生产脚本存在 | STEP 5 | `production_scripts/Chapter<序号>_<篇章名>/E<NN>.md` 对应该篇章所有集数都存在 | 提示用户回到 STEP 5 生成生产脚本 |
+| 剧本文件存在 | STEP 4 | `screenplays/Chapter<序号>_<篇章名>/E<NN>.md` 对应该篇章所有集数都存在 | 提示用户回到 STEP 4 生成剧本 |
 | framework.md 存在 | STEP 2 | 文件存在且包含「核心人物」字段（用于语音规格提取） | 提示用户回到 STEP 2 生成核心框架 |
 
 校验流程：
-1. 用 Glob 工具扫描 `reference_images/<篇章>/keyframes/E<NN>/` 目录下的 `*.png` 文件，统计数量是否合理（每集约 10-25 张，取决于片段数和是否跨场景）
+1. 用 Glob 工具扫描 `reference_images/Chapter<序号>_<篇章名>/keyframes/E<NN>/` 目录下的 `*.png` 文件，统计数量是否合理（每集约 10-25 张，取决于片段数和是否跨场景）
 2. 检查每集是否至少有一个 `*_last.png`（末帧必须存在），以及第一个片段是否有 `C01_first.png` 或可沿用的前集末帧
-3. 用 Glob 工具扫描 `reference_images/<篇章>/` 目录下的 `E*.md` 文件，确认集数完整
-4. 用 Glob 工具扫描 `production_scripts/<篇章>/` 和 `screenplays/<篇章>/` 目录作为辅助参考
+3. 用 Glob 工具扫描 `reference_images/Chapter<序号>_<篇章名>/` 目录下的 `E*.md` 文件，确认集数完整
+4. 用 Glob 工具扫描 `production_scripts/Chapter<序号>_<篇章名>/` 和 `screenplays/Chapter<序号>_<篇章名>/` 目录作为辅助参考
 5. 用 Read 工具读取 `framework.md`，确认包含核心人物字段
 6. 如果任何校验项不通过，向用户明确告知缺失内容和建议的回退步骤，**不要继续生成**
 
 ### 7A：图片分析与片段组装（按集）
 
 1. 读取以下文件：
-   - `reference_images/<篇章>/keyframes/E<NN>/` — 扫描实际 PNG 文件列表
-   - `reference_images/<篇章>/E<NN>.md` — STEP 6 的关键帧 prompt（首帧/末帧描述）
-   - `production_scripts/<篇章>/E<NN>.md` — STEP 5 的生产脚本（motion prompt、景别、运镜）
-   - `screenplays/<篇章>/E<NN>.md` — STEP 4 的剧本（对白、声音设计、情绪）
+   - `reference_images/Chapter<序号>_<篇章名>/keyframes/E<NN>/` — 扫描实际 PNG 文件列表
+   - `reference_images/Chapter<序号>_<篇章名>/E<NN>.md` — STEP 6 的关键帧 prompt（首帧/末帧描述）
+   - `production_scripts/Chapter<序号>_<篇章名>/E<NN>.md` — STEP 5 的分镜表（画面描述、景别、运镜）
+   - `screenplays/Chapter<序号>_<篇章名>/E<NN>.md` — STEP 4 的剧本（对白、声音设计、情绪）
    - `framework.md` — 角色语音特征提取
 2. 为每个片段确定首帧图片来源：
    - `C{NN}_first.png` 存在 → 使用该独立首帧
@@ -66,11 +66,11 @@ reference_images/<篇章>/keyframes/E<NN>/
 
 ### 7B：视频生成指令编写（按集）
 
-基于 7A 的图片分析 + STEP 5 的 motion prompt 基础，按场景分组输出分镜表：
+基于 7A 的图片分析 + STEP 5 分镜表的画面描述基础，按场景分组输出分镜表：
 
 1. **分镜拆分**：每个片段（clip）拆分为 1-3 个分镜（sub-shot），每个分镜 >= 1.5 秒，各分镜时长之和 = 片段时长
 2. **运镜精炼**：基于首帧/末帧图片的实际构图差异，精炼为运镜列（景别变化 + 运镜方式 + 幅度）
-3. **画面描述精炼**：基于 STEP 5 motion prompt，去除重复的静态信息，只保留变化和运动描述
+3. **画面描述精炼**：基于 STEP 5 分镜表的画面描述，去除重复的静态信息，只保留变化和运动描述
 4. **声音设计提取**：从 STEP 4 剧本提取对白/内心OS/环境音/BGM，合并写入声音列
 5. **语音规格提取**：从 framework.md 提取角色语音特征（供人工审核/TTS 校准）
 6. 按篇章批量生成，**等待用户确认**后写入文件
@@ -96,7 +96,7 @@ reference_images/<篇章>/keyframes/E<NN>/
 ```
 outputs/scripts/<标题>_<yyyyMMdd>/
   video_generation/                     # STEP 7 产出
-    <篇章缩写>/
+    Chapter<序号>_<篇章名>/
       E01.md                            # 视频生成指令
       E02.md
       ...
@@ -234,20 +234,20 @@ outputs/scripts/<标题>_<yyyyMMdd>/
 ```
 outputs/scripts/<标题>_<yyyyMMdd>/
   reference_images/                     # STEP 6 产出
-    nightmare/keyframes/E01/            # 关键帧图片
-    nightmare/E01.md                    # 关键帧 prompt
+    Chapter1_噩梦/keyframes/E01/            # 关键帧图片
+    Chapter1_噩梦/E01.md                    # 关键帧 prompt
   production_scripts/                   # STEP 5 产出
-    nightmare/E01.md
+    Chapter1_噩梦/E01.md
   screenplays/                          # STEP 4 产出
-    nightmare/E01.md
+    Chapter1_噩梦/E01.md
   video_generation/                     # STEP 7 产出
-    nightmare/
+    Chapter1_噩梦/
       E01.md                            # 视频生成指令
       E02.md
       ...
 ```
 
-告知用户："篇章「[篇章名]」的视频生成指令已保存到 `outputs/scripts/<标题>_<yyyyMMdd>/video_generation/<篇章缩写>/`。是否继续下一个篇章？"
+告知用户："篇章「[篇章名]」的视频生成指令已保存到 `outputs/scripts/<标题>_<yyyyMMdd>/video_generation/Chapter<序号>_<篇章中文名>/`。是否继续下一个篇章？"
 
 ## 与上下游的关系
 
@@ -255,17 +255,17 @@ outputs/scripts/<标题>_<yyyyMMdd>/
 
 | 来源 | 文件 | 用途 |
 |------|------|------|
-| STEP 4 | `screenplays/<篇章>/E<NN>.md` | 对白、内心OS、环境音、声音设计 |
-| STEP 5 | `production_scripts/<篇章>/E<NN>.md` | Motion Prompt 基础、景别、运镜、片段时长 |
-| STEP 6 | `reference_images/<篇章>/keyframes/E<NN>/` | 实际首帧/末帧图片文件 |
-| STEP 6 | `reference_images/<篇章>/E<NN>.md` | 关键帧 prompt（首帧/末帧描述） |
+| STEP 4 | `screenplays/Chapter<序号>_<篇章名>/E<NN>.md` | 对白、内心OS、环境音、声音设计 |
+| STEP 5 | `production_scripts/Chapter<序号>_<篇章名>/E<NN>.md` | 分镜表（画面描述、景别、运镜、片段时长） |
+| STEP 6 | `reference_images/Chapter<序号>_<篇章名>/keyframes/E<NN>/` | 实际首帧/末帧图片文件 |
+| STEP 6 | `reference_images/Chapter<序号>_<篇章名>/E<NN>.md` | 关键帧 prompt（首帧/末帧描述） |
 | STEP 2 | `framework.md` | 角色语音特征提取 |
 
 ### 输出
 
 | 文件 | 内容 | 消费者 |
 |------|------|--------|
-| `video_generation/<篇章>/E<NN>.md` | 视频生成指令（运镜、Motion Prompt、声音、片段组装） | content-generation-workflow |
+| `video_generation/Chapter<序号>_<篇章名>/E<NN>.md` | 视频生成指令（运镜、Motion Prompt、声音、片段组装） | content-generation-workflow |
 
 ### 下游执行顺序
 

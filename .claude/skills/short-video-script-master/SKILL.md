@@ -21,7 +21,7 @@ metadata:
 | 阶段二 | `reference/step2_core_framework.md` | 核心框架定调：剧集规格、主要剧情、核心人物、主要场景、画风风格、整剧基调 |
 | 阶段三 | `reference/step3_story.md` | 故事线设计：3A 大纲确认 + 3B 篇章创作 |
 | 阶段四 | `reference/step4_screenplay.md` | 剧本创作：按篇章批量生成逐集剧本 |
-| 阶段五 | `reference/step5_production_script.md` | 生产脚本：将片段拆分转化为 AI 生成指令（中文首帧图 prompt + 视频 motion prompt） |
+| 阶段五 | `reference/step5_production_script.md` | 生产脚本：将片段拆分转化为结构化分镜表（镜号/时长/景别/运镜/画面描述/声音） |
 | 阶段六 | `reference/step6_keyframe_prompts.md` | 关键帧图片提示词：预生成角色/场景参考图 prompt，再基于参考图为每个片段生成首帧和末帧图片 prompt |
 | 阶段七 | `reference/step7_video_prompts.md` | 视频生成指令：基于实际关键帧图片分析，精炼 Motion Prompt，补全声音设计和片段组装 |
 
@@ -67,7 +67,7 @@ metadata:
 
 **5A — 全局参数提取**：从 framework.md 提取 Style Lock（风格前缀）和 Character Reference（角色外观关键词），与用户确认后进入 5B。
 
-**5B — 片段指令生成**：为该篇章所有集数的每个片段生成首帧图 prompt（中文，描述静态起始画面）和视频 motion prompt（中文，描述 6-8s 内的运动变化）。按篇章批量生成，用户确认后展示**篇章完成选项**：
+**5B — 分镜表生成**：为该篇章所有集数的每个片段生成结构化分镜表，每个片段拆分为 1-4 个分镜（镜号/时长/景别/运镜/画面描述/声音）。按篇章批量生成，用户确认后展示**篇章完成选项**：
 
 ```
 篇章「[篇章名]」的生产脚本已完成。请选择下一步：
@@ -87,7 +87,7 @@ metadata:
 
 **6B — 场景参考图 Prompt（项目级）**：从 framework.md 提取场景描述，为每个场景生成参考图 prompt（无人物）。与 6A 一起向用户确认后进入 6C。
 
-**6C — 关键帧 Prompt（篇章级）**：基于 STEP 5 的首帧图 Prompt 和末帧描述，为该篇章所有集数的每个片段生成首帧和末帧的完整图片 prompt，标注参考图引用。按篇章批量生成，用户确认后写入 `reference_images/` 目录。
+**6C — 关键帧 Prompt（篇章级）**：基于 STEP 5 分镜表的画面描述和 STEP 4B 的片段拆分，为该篇章所有集数的每个分镜生成首帧和末帧的完整图片 prompt，标注参考图引用。按篇章批量生成，用户确认后写入 `reference_images/` 目录。
 
 ### 阶段七：视频生成指令
 
@@ -95,4 +95,4 @@ metadata:
 
 **7A — 图片分析与片段组装（按集）**：扫描实际关键帧图片文件，确定每个片段的首帧/末帧图片来源，分析首帧/末帧的视觉差异（运镜、主体变化、环境变化），输出片段组装表。
 
-**7B — 视频生成指令编写（按集）**：基于 7A 图片分析 + STEP 5 motion prompt 精炼，编写运镜公式、Motion Prompt、声音设计（对白/OS/环境音）、角色语音规格。按篇章批量生成，用户确认后写入 `video_generation/` 目录。
+**7B — 视频生成指令编写（按集）**：基于 7A 图片分析 + STEP 5 分镜表精炼，编写运镜公式、Motion Prompt、声音设计（对白/OS/环境音）、角色语音规格。按篇章批量生成，用户确认后写入 `video_generation/` 目录。

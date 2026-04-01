@@ -174,13 +174,13 @@ outputs/scripts/<标题>_<yyyyMMdd>/
   stories/
     EP01_EP05_chess_opening.md
   screenplays/
-    chess_opening/
+    Chapter1_棋局开场/
       E01.md              # 第1集剧本 + 片段拆分（同一个文件）
       E02.md
       ...
 ```
 
-- 按篇章分子目录，目录名使用篇章文件名中的英文缩写
+- 按篇章分子目录，目录名格式为 `Chapter<篇章序号>_<篇章中文名>`（如 `Chapter1_噩梦`、`Chapter2_暴雨归来`）
 - 每集一个文件 `E<集号>.md`，剧本和片段拆分写在同一个文件中（剧本在前，片段拆分在后）
 
 ## 篇章完成选项（4B 确认后）
@@ -188,7 +188,7 @@ outputs/scripts/<标题>_<yyyyMMdd>/
 每个篇章的 4B 片段拆分确认并写入文件后，**必须**向用户展示互动选项，让用户决定下一步：
 
 ```markdown
-篇章「[篇章名]」的剧本和片段拆分已保存到 `outputs/scripts/<标题>_<yyyyMMdd>/screenplays/<篇章缩写>/`。请选择下一步：
+篇章「[篇章名]」的剧本和片段拆分已保存到 `outputs/scripts/<标题>_<yyyyMMdd>/screenplays/Chapter<序号>_<篇章中文名>/`。请选择下一步：
 
 1. 继续下一个篇章的剧本创作（→ STEP 4A）
 2. 为本篇章生成生产脚本（→ STEP 5）
