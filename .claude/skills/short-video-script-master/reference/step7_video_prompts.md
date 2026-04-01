@@ -26,6 +26,27 @@ reference_images/<篇章>/keyframes/E<NN>/
 
 ## 工作流程
 
+### 前置校验（每次进入 STEP 7 时执行）
+
+在开始生成之前，**必须**验证以下前置条件是否满足：
+
+| 校验项 | 依赖来源 | 校验内容 | 不通过时处理 |
+|--------|---------|---------|-------------|
+| 关键帧图片存在 | STEP 6 | `reference_images/<篇章>/keyframes/E<NN>/` 目录下有实际 PNG 图片文件 | 提示用户回到 STEP 6 生成关键帧图片 |
+| 关键帧图片完整 | STEP 6 | 每集至少有首帧和末帧图片（C01_first.png 或沿用前集末帧 + C01_last.png） | 提示用户回到 STEP 6 补充缺失的关键帧 |
+| 关键帧 prompt 存在 | STEP 6 | `reference_images/<篇章>/E<NN>.md` 对应该篇章所有集数都存在 | 提示用户回到 STEP 6 生成关键帧 prompt |
+| 生产脚本存在 | STEP 5 | `production_scripts/<篇章>/E<NN>.md` 对应该篇章所有集数都存在 | 提示用户回到 STEP 5 生成生产脚本 |
+| 剧本文件存在 | STEP 4 | `screenplays/<篇章>/E<NN>.md` 对应该篇章所有集数都存在 | 提示用户回到 STEP 4 生成剧本 |
+| framework.md 存在 | STEP 2 | 文件存在且包含「核心人物」字段（用于语音规格提取） | 提示用户回到 STEP 2 生成核心框架 |
+
+校验流程：
+1. 用 Glob 工具扫描 `reference_images/<篇章>/keyframes/E<NN>/` 目录下的 `*.png` 文件，统计数量是否合理（每集约 10-25 张，取决于片段数和是否跨场景）
+2. 检查每集是否至少有一个 `*_last.png`（末帧必须存在），以及第一个片段是否有 `C01_first.png` 或可沿用的前集末帧
+3. 用 Glob 工具扫描 `reference_images/<篇章>/` 目录下的 `E*.md` 文件，确认集数完整
+4. 用 Glob 工具扫描 `production_scripts/<篇章>/` 和 `screenplays/<篇章>/` 目录作为辅助参考
+5. 用 Read 工具读取 `framework.md`，确认包含核心人物字段
+6. 如果任何校验项不通过，向用户明确告知缺失内容和建议的回退步骤，**不要继续生成**
+
 ### 7A：图片分析与片段组装（按集）
 
 1. 读取以下文件：
