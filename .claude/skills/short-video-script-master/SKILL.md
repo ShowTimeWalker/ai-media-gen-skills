@@ -20,6 +20,8 @@ metadata:
 | 阶段一 | `reference/hongguo_genre_map.md` | 红果爆款类型图谱，用户提到类型时查阅展示 |
 | 阶段二 | `reference/step2_core_framework.md` | 核心框架定调：剧集规格、主要剧情、核心人物、主要场景、画风风格、整剧基调 |
 | 阶段三 | `reference/step3_story.md` | 故事线设计：3A 大纲确认 + 3B 篇章创作 |
+| 阶段四 | `reference/step4_screenplay.md` | 剧本创作：按篇章批量生成逐集剧本 |
+| 阶段五 | `reference/step5_production_script.md` | 生产脚本：将片段拆分转化为 AI 生成指令（中文首帧图 prompt + 视频 motion prompt） |
 
 ## 工作流程
 
@@ -38,3 +40,19 @@ metadata:
 **3A — 大纲确认**：生成主线概述 + 所有篇章标题和一句话概览（含集数分配），**必须等待用户确认**才能进入 3B。
 
 **3B — 篇章创作**：基于确认后的大纲，逐个创作每个篇章的完整故事，输出到 `stories/` 目录。全部完成后生成主线总文件 `story.md`。
+
+### 阶段四：剧本创作与片段拆分
+
+按篇章逐步推进，前一个篇章确认后再进行下一个。查阅 `reference/step4_screenplay.md` 获取完整规范。
+
+**4A — 剧本生成**：读取篇章故事文件，为该篇章所有集数生成剧本（场景列表、画面、旁白对白、声音设计、结尾钩子）。用户确认后进入 4B。
+
+**4B — 片段拆分**：将每集剧本拆分为 6-8 秒的 AI 视频片段，用朴实平白的语言描述画面内容（禁止比喻、华丽辞藻、抽象概念）。用户确认后进入下一个篇章的 4A。
+
+### 阶段五：生产脚本
+
+将片段拆分转化为可直接用于 AI 视频生成的结构化生产指令。查阅 `reference/step5_production_script.md` 获取完整规范。
+
+**5A — 全局参数提取**：从 framework.md 提取 Style Lock（风格前缀）和 Character Reference（角色外观关键词），与用户确认后进入 5B。
+
+**5B — 片段指令生成**：为该篇章所有集数的每个片段生成首帧图 prompt（中文，描述静态起始画面）和视频 motion prompt（中文，描述 6-8s 内的运动变化）。按篇章批量生成，用户确认后写入 `production_scripts/` 目录。

@@ -96,8 +96,8 @@
 
 用户确认框架后，将内容写入 STEP 1 创建的项目目录中：
 
-**文件路径**：`outputs/scripts/<标题>_<yyyyMMdd>/framework.md`
+**文件路径**：项目根目录下的 `outputs/scripts/<标题>_<yyyyMMdd>/framework.md`（注意：是项目根目录的 outputs，与 doubao-all-in-one 的输出目录同级）
 
 - 直接将输出格式中的全部内容写入文件（不含末尾的确认选项部分）
-- 同时在对话中告知用户："核心框架已保存到 `outputs/scripts/<标题>_<yyyyMMdd>/framework.md`。"
+- 同时在对话中告知用户："核心框架已保存到 `outputs/scripts/<标题>_<yyyyMMdd>/framework.md`（项目根目录下）。"
 - 然后进入 **STEP 3**

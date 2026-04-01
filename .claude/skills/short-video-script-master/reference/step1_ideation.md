@@ -62,7 +62,7 @@
 
 退出前必须将收集到的创意整理并写入文件：
 
-**文件路径**：`outputs/scripts/<标题>_<yyyyMMdd>/idea.md`
+**文件路径**：项目根目录下的 `outputs/scripts/<标题>_<yyyyMMdd>/idea.md`（注意：是项目根目录的 outputs，不是 skill 目录下的）
 
 **标题规则**：
 - 由 AI 根据创意核心提炼，简洁有力，2-6 个字
@@ -103,7 +103,7 @@
 
 输出文件后告知用户：
 
-> "创意已保存到 `outputs/scripts/<标题>_<yyyyMMdd>/idea.md`。让我整理一个系统框架给你看看。" -> 进入**STEP 2**
+> "创意已保存到 `outputs/scripts/<标题>_<yyyyMMdd>/idea.md`（项目根目录下）。让我整理一个系统框架给你看看。" -> 进入**STEP 2**
 
 ## 常见引导话术
 
