@@ -1,0 +1,4 @@
+interface:
+  display_name: "剧本创作大师"
+  short_description: "通过结构化对话，从创意出发完成故事概览和故事创作。"
+  default_prompt: "Use $short_video_script_master when the user wants to create a story or script for short video production."
