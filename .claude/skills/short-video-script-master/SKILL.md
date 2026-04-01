@@ -22,6 +22,7 @@ metadata:
 | 阶段三 | `reference/step3_story.md` | 故事线设计：3A 大纲确认 + 3B 篇章创作 |
 | 阶段四 | `reference/step4_screenplay.md` | 剧本创作：按篇章批量生成逐集剧本 |
 | 阶段五 | `reference/step5_production_script.md` | 生产脚本：将片段拆分转化为 AI 生成指令（中文首帧图 prompt + 视频 motion prompt） |
+| 阶段六 | `reference/step6_keyframe_prompts.md` | 关键帧图片提示词：预生成角色/场景参考图 prompt，再基于参考图为每个片段生成首帧和末帧图片 prompt |
 
 ## 工作流程
 
@@ -56,3 +57,13 @@ metadata:
 **5A — 全局参数提取**：从 framework.md 提取 Style Lock（风格前缀）和 Character Reference（角色外观关键词），与用户确认后进入 5B。
 
 **5B — 片段指令生成**：为该篇章所有集数的每个片段生成首帧图 prompt（中文，描述静态起始画面）和视频 motion prompt（中文，描述 6-8s 内的运动变化）。按篇章批量生成，用户确认后写入 `production_scripts/` 目录。
+
+### 阶段六：关键帧图片提示词
+
+为 AI 图片生成准备结构化 prompt，通过预定义的角色和场景参考图提升跨片段一致性。查阅 `reference/step6_keyframe_prompts.md` 获取完整规范。本阶段只输出 prompt，不调用外部 API。
+
+**6A — 角色参考图 Prompt（项目级）**：从 framework.md 提取角色外观，为每个核心角色生成参考图 prompt（基础姿态 + 关键表情，灰色纯色背景）。用户确认后进入 6B。
+
+**6B — 场景参考图 Prompt（项目级）**：从 framework.md 提取场景描述，为每个场景生成参考图 prompt（区分光线条件，无人物）。与 6A 一起向用户确认后进入 6C。
+
+**6C — 关键帧 Prompt（篇章级）**：基于 STEP 5 的首帧图 Prompt 和末帧描述，为该篇章所有集数的每个片段生成首帧和末帧的完整图片 prompt，标注参考图引用。按篇章批量生成，用户确认后写入 `reference_images/` 目录。

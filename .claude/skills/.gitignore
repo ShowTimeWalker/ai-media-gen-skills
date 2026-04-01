@@ -30,6 +30,7 @@ Thumbs.db
 
 # Sensitive files
 *_key*
+!*_keyframe*
 *_secret*
 *_credential*
 *.pem
