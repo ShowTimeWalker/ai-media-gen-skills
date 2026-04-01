@@ -23,6 +23,7 @@ metadata:
 | 阶段四 | `reference/step4_screenplay.md` | 剧本创作：按篇章批量生成逐集剧本 |
 | 阶段五 | `reference/step5_production_script.md` | 生产脚本：将片段拆分转化为 AI 生成指令（中文首帧图 prompt + 视频 motion prompt） |
 | 阶段六 | `reference/step6_keyframe_prompts.md` | 关键帧图片提示词：预生成角色/场景参考图 prompt，再基于参考图为每个片段生成首帧和末帧图片 prompt |
+| 阶段七 | `reference/step7_video_prompts.md` | 视频生成指令：基于实际关键帧图片分析，精炼 Motion Prompt，补全声音设计和片段组装 |
 
 ## 工作流程
 
@@ -62,8 +63,16 @@ metadata:
 
 为 AI 图片生成准备结构化 prompt，通过预定义的角色和场景参考图提升跨片段一致性。查阅 `reference/step6_keyframe_prompts.md` 获取完整规范。本阶段只输出 prompt，不调用外部 API。
 
-**6A — 角色参考图 Prompt（项目级）**：从 framework.md 提取角色外观，为每个核心角色生成参考图 prompt（基础姿态 + 关键表情，灰色纯色背景）。用户确认后进入 6B。
+**6A — 角色参考图 Prompt（项目级）**：从 framework.md 提取角色外观，为每个核心角色生成服饰参考图 prompt（2x2 组图，4 种穿搭，灰色纯色背景）。用户确认后进入 6B。
 
-**6B — 场景参考图 Prompt（项目级）**：从 framework.md 提取场景描述，为每个场景生成参考图 prompt（区分光线条件，无人物）。与 6A 一起向用户确认后进入 6C。
+**6B — 场景参考图 Prompt（项目级）**：从 framework.md 提取场景描述，为每个场景生成参考图 prompt（无人物）。与 6A 一起向用户确认后进入 6C。
 
 **6C — 关键帧 Prompt（篇章级）**：基于 STEP 5 的首帧图 Prompt 和末帧描述，为该篇章所有集数的每个片段生成首帧和末帧的完整图片 prompt，标注参考图引用。按篇章批量生成，用户确认后写入 `reference_images/` 目录。
+
+### 阶段七：视频生成指令
+
+基于实际生成的关键帧图片，为每个片段编写可直接用于 Seedance I2V 视频生成的结构化指令。查阅 `reference/step7_video_prompts.md` 获取完整规范。本阶段只输出指令文本，不调用外部 API。
+
+**7A — 图片分析与片段组装（按集）**：扫描实际关键帧图片文件，确定每个片段的首帧/末帧图片来源，分析首帧/末帧的视觉差异（运镜、主体变化、环境变化），输出片段组装表。
+
+**7B — 视频生成指令编写（按集）**：基于 7A 图片分析 + STEP 5 motion prompt 精炼，编写运镜公式、Motion Prompt、声音设计（对白/OS/环境音）、角色语音规格。按篇章批量生成，用户确认后写入 `video_generation/` 目录。

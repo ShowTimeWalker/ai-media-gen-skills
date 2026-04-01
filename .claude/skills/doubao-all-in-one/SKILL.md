@@ -343,6 +343,23 @@ uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
 
 - 环境变量：`ARK_API_KEY`（必需，未设置时直接报错）
 
+## 短剧批量视频生成
+
+当用户请求为短剧的多个 clip（C01、C02…）批量生成视频时，遵循以下规则：
+
+### 一 clip 一请求
+
+- 每个 clip（CXX）是**一个完整的视频生成请求**，不得按分镜（sub-shot）拆分为多次请求
+- 分镜仅用于提示词规划（描述运镜变化、景别切换等），最终合并为一条 prompt 提交给模型
+- 示例：C01 有 2 个分镜（C01-1、C01-2），仍只调用一次 `create_video_task.py --duration 8`
+
+### 输出目录与文件名
+
+- 视频生成完成后，**必须**将文件从脚本默认输出目录复制到项目的视频生成目录
+- 输出路径：`outputs/scripts/{项目名}/video_generation/{篇章}/CXX.MP4`
+  - 例如：`outputs/scripts/chong_sheng_zhui_qi_20260401/video_generation/nightmare/C01.MP4`
+- 项目名和篇章名从用户提供的视频生成指令文档路径中推断
+
 ## 协作方式
 
 - 图片生成可直接完成任务
