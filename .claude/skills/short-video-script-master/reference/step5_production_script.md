@@ -238,7 +238,7 @@ outputs/scripts/<标题>_<yyyyMMdd>/
   framework.md
   story.md
   stories/
-    nightmare_1_5.md
+    EP01_EP05_nightmare.md
   screenplays/
     nightmare/
       E01.md              # STEP 4 产出（剧本 + 片段拆分）

@@ -14,7 +14,7 @@
 2. AI 读取以下文件：
    - `framework.md` — 人物形象、场景描述、画风基调、整剧基调、剧集规格
    - `story.md` — 主线概述、篇章索引、人物成长弧线
-   - `stories/<篇章>_<n>_<m>.md` — 当前篇章的故事梗概
+   - `stories/EP<n>_EP<m>_<篇章>.md` — 当前篇章的故事梗概
 3. 批量生成该篇章所有集数的剧本
 4. 向用户展示，**等待确认**
 
@@ -172,7 +172,7 @@ outputs/scripts/<标题>_<yyyyMMdd>/
   framework.md
   story.md
   stories/
-    chess_opening_1_6.md
+    EP01_EP05_chess_opening.md
   screenplays/
     chess_opening/
       E01.md              # 第1集剧本 + 片段拆分（同一个文件）

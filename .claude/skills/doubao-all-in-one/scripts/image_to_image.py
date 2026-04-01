@@ -12,6 +12,8 @@ import json
 import time
 from pathlib import Path
 
+from volcenginesdkarkruntime.types.images import OptimizePromptOptions, SequentialImageGenerationOptions
+
 from common import PROJECT_ROOT, create_client, default_output_path, generate_image_with_fallback, get_trace_id, log_params, resolve_image_source, save_image_results, setup_logging
 
 setup_logging()
@@ -90,9 +92,9 @@ def main() -> None:
         "sequential_image_generation": args.sequential_image_generation,
     }
     if args.sequential_image_generation == "auto" and args.max_images is not None:
-        kwargs["sequential_image_generation_options"] = {"max_images": args.max_images}
+        kwargs["sequential_image_generation_options"] = SequentialImageGenerationOptions(max_images=args.max_images)
     if args.optimize_prompt is not None:
-        kwargs["optimize_prompt_options"] = {"mode": args.optimize_prompt}
+        kwargs["optimize_prompt_options"] = OptimizePromptOptions(mode=args.optimize_prompt)
     if args.web_search:
         kwargs["tools"] = [{"type": "web_search"}]
     if args.guidance_scale is not None:
