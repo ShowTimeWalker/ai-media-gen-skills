@@ -1,7 +1,6 @@
 api_key/*.json
 __pycache__/
 *.pyc
-outputs/
 Aetherion/
 .claude/settings.local.json
 prompts/test/

@@ -1,0 +1,81 @@
+2026-03-30 12:52:08 [e7051429d1b0451492b53282750eb4ec] INFO 文生图开始 | model=doubao-seedream-5-0-260128 size=2K
+2026-03-30 12:52:30 [e7051429d1b0451492b53282750eb4ec] INFO 模型 API 调用完成 | model=doubao-seedream-5-0-260128 elapsed=21.678s
+2026-03-30 12:52:30 [e7051429d1b0451492b53282750eb4ec] INFO 图片保存完成 | count=1 path=20260330_125209.png
+2026-03-30 12:52:30 [e7051429d1b0451492b53282750eb4ec] INFO 文生图完成 | total_elapsed=22.295s
+2026-03-30 12:56:12 [589c22d21aef4fa78b1f1cc38fbe3aba] INFO 图生图开始 | model=doubao-seedream-5-0-260128 size=2K images=['outputs/doubao/images/text_to_image/ref_portrait.png']
+2026-03-30 12:56:34 [589c22d21aef4fa78b1f1cc38fbe3aba] INFO 模型 API 调用完成 | model=doubao-seedream-5-0-260128 elapsed=21.879s
+2026-03-30 12:56:34 [589c22d21aef4fa78b1f1cc38fbe3aba] INFO 图片保存完成 | count=1 path=20260330_125612.png
+2026-03-30 12:56:34 [589c22d21aef4fa78b1f1cc38fbe3aba] INFO 图生图完成 | total_elapsed=22.514s
+2026-03-30 12:59:43 [7f2447b032784d9d9a94cfb934b687a7] INFO 视频任务开始 | scene=text_to_video model=doubao-seedance-1-5-pro-251215 ratio=16:9 duration=5s
+2026-03-30 12:59:45 [7f2447b032784d9d9a94cfb934b687a7] INFO 视频任务创建完成 | task_id=cgt-20260330125944-mwkg6 status=unknown api_elapsed=0.588s
+2026-03-30 12:59:45 [7f2447b032784d9d9a94cfb934b687a7] INFO 开始轮询视频任务 | task_id=cgt-20260330125944-mwkg6 interval=10s timeout=900s
+2026-03-30 12:59:45 [7f2447b032784d9d9a94cfb934b687a7] INFO 视频任务状态: running
+2026-03-30 13:00:16 [7f2447b032784d9d9a94cfb934b687a7] INFO 视频任务状态: succeeded
+2026-03-30 13:00:16 [7f2447b032784d9d9a94cfb934b687a7] INFO 视频生成成功 | task_id=cgt-20260330125944-mwkg6 poll_elapsed=30.954s
+2026-03-30 13:00:17 [7f2447b032784d9d9a94cfb934b687a7] INFO 视频下载完成 | path=20260330_130016_cgt-20260330.mp4
+2026-03-30 13:00:17 [7f2447b032784d9d9a94cfb934b687a7] INFO 视频任务完成 | task_id=cgt-20260330125944-mwkg6 total_elapsed=34.466s
+2026-03-30 13:03:19 [fccffc435c30474d966519152f91e9c5] INFO 文生图开始 | model=doubao-seedream-5-0-260128 size=2K
+2026-03-30 13:03:45 [fccffc435c30474d966519152f91e9c5] INFO 模型 API 调用完成 | model=doubao-seedream-5-0-260128 elapsed=24.874s
+2026-03-30 13:03:45 [fccffc435c30474d966519152f91e9c5] INFO 图片保存完成 | count=1 path=ref_blazer.png
+2026-03-30 13:03:45 [fccffc435c30474d966519152f91e9c5] INFO 文生图完成 | total_elapsed=25.518s
+2026-03-30 13:11:03 [a63671b5becf4f22be35c4636f1f2f3d] INFO 提示词 | 一位有着棕红色卷发、身穿淡粉色针织毛衣的年轻女孩，怀中轻轻环抱着一只毛发蓬松的红狐狸。女孩缓缓低头，温柔地用手轻轻抚摸狐狸的毛发，狐狸微微抬起头，眯着眼睛享受。背景是燃烧的壁炉，橙黄色的火光轻轻摇曳，暖光映照在女孩和狐狸身上。镜头从正面中景缓慢推近至近景，最终定格在女孩与狐狸亲密互动的画面。环境音是壁炉木柴燃烧时轻柔的噼啪声。 refs=outputs/doubao/images/text_to_image/ref_girl_fox.png
+2026-03-30 13:11:06 [a63671b5becf4f22be35c4636f1f2f3d] INFO 视频任务创建完成 | task_id=cgt-20260330131104-lnb2r status=unknown api_elapsed=1.528s
+2026-03-30 13:11:06 [a63671b5becf4f22be35c4636f1f2f3d] INFO 开始轮询视频任务 | task_id=cgt-20260330131104-lnb2r interval=10s timeout=900s
+2026-03-30 13:11:06 [a63671b5becf4f22be35c4636f1f2f3d] INFO 视频任务状态: running
+2026-03-30 13:11:37 [a63671b5becf4f22be35c4636f1f2f3d] INFO 视频任务状态: succeeded
+2026-03-30 13:11:37 [a63671b5becf4f22be35c4636f1f2f3d] INFO 视频生成成功 | task_id=cgt-20260330131104-lnb2r poll_elapsed=30.958s
+2026-03-30 13:11:38 [a63671b5becf4f22be35c4636f1f2f3d] INFO 视频下载完成 | path=20260330_131137_cgt-20260330.mp4
+2026-03-30 13:11:38 [a63671b5becf4f22be35c4636f1f2f3d] INFO 视频任务完成 | task_id=cgt-20260330131104-lnb2r total_elapsed=35.181s
+2026-03-30 13:22:59 [7c17c85c3bd4480794749c98ed215085] INFO 视频任务开始 | {"scene": "first_last_frame_to_video", "model": "doubao-seedance-1-5-pro-251215", "prompt": "花朵从紧闭的花苞缓缓绽放，花瓣一层层优雅地舒展开来，晶莹的露珠从花瓣上轻轻滑落。清晨柔和的自然光洒在花朵上，背景是虚化的翠绿枝叶。镜头以特写开始，缓慢推近花朵，展现绽放的细腻过程。可以听到轻柔的鸟鸣和露珠滴落的声音。", "ratio": "adaptive", "duration": 5, "resolution": "720p", "generate_audio": "(API默认true)", "service_tier": "(API默认default/在线)", "draft": false, "return_last_frame": false, "images": ["outputs/doubao/images/text_to_image/ref_flower_bud.png", "outputs/doubao/images/text_to_image/ref_flower_bloom.png"]}
+2026-03-30 13:23:02 [7c17c85c3bd4480794749c98ed215085] INFO 视频任务创建完成 | {"task_id": "cgt-20260330132301-bc6xw", "status": "unknown", "api_elapsed": 1.416}
+2026-03-30 13:23:02 [7c17c85c3bd4480794749c98ed215085] INFO 开始轮询视频任务 | {"task_id": "cgt-20260330132301-bc6xw", "interval": 10, "timeout": 900}
+2026-03-30 13:23:02 [7c17c85c3bd4480794749c98ed215085] INFO 视频任务状态 | {"status": "running"}
+2026-03-30 13:24:24 [7c17c85c3bd4480794749c98ed215085] INFO 视频任务状态 | {"status": "succeeded"}
+2026-03-30 13:24:24 [7c17c85c3bd4480794749c98ed215085] INFO 视频生成成功 | {"task_id": "cgt-20260330132301-bc6xw", "poll_elapsed": 82.376}
+2026-03-30 13:24:26 [7c17c85c3bd4480794749c98ed215085] INFO 视频下载完成 | {"path": "20260330_132424_cgt-20260330.mp4"}
+2026-03-30 13:24:26 [7c17c85c3bd4480794749c98ed215085] INFO 视频任务完成 | {"task_id": "cgt-20260330132301-bc6xw", "total_elapsed": 87.208}
+2026-03-30 13:29:14 [d8dc61fa90f44671b7ab9da35806e866] INFO 视频任务开始 | {"scene": "text_to_video", "model": "doubao-seedance-1-5-pro-251215", "prompt": "一只毛发蓬松的白色猫咪趴在木质窗台上，午后温暖的阳光透过纱窗洒进房间，光影柔和地落在猫咪身上。猫咪慵懒地伸了个懒腰，缓缓睁开蓝色的眼睛，然后轻巧地站起身来，凑到窗边好奇地望向窗外。镜头从中景开始，缓慢推近到猫咪面部的极近特写，捕捉它细腻的胡须和明亮的眼睛。", "ratio": "16:9", "duration": 5, "resolution": "480p", "generate_audio": "(API默认true)", "service_tier": "(API默认default/在线)", "draft": false, "return_last_frame": false, "images": "(无)"}
+2026-03-30 13:29:16 [d8dc61fa90f44671b7ab9da35806e866] INFO 视频任务创建完成 | {"task_id": "cgt-20260330132915-6sjgg", "status": "unknown", "api_elapsed": 0.426}
+2026-03-30 13:29:16 [d8dc61fa90f44671b7ab9da35806e866] INFO 开始轮询视频任务 | {"task_id": "cgt-20260330132915-6sjgg", "interval": 10, "timeout": 900}
+2026-03-30 13:29:16 [d8dc61fa90f44671b7ab9da35806e866] INFO 视频任务状态 | {"status": "running"}
+2026-03-30 13:29:47 [d8dc61fa90f44671b7ab9da35806e866] INFO 视频任务状态 | {"status": "succeeded"}
+2026-03-30 13:29:47 [d8dc61fa90f44671b7ab9da35806e866] INFO 视频生成成功 | {"task_id": "cgt-20260330132915-6sjgg", "poll_elapsed": 30.915}
+2026-03-30 13:29:48 [d8dc61fa90f44671b7ab9da35806e866] INFO 视频下载完成 | {"path": "20260330_132947_cgt-20260330.mp4"}
+2026-03-30 13:29:48 [d8dc61fa90f44671b7ab9da35806e866] INFO 视频任务完成 | {"task_id": "cgt-20260330132915-6sjgg", "total_elapsed": 34.093}
+2026-03-30 13:35:34 [45bc321048fd4f3f88a30ad35e7b5d18] INFO 视频任务开始 | {"scene": "text_to_video", "model": "doubao-seedance-1-5-pro-251215", "prompt": "一只毛发蓬松的白色猫咪趴在木质窗台上，午后温暖的阳光透过纱窗洒进房间，光影柔和地落在猫咪身上。猫咪慵懒地伸了个懒腰，缓缓睁开蓝色的眼睛，然后轻巧地站起身来，凑到窗边好奇地望向窗外。镜头从中景开始，缓慢推近到猫咪面部的极近特写，捕捉它细腻的胡须和明亮的眼睛。", "ratio": "16:9", "duration": 5, "resolution": "480p", "generate_audio": "(API默认true)", "service_tier": "(API默认default/在线)", "draft": false, "return_last_frame": false, "images": "(无)"}
+2026-03-30 13:35:36 [45bc321048fd4f3f88a30ad35e7b5d18] INFO 视频任务创建完成 | {"task_id": "cgt-20260330133535-vkm48", "status": "unknown", "api_elapsed": 0.499}
+2026-03-30 13:35:36 [45bc321048fd4f3f88a30ad35e7b5d18] INFO 开始轮询视频任务 | {"task_id": "cgt-20260330133535-vkm48", "interval": 10, "timeout": 900}
+2026-03-30 13:35:36 [45bc321048fd4f3f88a30ad35e7b5d18] INFO 视频任务状态 | {"status": "queued"}
+2026-03-30 13:35:46 [45bc321048fd4f3f88a30ad35e7b5d18] INFO 视频任务状态 | {"status": "running"}
+2026-03-30 13:36:07 [45bc321048fd4f3f88a30ad35e7b5d18] INFO 视频任务状态 | {"status": "succeeded"}
+2026-03-30 13:36:07 [45bc321048fd4f3f88a30ad35e7b5d18] INFO 视频生成成功 | {"task_id": "cgt-20260330133535-vkm48", "poll_elapsed": 31.029}
+2026-03-30 13:36:08 [45bc321048fd4f3f88a30ad35e7b5d18] INFO 视频下载完成 | {"path": "20260330_133607_cgt-20260330.mp4"}
+2026-03-30 13:36:08 [45bc321048fd4f3f88a30ad35e7b5d18] INFO 视频任务完成 | {"task_id": "cgt-20260330133535-vkm48", "total_elapsed": 34.328}
+2026-03-30 13:37:31 [75a34dba0e204ba4a4f5716fe7841b03] INFO 视频任务开始 | {"scene": "text_to_video", "model": "doubao-seedance-1-5-pro-251215", "prompt": "一只毛发蓬松的白色猫咪趴在木质窗台上，午后温暖的阳光透过纱窗洒进房间，光影柔和地落在猫咪身上。猫咪慵懒地伸了个懒腰，缓缓睁开蓝色的眼睛，然后轻巧地站起身来，凑到窗边好奇地望向窗外。镜头从中景开始，缓慢推近到猫咪面部的极近特写，捕捉它细腻的胡须和明亮的眼睛。", "ratio": "16:9", "duration": 5, "resolution": "480p", "generate_audio": "(API默认true)", "service_tier": "(API默认default/在线)", "draft": false, "return_last_frame": false, "images": "(无)"}
+2026-03-30 13:37:33 [75a34dba0e204ba4a4f5716fe7841b03] INFO 视频任务创建完成 | {"task_id": "cgt-20260330133732-xvvmh", "status": "unknown", "api_elapsed": 0.513}
+2026-03-30 13:37:33 [75a34dba0e204ba4a4f5716fe7841b03] INFO 开始轮询视频任务 | {"task_id": "cgt-20260330133732-xvvmh", "interval": 10, "timeout": 900}
+2026-03-30 13:37:33 [75a34dba0e204ba4a4f5716fe7841b03] INFO 视频任务状态 | {"status": "running"}
+2026-03-30 13:38:04 [75a34dba0e204ba4a4f5716fe7841b03] INFO 视频任务状态 | {"status": "succeeded"}
+2026-03-30 13:38:04 [75a34dba0e204ba4a4f5716fe7841b03] INFO 视频生成成功 | {"task_id": "cgt-20260330133732-xvvmh", "poll_elapsed": 31.101}
+2026-03-30 13:38:05 [75a34dba0e204ba4a4f5716fe7841b03] INFO 视频下载完成 | {"path": "20260330_133804_cgt-20260330.mp4"}
+2026-03-30 13:38:05 [75a34dba0e204ba4a4f5716fe7841b03] INFO 视频任务完成 | {"task_id": "cgt-20260330133732-xvvmh", "total_elapsed": 34.488}
+2026-03-30 13:38:59 [7298f11ea10e46fc96258b6c20c93983] INFO 视频任务开始 | {"scene": "text_to_video", "model": "doubao-seedance-1-5-pro-251215", "prompt": "一只毛发蓬松的白色长毛猫趴在木质地板上，温暖的午后阳光透过窗户洒在它身上形成斑驳的光影。白猫慵懒地伸展前肢，打了一个哈欠，然后轻轻甩动尾巴。镜头以中景缓慢推近，最终定格在猫咪面部特写。写实摄影风格，暖色调，浅景深。", "ratio": "16:9", "duration": 5, "resolution": "480p", "generate_audio": "(API默认true)", "service_tier": "(API默认default/在线)", "draft": false, "return_last_frame": false, "images": "(无)"}
+2026-03-30 13:39:01 [7298f11ea10e46fc96258b6c20c93983] INFO 视频任务创建完成 | {"task_id": "cgt-20260330133900-fwrnv", "status": "unknown", "api_elapsed": 0.806}
+2026-03-30 13:39:01 [7298f11ea10e46fc96258b6c20c93983] INFO 开始轮询视频任务 | {"task_id": "cgt-20260330133900-fwrnv", "interval": 10, "timeout": 900}
+2026-03-30 13:39:01 [7298f11ea10e46fc96258b6c20c93983] INFO 视频任务状态 | {"status": "running"}
+2026-03-30 13:39:32 [7298f11ea10e46fc96258b6c20c93983] INFO 视频任务状态 | {"status": "succeeded"}
+2026-03-30 13:39:32 [7298f11ea10e46fc96258b6c20c93983] INFO 视频生成成功 | {"task_id": "cgt-20260330133900-fwrnv", "poll_elapsed": 30.892}
+2026-03-30 13:39:33 [7298f11ea10e46fc96258b6c20c93983] INFO 视频下载完成 | {"path": "20260330_133932_cgt-20260330.mp4"}
+2026-03-30 13:39:33 [7298f11ea10e46fc96258b6c20c93983] INFO 视频任务完成 | {"task_id": "cgt-20260330133900-fwrnv", "total_elapsed": 34.437}
+2026-03-30 13:55:20 [3f97578c45db4c0f8d6857f2b9d69f14] INFO 图生图开始 | {"model": "doubao-seedream-5-0-260128", "size": "2K", "prompt": "让图一的人物穿上图二的西装外套，保持人物的面部特征、发型和姿态不变，整体画面保持写实摄影风格。", "images": ["outputs/doubao/images/text_to_image/ref_portrait.png", "outputs/doubao/images/text_to_image/ref_blazer.png"]}
+2026-03-30 13:55:57 [3f97578c45db4c0f8d6857f2b9d69f14] INFO 模型 API 调用完成 | {"model": "doubao-seedream-5-0-260128", "elapsed": 37.293}
+2026-03-30 13:55:57 [3f97578c45db4c0f8d6857f2b9d69f14] INFO 图片保存完成 | {"count": 1, "path": "20260330_135520.png"}
+2026-03-30 13:55:57 [3f97578c45db4c0f8d6857f2b9d69f14] INFO 图生图完成 | {"total_elapsed": 37.878}
+2026-03-30 13:58:43 [9802a9193d404b1ab9ed3463cc518169] INFO 文生图开始 | {"model": "doubao-seedream-5-0-260128", "size": "2K", "prompt": "一位中国男性歌手的写实手绘肖像画，清秀帅气的五官，温文尔雅的气质，短发，阳光文艺的气质，身穿简约的黑色T恤。手绘素描风格，线条流畅自然，光影柔和，白色背景。"}
+2026-03-30 13:59:12 [9802a9193d404b1ab9ed3463cc518169] INFO 模型 API 调用完成 | {"model": "doubao-seedream-5-0-260128", "elapsed": 29.036}
+2026-03-30 13:59:12 [9802a9193d404b1ab9ed3463cc518169] INFO 图片保存完成 | {"count": 1, "path": "20260330_135843.png"}
+2026-03-30 13:59:12 [9802a9193d404b1ab9ed3463cc518169] INFO 文生图完成 | {"total_elapsed": 29.585}
+2026-03-30 14:01:29 [89977c694d864290903cacaf0c268291] INFO 图生图开始 | {"model": "doubao-seedream-5-0-260128", "size": "2K", "prompt": "参考图中的人物形象，将其转换为写实手绘素描风格，保持人物的面部特征、五官、发型和穿着不变，线条流畅自然，光影柔和，白色背景。", "images": ["resources/images/微信图片_20260330140024_100_5.jpg"]}
+2026-03-30 14:01:58 [89977c694d864290903cacaf0c268291] INFO 模型 API 调用完成 | {"model": "doubao-seedream-5-0-260128", "elapsed": 28.336}
+2026-03-30 14:01:58 [89977c694d864290903cacaf0c268291] INFO 图片保存完成 | {"count": 1, "path": "20260330_140130.png"}
+2026-03-30 14:01:58 [89977c694d864290903cacaf0c268291] INFO 图生图完成 | {"total_elapsed": 28.912}
