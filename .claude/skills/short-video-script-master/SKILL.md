@@ -83,7 +83,7 @@ metadata:
 
 为 AI 图片生成准备结构化 prompt，通过预定义的角色和场景参考图提升跨片段一致性。查阅 `reference/step6_keyframe_prompts.md` 获取完整规范。本阶段只输出 prompt，不调用外部 API。
 
-**6A — 角色参考图 Prompt（项目级）**：从 framework.md 提取角色外观，为每个核心角色生成服饰参考图 prompt（2x2 组图，4 种穿搭，灰色纯色背景）。用户确认后进入 6B。
+**6A — 角色参考图 Prompt（项目级）**：从 framework.md 提取角色外观，为每个核心角色生成参考图 prompt（单张，默认穿搭，灰色纯色背景）。用户确认后进入 6B。
 
 **6B — 场景参考图 Prompt（项目级）**：从 framework.md 提取场景描述，为每个场景生成参考图 prompt（无人物）。与 6A 一起向用户确认后进入 6C。
 
