@@ -95,7 +95,7 @@ STEP 6 **唯一新增**的内容：
 ### 文件路径
 
 ```
-outputs/scripts/<标题>_<yyyyMMdd>/
+outputs/dramas/<标题>_<yyyyMMdd_HHmm>/
   video_generation/                     # STEP 6 产出
     Chapter<序号>_<篇章名>/
       E01.md                            # 视频生成指令
@@ -199,7 +199,7 @@ outputs/scripts/<标题>_<yyyyMMdd>/
 ### 目录结构
 
 ```
-outputs/scripts/<标题>_<yyyyMMdd>/
+outputs/dramas/<标题>_<yyyyMMdd_HHmm>/
   reference_images/                     # STEP 5 产出
     Chapter1_噩梦/keyframes/E01/            # 关键帧图片
     Chapter1_噩梦/E01.md                    # 关键帧 prompt
@@ -214,7 +214,7 @@ outputs/scripts/<标题>_<yyyyMMdd>/
       ...
 ```
 
-告知用户："篇章「[篇章名]」的视频生成指令已保存到 `outputs/scripts/<标题>_<yyyyMMdd>/video_generation/Chapter<序号>_<篇章中文名>/`。是否继续下一个篇章？"
+告知用户："篇章「[篇章名]」的视频生成指令已保存到 `outputs/dramas/<标题>_<yyyyMMdd_HHmm>/video_generation/Chapter<序号>_<篇章中文名>/`。是否继续下一个篇章？"
 
 ## 与上下游的关系
 

@@ -95,7 +95,7 @@
 ## 输出文件清单
 
 ```
-outputs/scripts/<标题>_<yyyyMMdd>/
+outputs/dramas/<标题>_<yyyyMMdd_HHmm>/
   framework.md                                              # 阶段一产出
   story.md                                                  # 阶段二产出（仅大纲 + 第一篇章索引）
   stories/

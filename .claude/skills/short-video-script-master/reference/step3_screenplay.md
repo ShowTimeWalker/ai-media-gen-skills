@@ -167,7 +167,7 @@
 所有路径基于**项目根目录**，`screenplays/` 与 `stories/` 同级：
 
 ```
-outputs/scripts/<标题>_<yyyyMMdd>/
+outputs/dramas/<标题>_<yyyyMMdd_HHmm>/
   framework.md
   story.md
   stories/
@@ -187,7 +187,7 @@ outputs/scripts/<标题>_<yyyyMMdd>/
 每个篇章的 3B 片段拆分确认并写入文件后，**必须**向用户展示互动选项，让用户决定下一步：
 
 ```markdown
-篇章「[篇章名]」的剧本和片段拆分已保存到 `outputs/scripts/<标题>_<yyyyMMdd>/screenplays/Chapter<序号>_<篇章中文名>/`。请选择下一步：
+篇章「[篇章名]」的剧本和片段拆分已保存到 `outputs/dramas/<标题>_<yyyyMMdd_HHmm>/screenplays/Chapter<序号>_<篇章中文名>/`。请选择下一步：
 
 1. 继续下一个篇章的剧本创作（→ STEP 3A）
 2. 为本篇章生成生产脚本（→ STEP 4）

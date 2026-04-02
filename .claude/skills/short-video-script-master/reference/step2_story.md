@@ -142,7 +142,7 @@
 所有路径基于**项目根目录**下的 `outputs/` 目录，**不是** skill 目录下：
 
 ```
-outputs/scripts/<标题>_<yyyyMMdd>/
+outputs/dramas/<标题>_<yyyyMMdd_HHmm>/
   framework.md                   # STEP 1 产出
   story.md                       # 2B 完成后生成：主线概述 + 篇章索引 + 人物弧线 + 核心卖点
   stories/
@@ -202,4 +202,4 @@ outputs/scripts/<标题>_<yyyyMMdd>/
 - `<缩写>` 为篇章名的英文简写（如 `chess_opening`、`border_crisis`、`final_showdown`）
 - 文件内容为该篇章的完整设计（核心设定 + 篇章梗概）
 
-告知用户："故事线已保存到 `outputs/scripts/<标题>_<yyyyMMdd>/` 目录下，共 [X] 个篇章文件。"
+告知用户："故事线已保存到 `outputs/dramas/<标题>_<yyyyMMdd_HHmm>/` 目录下，共 [X] 个篇章文件。"
