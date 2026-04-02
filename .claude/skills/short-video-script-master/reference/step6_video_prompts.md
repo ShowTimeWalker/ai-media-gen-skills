@@ -1,14 +1,14 @@
-# 阶段七：视频生成指令
+# 阶段六：视频生成指令
 
 ## 目标
 
-在 STEP 5 分镜表的基础上，补充 STEP 6 产出的实际首尾帧图片引用，并提取角色语音规格。STEP 7 **不重新编写**分镜、运镜、画面描述或声音设计——这些在 STEP 5 中已完成。
+在 STEP 4 分镜表的基础上，补充 STEP 5 产出的实际首尾帧图片引用，并提取角色语音规格。STEP 6 **不重新编写**分镜、运镜、画面描述或声音设计——这些在 STEP 4 中已完成。
 
 产出格式是通用的，不绑定具体供应商，由 content-generation-workflow 在实际调用时适配。
 
 ## 背景：从关键帧到视频
 
-STEP 6 产出的目录结构：
+STEP 5 产出的目录结构：
 
 ```
 reference_images/Chapter<序号>_<篇章名>/keyframes/E<NN>/
@@ -24,11 +24,11 @@ reference_images/Chapter<序号>_<篇章名>/keyframes/E<NN>/
 
 本 STEP 只输出结构化指令文本，不调用外部 API。实际视频生成由 content-generation-workflow 执行。
 
-## STEP 5 与 STEP 7 的关系
+## STEP 4 与 STEP 6 的关系
 
-STEP 5 已经完成了以下工作，STEP 7 **不再重复**：
+STEP 4 已经完成了以下工作，STEP 6 **不再重复**：
 
-| 已完成内容 | STEP 5 产出 | STEP 7 处理方式 |
+| 已完成内容 | STEP 4 产出 | STEP 6 处理方式 |
 |-----------|------------|----------------|
 | 分镜拆分 | 每个片段拆为 1-3 个分镜 | 直接复用 |
 | 景别 | 每个分镜的起幅/落幅景别 | 直接复用 |
@@ -37,26 +37,26 @@ STEP 5 已经完成了以下工作，STEP 7 **不再重复**：
 | 声音设计 | 环境音、对白、内心OS、BGM | 直接复用 |
 | 片段时长 | 每个片段和分镜的精确时长 | 直接复用 |
 
-STEP 7 **唯一新增**的内容：
+STEP 6 **唯一新增**的内容：
 
 | 新增内容 | 说明 |
 |---------|------|
-| 首帧/末帧图片引用 | 将 STEP 6 生成的实际图片文件路径标注到每个片段 |
+| 首帧/末帧图片引用 | 将 STEP 5 生成的实际图片文件路径标注到每个片段 |
 | 角色语音规格 | 从 framework.md 提取角色的音色特征，供 TTS 参考 |
 | 参考概览表 | 全片段首尾帧图片一览 |
 
 ## 工作流程
 
-### 前置校验（每次进入 STEP 7 时执行）
+### 前置校验（每次进入 STEP 6 时执行）
 
 在开始生成之前，**必须**验证以下前置条件是否满足：
 
 | 校验项 | 依赖来源 | 校验内容 | 不通过时处理 |
 |--------|---------|---------|-------------|
-| 关键帧图片存在 | STEP 6 | `reference_images/Chapter<序号>_<篇章名>/keyframes/E<NN>/` 目录下有实际 PNG 图片文件 | 提示用户回到 STEP 6 生成关键帧图片 |
-| 关键帧图片完整 | STEP 6 | 每集至少有首帧和末帧图片（C01_first.png 或沿用前集末帧 + C01_last.png） | 提示用户回到 STEP 6 补充缺失的关键帧 |
-| 生产脚本存在 | STEP 5 | `production_scripts/Chapter<序号>_<篇章名>/E<NN>.md` 对应该篇章所有集数都存在 | 提示用户回到 STEP 5 生成生产脚本 |
-| framework.md 存在 | STEP 2 | 文件存在且包含「核心人物」字段（用于语音规格提取） | 提示用户回到 STEP 2 生成核心框架 |
+| 关键帧图片存在 | STEP 5 | `reference_images/Chapter<序号>_<篇章名>/keyframes/E<NN>/` 目录下有实际 PNG 图片文件 | 提示用户回到 STEP 5 生成关键帧图片 |
+| 关键帧图片完整 | STEP 5 | 每集至少有首帧和末帧图片（C01_first.png 或沿用前集末帧 + C01_last.png） | 提示用户回到 STEP 5 补充缺失的关键帧 |
+| 生产脚本存在 | STEP 4 | `production_scripts/Chapter<序号>_<篇章名>/E<NN>.md` 对应该篇章所有集数都存在 | 提示用户回到 STEP 4 生成生产脚本 |
+| framework.md 存在 | STEP 1 | 文件存在且包含「核心人物」字段（用于语音规格提取） | 提示用户回到 STEP 1 生成核心框架 |
 
 校验流程：
 1. 用 Glob 工具扫描 `reference_images/Chapter<序号>_<篇章名>/keyframes/E<NN>/` 目录下的 `*.png` 文件
@@ -65,30 +65,30 @@ STEP 7 **唯一新增**的内容：
 4. 用 Read 工具读取 `framework.md`，确认包含核心人物字段
 5. 如果任何校验项不通过，向用户明确告知缺失内容和建议的回退步骤，**不要继续生成**
 
-### 7A：片段组装（按集）
+### 6A：片段组装（按集）
 
 1. 读取以下文件：
    - `reference_images/Chapter<序号>_<篇章名>/keyframes/E<NN>/` — 扫描实际 PNG 文件列表
-   - `production_scripts/Chapter<序号>_<篇章名>/E<NN>.md` — STEP 5 的分镜表
+   - `production_scripts/Chapter<序号>_<篇章名>/E<NN>.md` — STEP 4 的分镜表
    - `framework.md` — 角色语音特征提取
 2. 为每个片段确定首帧图片来源：
    - `C{NN}_first.png` 存在 → 使用该独立首帧
    - `C{NN}_first.png` 不存在 → 沿用 `C{NN-1}_last.png`
 3. 输出片段组装表（参考概览）
 
-### 7B：生成视频生成指令（按集）
+### 6B：生成视频生成指令（按集）
 
-基于 STEP 5 分镜表，**直接复用**分镜、运镜、画面描述、声音设计，**新增**首尾帧图片引用和语音规格：
+基于 STEP 4 分镜表，**直接复用**分镜、运镜、画面描述、声音设计，**新增**首尾帧图片引用和语音规格：
 
-1. **复制 STEP 5 分镜表**：逐片段复制分镜表内容，不做任何修改
+1. **复制 STEP 4 分镜表**：逐片段复制分镜表内容，不做任何修改
 2. **标注首尾帧**：在每个片段的标题行标注该片段的首帧和末帧图片文件名
 3. **提取语音规格**：从 framework.md 提取角色语音特征
 4. 按篇章批量生成，**等待用户确认**后写入文件
 
 **推翻机制**：
-- 首尾帧标注不满意：回到 STEP 6 重新生成关键帧图片
+- 首尾帧标注不满意：回到 STEP 5 重新生成关键帧图片
 - 语音规格不满意：修改该角色的语音描述
-- 分镜/画面/声音不满意：回到 STEP 5 修改生产脚本
+- 分镜/画面/声音不满意：回到 STEP 4 修改生产脚本
 
 ## 产出格式
 
@@ -96,7 +96,7 @@ STEP 7 **唯一新增**的内容：
 
 ```
 outputs/scripts/<标题>_<yyyyMMdd>/
-  video_generation/                     # STEP 7 产出
+  video_generation/                     # STEP 6 产出
     Chapter<序号>_<篇章名>/
       E01.md                            # 视频生成指令
       E02.md
@@ -105,7 +105,7 @@ outputs/scripts/<标题>_<yyyyMMdd>/
 
 ### 单集格式
 
-文档最前面为参考概览表（全片段首尾帧一览），然后是语音规格表，最后是 STEP 5 分镜表的原文（每个片段标题行追加首尾帧标注）。
+文档最前面为参考概览表（全片段首尾帧一览），然后是语音规格表，最后是 STEP 4 分镜表的原文（每个片段标题行追加首尾帧标注）。
 
 ```markdown
 # E<NN> 视频生成指令
@@ -133,7 +133,7 @@ outputs/scripts/<标题>_<yyyyMMdd>/
 
 ## 分镜表
 
-> 以下分镜表直接复用 STEP 5 产出，未做修改。
+> 以下分镜表直接复用 STEP 4 产出，未做修改。
 
 ### C01 临终病房（8s，2分镜）| 首帧：C01_first.png | 末帧：C01_last.png
 
@@ -159,7 +159,7 @@ outputs/scripts/<标题>_<yyyyMMdd>/
 **要点**：
 - **参考概览**放在文档最前面，是全片段首尾帧图片的一览表
 - **语音规格**紧接着参考概览，列出本集所有有对白/OS 的角色
-- **分镜表**直接复用 STEP 5 产出，每个片段标题行追加 `| 首帧：xxx.png | 末帧：xxx.png` 标注
+- **分镜表**直接复用 STEP 4 产出，每个片段标题行追加 `| 首帧：xxx.png | 末帧：xxx.png` 标注
 - 分镜表正文（镜号/时长/景别/运镜/画面描述/声音）**不做任何修改**
 - 沿用前片段末帧时，首帧列标注的是前片段的末帧文件名（如 `C01_last.png`）
 
@@ -181,15 +181,15 @@ outputs/scripts/<标题>_<yyyyMMdd>/
 
 ## 质量检查清单
 
-### 片段组装检查（7A 完成后）
+### 片段组装检查（6A 完成后）
 
 1. **首帧路径存在？** — 每个片段的首帧文件（独立或沿用前片段末帧）都实际存在于 keyframes 目录
 2. **末帧路径存在？** — 每个片段的末帧文件都实际存在
 3. **连贯性链有效？** — 同场景相邻片段 `C(N+1)` 的首帧 = `C(N)` 的末帧
 
-### 指令质量检查（7B 完成后，逐集自检）
+### 指令质量检查（6B 完成后，逐集自检）
 
-4. **分镜表与 STEP 5 一致？** — 分镜表正文（镜号/时长/景别/运镜/画面描述/声音）与 STEP 5 完全一致，未做修改
+4. **分镜表与 STEP 4 一致？** — 分镜表正文（镜号/时长/景别/运镜/画面描述/声音）与 STEP 4 完全一致，未做修改
 5. **首末帧标注完整？** — 每个片段都有首帧和末帧的文件名标注
 6. **首末帧路径正确？** — 标注的文件名与 keyframes 目录中的实际文件匹配
 7. **语音规格完整？** — 有对白/OS 的角色都有语音规格，字段完整
@@ -200,14 +200,14 @@ outputs/scripts/<标题>_<yyyyMMdd>/
 
 ```
 outputs/scripts/<标题>_<yyyyMMdd>/
-  reference_images/                     # STEP 6 产出
+  reference_images/                     # STEP 5 产出
     Chapter1_噩梦/keyframes/E01/            # 关键帧图片
     Chapter1_噩梦/E01.md                    # 关键帧 prompt
-  production_scripts/                   # STEP 5 产出
+  production_scripts/                   # STEP 4 产出
     Chapter1_噩梦/E01.md
-  screenplays/                          # STEP 4 产出
+  screenplays/                          # STEP 3 产出
     Chapter1_噩梦/E01.md
-  video_generation/                     # STEP 7 产出
+  video_generation/                     # STEP 6 产出
     Chapter1_噩梦/
       E01.md                            # 视频生成指令
       E02.md
@@ -222,15 +222,15 @@ outputs/scripts/<标题>_<yyyyMMdd>/
 
 | 来源 | 文件 | 用途 |
 |------|------|------|
-| STEP 5 | `production_scripts/Chapter<序号>_<篇章名>/E<NN>.md` | 分镜表（直接复用，不做修改） |
-| STEP 6 | `reference_images/Chapter<序号>_<篇章名>/keyframes/E<NN>/` | 实际首帧/末帧图片文件 |
-| STEP 2 | `framework.md` | 角色语音特征提取 |
+| STEP 4 | `production_scripts/Chapter<序号>_<篇章名>/E<NN>.md` | 分镜表（直接复用，不做修改） |
+| STEP 5 | `reference_images/Chapter<序号>_<篇章名>/keyframes/E<NN>/` | 实际首帧/末帧图片文件 |
+| STEP 1 | `framework.md` | 角色语音特征提取 |
 
 ### 输出
 
 | 文件 | 内容 | 消费者 |
 |------|------|--------|
-| `video_generation/Chapter<序号>_<篇章名>/E<NN>.md` | STEP 5 分镜表 + 首尾帧图片引用 + 语音规格 | content-generation-workflow |
+| `video_generation/Chapter<序号>_<篇章名>/E<NN>.md` | STEP 4 分镜表 + 首尾帧图片引用 + 语音规格 | content-generation-workflow |
 
 ### 下游执行顺序
 
