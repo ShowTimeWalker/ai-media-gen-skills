@@ -139,7 +139,7 @@
 
 ### 目录结构
 
-所有路径基于**项目根目录**（与其他 skill 的 `outputs/doubao/`、`outputs/juzi/` 同级），**不是** skill 目录下：
+所有路径基于**项目根目录**下的 `outputs/` 目录，**不是** skill 目录下：
 
 ```
 outputs/scripts/<标题>_<yyyyMMdd>/

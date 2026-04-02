@@ -4,7 +4,7 @@
 
 在 STEP 4 分镜表的基础上，补充 STEP 5 产出的实际首尾帧图片引用，并提取角色语音规格。STEP 6 **不重新编写**分镜、运镜、画面描述或声音设计——这些在 STEP 4 中已完成。
 
-产出格式是通用的，不绑定具体供应商，由 content-generation-workflow 在实际调用时适配。
+产出格式是通用的，不绑定具体供应商，为通用格式，可在任何图片/视频生成工具中使用。
 
 ## 背景：从关键帧到视频
 
@@ -22,7 +22,7 @@ reference_images/Chapter<序号>_<篇章名>/keyframes/E<NN>/
 
 **连贯性规则**：同场景相邻片段 `C(N+1)` 的实际首帧 = `C(N)_last.png`。只有跨场景转场的片段才有独立的 `_first.png`。
 
-本 STEP 只输出结构化指令文本，不调用外部 API。实际视频生成由 content-generation-workflow 执行。
+本 STEP 只输出结构化指令文本，不调用外部 API。实际视频生成由后续工具执行。
 
 ## STEP 4 与 STEP 6 的关系
 
@@ -230,13 +230,13 @@ outputs/scripts/<标题>_<yyyyMMdd>/
 
 | 文件 | 内容 | 消费者 |
 |------|------|--------|
-| `video_generation/Chapter<序号>_<篇章名>/E<NN>.md` | STEP 4 分镜表 + 首尾帧图片引用 + 语音规格 | content-generation-workflow |
+| `video_generation/Chapter<序号>_<篇章名>/E<NN>.md` | STEP 4 分镜表 + 首尾帧图片引用 + 语音规格 | 后续视频生成环节 |
 
 ### 下游执行顺序
 
-content-generation-workflow 应按以下顺序执行：
+后续视频生成应按以下顺序执行：
 
 1. 将片段组装表中标注的首帧图片上传获取 URL
-2. 按片段顺序调用视频生成 API（图生视频模式，首帧作为输入图片）
+2. 按片段顺序调用视频生成工具（图生视频模式，首帧作为输入图片）
 3. 下载每个片段的视频文件和末帧图片
 4. 按片段顺序拼接为完整集数视频（可选：添加转场效果）
