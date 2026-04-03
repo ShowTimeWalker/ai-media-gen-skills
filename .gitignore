@@ -4,3 +4,5 @@ __pycache__/
 Aetherion/
 .claude/settings.local.json
 prompts/test/
+outputs/
+.venv/
