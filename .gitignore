@@ -1,8 +1,9 @@
 api_key/*.json
 __pycache__/
 *.pyc
-Aetherion/
 .claude/settings.local.json
 prompts/test/
 outputs/
 .venv/
+CLAUDE.md
+AGENT.md
