@@ -1,4 +1,4 @@
-api_key/*.json
+api_key/
 __pycache__/
 *.pyc
 .claude/settings.local.json
@@ -6,4 +6,4 @@ prompts/test/
 outputs/
 .venv/
 CLAUDE.md
-AGENT.md
+AGENTS.md
