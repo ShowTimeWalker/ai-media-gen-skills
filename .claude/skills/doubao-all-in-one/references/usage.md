@@ -33,7 +33,6 @@ uv run --no-project --python python $DOUBAO_SKILL_DIR/scripts/create_video_task.
   - 文生视频：`outputs/doubao/videos/text_to_video/`
   - 首帧图生视频：`outputs/doubao/videos/first_frame_to_video/`
   - 首尾帧图生视频：`outputs/doubao/videos/first_last_frame_to_video/`
-  - 参考图生视频：`outputs/doubao/videos/reference_image_to_video/`
 - 输出字段：
   - `provider=doubao`
   - `scene`

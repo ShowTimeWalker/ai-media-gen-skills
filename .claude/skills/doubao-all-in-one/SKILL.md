@@ -154,7 +154,7 @@ uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
 | `--prompt` | 提示词 | 是 |
 | `--model` | 模型 ID，默认 `doubao-seedance-1-5-pro-251215` | 否 |
 | `--image-url` | 图片 URL（可多次传），配合 `--role` 使用 | 否 |
-| `--role` | 图片角色：`first_frame` / `last_frame` / `reference_image` | 否 |
+| `--role` | 图片角色：`first_frame` / `last_frame` | 否 |
 | `--ratio` | 宽高比：16:9, 4:3, 1:1, 3:4, 9:16, 21:9, adaptive | 否，默认 16:9 |
 | `--duration` | 视频时长（秒）：2~12（1.5 pro 支持 -1 由模型自选） | 否，默认 5 |
 | `--resolution` | 分辨率：480p, 720p, 1080p（1.0 lite 参考图不支持 1080p） | 否，默认 480p |
@@ -179,7 +179,6 @@ uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
 - `outputs/doubao/videos/text_to_video/`
 - `outputs/doubao/videos/first_frame_to_video/`
 - `outputs/doubao/videos/first_last_frame_to_video/`
-- `outputs/doubao/videos/reference_image_to_video/`
 
 ### 视频脚本输出 JSON
 

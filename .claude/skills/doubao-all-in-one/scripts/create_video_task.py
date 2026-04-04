@@ -103,7 +103,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--role",
         default="first_frame",
-        choices=["first_frame", "last_frame", "reference_image"],
+        choices=["first_frame", "last_frame"],
         help="图片角色（需配合 --image-url）",
     )
     parser.add_argument("--ratio", default=DEFAULT_RATIO, help="宽高比：16:9, 4:3, 1:1, 3:4, 9:16, 21:9, adaptive")
@@ -211,8 +211,6 @@ def determine_scene(
 ) -> str:
     if not image_urls and not last_frame_url:
         return "text_to_video"
-    if role == "reference_image":
-        return "reference_image_to_video"
     if last_frame_url or role == "last_frame" or (len(image_urls) > 1):
         return "first_last_frame_to_video"
     return "first_frame_to_video"
