@@ -15,9 +15,11 @@ from urllib.parse import quote
 from urllib.request import Request, urlopen
 from uuid import uuid4
 
-OUTPUT_ROOT = Path(os.environ.get("OUTPUT_ROOT", "~/")).expanduser().resolve()
-
 logger = logging.getLogger("qiniu")
+
+
+def _get_output_root() -> Path:
+    return Path(os.environ.get("OUTPUT_ROOT", "~/")).expanduser().resolve()
 
 
 def log_params(event: str, **kwargs: Any) -> None:
@@ -42,23 +44,21 @@ class _TraceIdFilter(logging.Filter):
         return True
 
 
-LOG_DIR = OUTPUT_ROOT / "outputs" / "logs"
-
-
 def _ensure_logging() -> None:
     """Lazy init logging on first use."""
     if logger.handlers:
         return
+    log_dir = _get_output_root() / "outputs" / "logs"
     trace_filter = _TraceIdFilter()
     log_fmt = "%(asctime)s [%(trace_id)s] %(levelname)s %(message)s"
     fmt = logging.Formatter(log_fmt, datefmt="%Y-%m-%d %H:%M:%S")
-    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    log_dir.mkdir(parents=True, exist_ok=True)
     today = datetime.now().strftime("%Y%m%d")
-    file_handler = logging.FileHandler(LOG_DIR / f"{today}.log", encoding="utf-8")
+    file_handler = logging.FileHandler(log_dir / f"{today}.log", encoding="utf-8")
     file_handler.setFormatter(fmt)
     file_handler.addFilter(trace_filter)
     logger.addHandler(file_handler)
-    error_handler = logging.FileHandler(LOG_DIR / f"{today}.error.log", encoding="utf-8")
+    error_handler = logging.FileHandler(log_dir / f"{today}.error.log", encoding="utf-8")
     error_handler.setFormatter(fmt)
     error_handler.addFilter(trace_filter)
     error_handler.setLevel(logging.ERROR)
