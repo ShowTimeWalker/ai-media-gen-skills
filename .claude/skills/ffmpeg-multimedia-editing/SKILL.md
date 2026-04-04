@@ -69,16 +69,16 @@ metadata:
 
 ```powershell
 # 截图
-uv run --no-project --python python $FFMPEG_SKILL_DIR/scripts/video_screenshot.py --input video.mp4 --time 00:01:30
+uv run --python python $FFMPEG_SKILL_DIR/scripts/video_screenshot.py --input video.mp4 --time 00:01:30
 
 # 视频拼接
-uv run --no-project --python python $FFMPEG_SKILL_DIR/scripts/video_concat.py --inputs a.mp4 b.mp4 c.mp4
+uv run --python python $FFMPEG_SKILL_DIR/scripts/video_concat.py --inputs a.mp4 b.mp4 c.mp4
 
 # 音频提取
-uv run --no-project --python python $FFMPEG_SKILL_DIR/scripts/audio_extract_replace.py --input video.mp4 --extract-audio
+uv run --python python $FFMPEG_SKILL_DIR/scripts/audio_extract_replace.py --input video.mp4 --extract-audio
 
 # 字幕嵌入
-uv run --no-project --python python $FFMPEG_SKILL_DIR/scripts/video_subtitle.py --input video.mp4 --subtitle subs.srt
+uv run --python python $FFMPEG_SKILL_DIR/scripts/video_subtitle.py --input video.mp4 --subtitle subs.srt
 ```
 
 ## 输出约定

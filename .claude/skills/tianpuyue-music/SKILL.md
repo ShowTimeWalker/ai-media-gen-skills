@@ -32,12 +32,12 @@ metadata:
 
 设 `TP_SKILL_DIR` 为 `.claude/skills/tianpuyue_music` 的绝对路径：
 
-- 纯音乐生成（完整流程）：`uv run --no-project --python python $TP_SKILL_DIR/scripts/generate_music.py --prompt "..."`
-- 歌曲生成（完整流程）：`uv run --no-project --python python $TP_SKILL_DIR/scripts/generate_song.py --prompt "..."`
-- 歌词生成（完整流程）：`uv run --no-project --python python $TP_SKILL_DIR/scripts/generate_lyrics.py --prompt "..."`
-- 纯音乐状态查询：`uv run --no-project --python python $TP_SKILL_DIR/scripts/query_music_status.py --item-id <ID>`
-- 歌曲状态查询：`uv run --no-project --python python $TP_SKILL_DIR/scripts/query_song_status.py --item-id <ID>`
-- 歌词状态查询：`uv run --no-project --python python $TP_SKILL_DIR/scripts/query_lyrics_status.py --item-id <ID>`
+- 纯音乐生成（完整流程）：`uv run --python python $TP_SKILL_DIR/scripts/generate_music.py --prompt "..."`
+- 歌曲生成（完整流程）：`uv run --python python $TP_SKILL_DIR/scripts/generate_song.py --prompt "..."`
+- 歌词生成（完整流程）：`uv run --python python $TP_SKILL_DIR/scripts/generate_lyrics.py --prompt "..."`
+- 纯音乐状态查询：`uv run --python python $TP_SKILL_DIR/scripts/query_music_status.py --item-id <ID>`
+- 歌曲状态查询：`uv run --python python $TP_SKILL_DIR/scripts/query_song_status.py --item-id <ID>`
+- 歌词状态查询：`uv run --python python $TP_SKILL_DIR/scripts/query_lyrics_status.py --item-id <ID>`
 
 ## 脚本参数
 

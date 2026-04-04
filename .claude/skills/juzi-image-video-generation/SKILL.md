@@ -32,10 +32,10 @@ metadata:
 
 设 `JUZI_SKILL_DIR` 为 `.claude/skills/juzi_image_video_generation` 的绝对路径：
 
-- 图片流程：`uv run --no-project --python python $JUZI_SKILL_DIR/scripts/run_juzi_image_pipeline.py`
-- 视频流程：`uv run --no-project --python python $JUZI_SKILL_DIR/scripts/run_juzi_video_pipeline.py`
-- 图片状态查询：`uv run --no-project --python python $JUZI_SKILL_DIR/scripts/query_image_status.py --juzi-id <ID>`
-- 视频状态查询：`uv run --no-project --python python $JUZI_SKILL_DIR/scripts/query_video_status.py --juzi-id <ID>`
+- 图片流程：`uv run --python python $JUZI_SKILL_DIR/scripts/run_juzi_image_pipeline.py`
+- 视频流程：`uv run --python python $JUZI_SKILL_DIR/scripts/run_juzi_video_pipeline.py`
+- 图片状态查询：`uv run --python python $JUZI_SKILL_DIR/scripts/query_image_status.py --juzi-id <ID>`
+- 视频状态查询：`uv run --python python $JUZI_SKILL_DIR/scripts/query_video_status.py --juzi-id <ID>`
 
 ## 输出约定
 

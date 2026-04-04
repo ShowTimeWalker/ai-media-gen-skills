@@ -19,10 +19,10 @@
 ## 运行方式
 
 ```powershell
-uv run --no-project --python python scripts/upload_file.py --file <本地文件>
-uv run --no-project --python python scripts/upload_file.py --file <本地文件> --private-url --expires-in 600
-uv run --no-project --python python scripts/upload_file.py --file <本地文件> --public-url
-uv run --no-project --python python scripts/generate_private_download_url.py --key <对象key> --expires-in 600
+uv run --python python scripts/upload_file.py --file <本地文件>
+uv run --python python scripts/upload_file.py --file <本地文件> --private-url --expires-in 600
+uv run --python python scripts/upload_file.py --file <本地文件> --public-url
+uv run --python python scripts/generate_private_download_url.py --key <对象key> --expires-in 600
 ```
 
 ## 对象 key 规则

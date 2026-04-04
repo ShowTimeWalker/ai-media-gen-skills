@@ -39,6 +39,19 @@
 | 智谱 AI（GLM） | [open.bigmodel.cn](https://open.bigmodel.cn) |
 | MiniMax | [platform.minimaxi.com](https://platform.minimaxi.com) |
 
+## docs 目录
+
+存放各内容生成供应商的官方 API 文档离线副本，供开发参考：
+
+| 目录 | 说明 |
+|---|---|
+| doubao-api-docs | 豆包（火山引擎）API 文档 |
+| hailuo-video | 海螺视频 API 文档 |
+| juzi | 橘子 AI API 文档 |
+| tianpule | 天谱乐 API 文档 |
+| openclaw-skills | OpenClaw 技能开发文档 |
+| openclaw-workspace | OpenClaw 工作空间文档 |
+
 ## 许可
 
 MIT

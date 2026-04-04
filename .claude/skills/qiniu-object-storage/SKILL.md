@@ -43,10 +43,10 @@ metadata:
 
 设 `QINIU_SKILL_DIR` 为 `.claude/skills/qiniu_object_storage` 的绝对路径：
 
-- 上传文件并按空间配置返回默认交付链接：`uv run --no-project --python python $QINIU_SKILL_DIR/scripts/upload_file.py --file <本地文件>`
-- 强制返回私有签名链接：`uv run --no-project --python python $QINIU_SKILL_DIR/scripts/upload_file.py --file <本地文件> --private-url --expires-in 600`
-- 强制返回公网链接：`uv run --no-project --python python $QINIU_SKILL_DIR/scripts/upload_file.py --file <本地文件> --public-url`
-- 已有对象 key，生成私有签名链接：`uv run --no-project --python python $QINIU_SKILL_DIR/scripts/generate_private_download_url.py --key <对象key> --expires-in 600`
+- 上传文件并按空间配置返回默认交付链接：`uv run --python python $QINIU_SKILL_DIR/scripts/upload_file.py --file <本地文件>`
+- 强制返回私有签名链接：`uv run --python python $QINIU_SKILL_DIR/scripts/upload_file.py --file <本地文件> --private-url --expires-in 600`
+- 强制返回公网链接：`uv run --python python $QINIU_SKILL_DIR/scripts/upload_file.py --file <本地文件> --public-url`
+- 已有对象 key，生成私有签名链接：`uv run --python python $QINIU_SKILL_DIR/scripts/generate_private_download_url.py --key <对象key> --expires-in 600`
 
 ## 输出约定
 
