@@ -52,6 +52,67 @@
 | openclaw-skills | OpenClaw 技能开发文档 |
 | openclaw-workspace | OpenClaw 工作空间文档 |
 
+## 输出目录
+
+所有生成的文件统一输出到 `OUTPUT_ROOT/outputs/` 下：
+
+```
+outputs/
+├── doubao/images/          # 豆包图片
+├── doubao/videos/          # 豆包视频
+├── juzi/images/            # 橘子图片
+├── juzi/videos/            # 橘子视频
+├── tianpuyue/music/        # 天谱乐纯音乐
+├── tianpuyue/songs/        # 天谱乐歌曲
+├── tianpuyue/lyrics/       # 天谱乐歌词
+├── ffmpeg/<operation>/     # FFmpeg 处理结果
+├── logs/                   # 运行日志
+└── scripts/<project>/      # 工作流产出
+```
+
+## 环境变量
+
+> API 密钥仅需在**使用对应功能时**配置，无需全部填写。
+
+### 全局
+
+| 变量 | 必填 | 默认值 | 说明 |
+|---|---|---|---|
+| `OUTPUT_ROOT` | 否 | `~`（用户主目录） | 输出根目录 |
+
+### 豆包（火山引擎）— 使用豆包生图/生视频时需要
+
+| 变量 | 必填 | 默认值 | 说明 |
+|---|---|---|---|
+| `ARK_API_KEY` | 是 | — | 火山引擎 Ark API 密钥 |
+
+### 橘子 AI — 使用橘子生图/生视频时需要
+
+| 变量 | 必填 | 默认值 | 说明 |
+|---|---|---|---|
+| `JUZI_API_KEY` | 是 | — | 橘子 AI API 密钥 |
+
+### 天谱乐 — 使用天谱乐生成音乐/歌曲/歌词时需要
+
+| 变量 | 必填 | 默认值 | 说明 |
+|---|---|---|---|
+| `TIANPUYUE_API_KEY` | 是 | — | 天谱乐 API 密钥 |
+| `TIANPUYUE_CALLBACK_URL` | 否 | `https://example.com/callback` | 回调地址（轮询模式下可用占位值） |
+
+### 七牛对象存储 — 使用七牛上传/交付时需要
+
+| 变量 | 必填 | 默认值 | 说明 |
+|---|---|---|---|
+| `QINIU_ACCESS_KEY` | 是 | — | 七牛 Access Key |
+| `QINIU_SECRET_KEY` | 是 | — | 七牛 Secret Key |
+| `QINIU_BUCKET` | 是 | — | 存储空间名称 |
+| `QINIU_PUBLIC_DOMAIN` | 是 | — | 公网访问域名 |
+| `QINIU_IS_PRIVATE` | 否 | `false` | 是否为私有空间 |
+
+### FFmpeg — 无需 API 密钥
+
+仅需在系统 PATH 中安装 FFmpeg 和 ffprobe（full build 8.1+）。
+
 ## 许可
 
 MIT

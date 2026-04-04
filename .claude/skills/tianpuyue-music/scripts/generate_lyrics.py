@@ -6,13 +6,19 @@ from __future__ import annotations
 
 import argparse
 import json
+import time
 
 from common import (
     OUTPUT_ROOT,
     create_lyrics_task,
     default_output_path,
+    get_trace_id,
+    log_params,
+    setup_logging,
     wait_for_lyrics_task,
 )
+
+setup_logging()
 
 DEFAULT_SONG_MODEL = "TemPolor v4.5"
 DEFAULT_PROMPT = (
@@ -41,11 +47,14 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    pipeline_start = time.monotonic()
+    log_params("歌词生成开始", prompt=args.prompt, song_model=args.song_model)
     create_response = create_lyrics_task(
         prompt=args.prompt,
         song_model=args.song_model,
     )
     item_id = create_response["data"]["item_ids"][0]
+    log_params("歌词任务已创建", item_id=item_id)
     print(f"歌词任务已创建: {item_id}")
 
     item = wait_for_lyrics_task(
@@ -53,6 +62,7 @@ def main() -> None:
         poll_interval=args.poll_interval,
         timeout=args.timeout,
     )
+    log_params("歌词生成成功", item_id=item_id)
 
     title = item.get("title", "")
     lyric = item.get("lyric", "")
@@ -60,6 +70,8 @@ def main() -> None:
     local_path = default_output_path("lyrics", item_id, ".md")
     local_path.write_text(f"# {title}\n\n{lyric}", encoding="utf-8")
 
+    total_elapsed = round(time.monotonic() - pipeline_start, 3)
+    log_params("歌词生成完成", item_id=item_id, total_elapsed=total_elapsed)
     result = {
         "type": "lyrics",
         "provider": "tianpuyue",

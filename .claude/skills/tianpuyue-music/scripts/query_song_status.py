@@ -7,7 +7,9 @@ from __future__ import annotations
 import argparse
 import json
 
-from common import query_song_task
+from common import log_params, query_song_task, setup_logging
+
+setup_logging()
 
 
 def parse_args() -> argparse.Namespace:
@@ -18,7 +20,9 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    log_params("查询歌曲状态", item_id=args.item_id)
     item = query_song_task(args.item_id)
+    log_params("查询歌曲状态完成", item_id=args.item_id)
     print(json.dumps(item, ensure_ascii=False, indent=2))
 
 

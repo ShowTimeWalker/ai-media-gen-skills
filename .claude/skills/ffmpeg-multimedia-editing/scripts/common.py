@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 import shutil
 import subprocess
@@ -15,6 +16,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+from uuid import uuid4
 
 OUTPUT_ROOT = Path(os.environ.get("OUTPUT_ROOT", "~/")).expanduser().resolve()
 DEFAULT_OUTPUT_DIR = OUTPUT_ROOT / "outputs" / "ffmpeg"
@@ -45,6 +47,55 @@ XFADER_TRANSITIONS = [
     "distance", "wipetl", "wipetr", "wipebl", "wipebr",
     "squeezeH", "squeezeV", "zoomin",
 ]
+
+logger = logging.getLogger("ffmpeg")
+
+
+def log_params(event: str, **kwargs: Any) -> None:
+    """Log an event with a provider prefix and JSON payload."""
+    params_str = json.dumps(kwargs, ensure_ascii=False, default=str)
+    logger.info("FFmpeg - %s | %s", event, params_str)
+
+
+_trace_id: str = ""
+
+
+def get_trace_id() -> str:
+    global _trace_id
+    if not _trace_id:
+        _trace_id = uuid4().hex
+    return _trace_id
+
+
+class _TraceIdFilter(logging.Filter):
+    def filter(self, record: logging.LogRecord) -> bool:
+        record.trace_id = get_trace_id()
+        return True
+
+
+LOG_DIR = OUTPUT_ROOT / "outputs" / "logs"
+
+
+def _ensure_logging() -> None:
+    """Lazy init logging on first use."""
+    if logger.handlers:
+        return
+    trace_filter = _TraceIdFilter()
+    log_fmt = "%(asctime)s [%(trace_id)s] %(levelname)s %(message)s"
+    fmt = logging.Formatter(log_fmt, datefmt="%Y-%m-%d %H:%M:%S")
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    from datetime import datetime
+    today = datetime.now().strftime("%Y%m%d")
+    file_handler = logging.FileHandler(LOG_DIR / f"{today}.log", encoding="utf-8")
+    file_handler.setFormatter(fmt)
+    file_handler.addFilter(trace_filter)
+    logger.addHandler(file_handler)
+    error_handler = logging.FileHandler(LOG_DIR / f"{today}.error.log", encoding="utf-8")
+    error_handler.setFormatter(fmt)
+    error_handler.addFilter(trace_filter)
+    error_handler.setLevel(logging.ERROR)
+    logger.addHandler(error_handler)
+    logger.setLevel(logging.INFO)
 
 
 # ---------------------------------------------------------------------------
@@ -126,6 +177,8 @@ def run_ffprobe(input_path: Path) -> FFProbeInfo:
         "ffprobe", "-v", "quiet", "-print_format", "json",
         "-show_format", "-show_streams", str(input_path),
     ]
+    _ensure_logging()
+    log_params("FFprobe 执行", input=str(input_path))
     result = subprocess.run(cmd, capture_output=True, text=True, check=True)
     data = json.loads(result.stdout)
 
@@ -138,7 +191,7 @@ def run_ffprobe(input_path: Path) -> FFProbeInfo:
     size = int(fmt.get("size", 0))
     bitrate = int(fmt.get("bit_rate", 0))
 
-    return FFProbeInfo(
+    info = FFProbeInfo(
         path=str(input_path),
         format_name=fmt.get("format_name", ""),
         duration=duration,
@@ -148,6 +201,8 @@ def run_ffprobe(input_path: Path) -> FFProbeInfo:
         audio_streams=audio_streams,
         subtitle_streams=subtitle_streams,
     )
+    log_params("FFprobe 完成", format=info.format_name, duration=info.duration, has_video=info.has_video, has_audio=info.has_audio)
+    return info
 
 
 def run_ffmpeg(
@@ -161,16 +216,26 @@ def run_ffmpeg(
         idx = cmd.index("ffmpeg") + 1
         cmd.insert(idx, "-y")
 
+    _ensure_logging()
+    log_params("FFmpeg 执行开始", cmd=" ".join(cmd))
+
+    start = time.monotonic()
     if capture_output:
         result = subprocess.run(cmd, capture_output=True, text=True)
+        elapsed = round(time.monotonic() - start, 3)
         if result.returncode != 0:
             print(f"FFmpeg stderr:\n{result.stderr}", file=sys.stderr)
+            log_params("FFmpeg 执行失败", elapsed=elapsed, returncode=result.returncode)
             raise subprocess.CalledProcessError(result.returncode, cmd)
+        log_params("FFmpeg 执行完成", elapsed=elapsed)
         return result
     else:
         result = subprocess.run(cmd)
+        elapsed = round(time.monotonic() - start, 3)
         if result.returncode != 0:
+            log_params("FFmpeg 执行失败", elapsed=elapsed, returncode=result.returncode)
             raise subprocess.CalledProcessError(result.returncode, cmd)
+        log_params("FFmpeg 执行完成", elapsed=elapsed)
         return result
 
 
@@ -247,6 +312,8 @@ def emit_result(
     elapsed: float | None = None,
     **extra: Any,
 ) -> None:
+    _ensure_logging()
+    log_params("输出结果", type=type, operation=operation, local_path=str(local_path), elapsed_seconds=round(elapsed, 2) if elapsed is not None else None)
     result: dict[str, Any] = {
         "type": type,
         "operation": operation,
@@ -269,6 +336,8 @@ def emit_multi_result(
     elapsed: float | None = None,
     **extra: Any,
 ) -> None:
+    _ensure_logging()
+    log_params("输出结果", type=type, operation=operation, count=len(local_paths), elapsed_seconds=round(elapsed, 2) if elapsed is not None else None)
     result: dict[str, Any] = {
         "type": type,
         "operation": operation,

@@ -24,9 +24,9 @@ logger = logging.getLogger("doubao")
 
 
 def log_params(event: str, **kwargs: Any) -> None:
-    """Log an event with a JSON payload after the pipe: 'event | {"key": "value", ...}'."""
+    """Log an event with a provider prefix and JSON payload."""
     params_str = json.dumps(kwargs, ensure_ascii=False, default=str)
-    logger.info("%s | %s", event, params_str)
+    logger.info("火山引擎 - %s | %s", event, params_str)
 
 # Per-execution trace ID, generated on first import
 _trace_id: str = ""

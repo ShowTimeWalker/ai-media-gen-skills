@@ -6,14 +6,20 @@ from __future__ import annotations
 
 import argparse
 import json
+import time
 
 from common import (
     create_image_task,
     default_output_path,
     download_file,
     extract_image_result_url,
+    get_trace_id,
+    log_params,
+    setup_logging,
     wait_for_image_task,
 )
+
+setup_logging()
 
 DEFAULT_MODEL = "nano-banana-2"
 DEFAULT_PROMPT = "一只戴着飞行员护目镜的哈士奇，写实风格，背景简洁。"
@@ -45,7 +51,9 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    pipeline_start = time.monotonic()
     args = parse_args()
+    log_params("图片生成开始", model=args.model, prompt=args.prompt, ratio=args.ratio)
     create_response = create_image_task(
         model=args.model,
         prompt=args.prompt,
@@ -55,16 +63,20 @@ def main() -> None:
     )
     juzi_id = str(create_response["data"]["juzi_id"])
     print(f"图片任务已创建: {juzi_id}")
+    log_params("图片任务已创建", juzi_id=juzi_id)
 
     final_response = wait_for_image_task(
         juzi_id,
         poll_interval=args.poll_interval,
         timeout=args.timeout,
     )
+    log_params("图片生成成功", juzi_id=juzi_id)
     result_url = extract_image_result_url(final_response)
     local_path = default_output_path("images", juzi_id, result_url, ".png")
     download_file(result_url, local_path)
 
+    total_elapsed = round(time.monotonic() - pipeline_start, 3)
+    log_params("图片生成完成", juzi_id=juzi_id, total_elapsed=total_elapsed)
     result = {
         "type": "image",
         "provider": "juzi",

@@ -4,17 +4,69 @@ import base64
 import hashlib
 import hmac
 import json
+import logging
 import mimetypes
 import os
 import time
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 from urllib.parse import quote
 from urllib.request import Request, urlopen
-
-DEFAULT_UPLOAD_DOMAIN = "https://upload-z2.qiniup.com"
+from uuid import uuid4
 
 OUTPUT_ROOT = Path(os.environ.get("OUTPUT_ROOT", "~/")).expanduser().resolve()
+
+logger = logging.getLogger("qiniu")
+
+
+def log_params(event: str, **kwargs: Any) -> None:
+    """Log an event with a provider prefix and JSON payload."""
+    params_str = json.dumps(kwargs, ensure_ascii=False, default=str)
+    logger.info("七牛 - %s | %s", event, params_str)
+
+
+_trace_id: str = ""
+
+
+def get_trace_id() -> str:
+    global _trace_id
+    if not _trace_id:
+        _trace_id = uuid4().hex
+    return _trace_id
+
+
+class _TraceIdFilter(logging.Filter):
+    def filter(self, record: logging.LogRecord) -> bool:
+        record.trace_id = get_trace_id()
+        return True
+
+
+LOG_DIR = OUTPUT_ROOT / "outputs" / "logs"
+
+
+def _ensure_logging() -> None:
+    """Lazy init logging on first use."""
+    if logger.handlers:
+        return
+    trace_filter = _TraceIdFilter()
+    log_fmt = "%(asctime)s [%(trace_id)s] %(levelname)s %(message)s"
+    fmt = logging.Formatter(log_fmt, datefmt="%Y-%m-%d %H:%M:%S")
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    today = datetime.now().strftime("%Y%m%d")
+    file_handler = logging.FileHandler(LOG_DIR / f"{today}.log", encoding="utf-8")
+    file_handler.setFormatter(fmt)
+    file_handler.addFilter(trace_filter)
+    logger.addHandler(file_handler)
+    error_handler = logging.FileHandler(LOG_DIR / f"{today}.error.log", encoding="utf-8")
+    error_handler.setFormatter(fmt)
+    error_handler.addFilter(trace_filter)
+    error_handler.setLevel(logging.ERROR)
+    logger.addHandler(error_handler)
+    logger.setLevel(logging.INFO)
+
+
+DEFAULT_UPLOAD_DOMAIN = "https://upload-z2.qiniup.com"
 
 ENV_FIELD_MAP = {
     "access_key": "QINIU_ACCESS_KEY",
@@ -63,6 +115,8 @@ def load_config() -> dict[str, Any]:
     config["public_domain"] = normalize_domain(config["public_domain"])
     is_private_env = os.getenv(OPTIONAL_ENV_FIELD_MAP["is_private"])
     config["is_private"] = parse_bool(is_private_env, default=False)
+    _ensure_logging()
+    log_params("配置加载完成", bucket=config["bucket"], is_private=config["is_private"])
     return config
 
 
@@ -96,6 +150,8 @@ def build_private_download_url(
     ).digest()
     encoded_sign = urlsafe_base64_encode(digest)
     token = f"{access_key}:{encoded_sign}"
+    _ensure_logging()
+    log_params("生成签名链接", base_url=base_url, expires_in=expires_in)
     return f"{signing_url}&token={token}"
 
 
@@ -182,6 +238,9 @@ def upload_file(
     upload_domain: str | None = None,
     token_expires_in: int = 3600,
 ) -> dict[str, str]:
+    _ensure_logging()
+    file_size = file_path.stat().st_size
+    log_params("文件上传开始", file=str(file_path.name), key=object_key, size=file_size)
     token = build_upload_token(
         access_key=config["access_key"],
         secret_key=config["secret_key"],
@@ -201,4 +260,6 @@ def upload_file(
         method="POST",
     )
     with urlopen(request) as response:
-        return json.loads(response.read().decode("utf-8"))
+        result = json.loads(response.read().decode("utf-8"))
+    log_params("文件上传完成", key=object_key, size=file_size)
+    return result

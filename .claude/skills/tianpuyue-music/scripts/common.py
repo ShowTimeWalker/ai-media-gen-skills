@@ -1,17 +1,70 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 import time
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
+from uuid import uuid4
+
+logger = logging.getLogger("tianpuyue")
+
+
+def log_params(event: str, **kwargs: Any) -> None:
+    """Log an event with a provider prefix and JSON payload."""
+    params_str = json.dumps(kwargs, ensure_ascii=False, default=str)
+    logger.info("天谱乐 - %s | %s", event, params_str)
+
+
+_trace_id: str = ""
+
+
+def generate_trace_id() -> str:
+    return uuid4().hex
+
+
+def get_trace_id() -> str:
+    global _trace_id
+    if not _trace_id:
+        _trace_id = generate_trace_id()
+    return _trace_id
+
+
+class _TraceIdFilter(logging.Filter):
+    def filter(self, record: logging.LogRecord) -> bool:
+        record.trace_id = get_trace_id()
+        return True
+
 
 OUTPUT_ROOT = Path(os.environ.get("OUTPUT_ROOT", "~/")).expanduser().resolve()
 BASE_URL = "https://api.tianpuyue.cn"
 DEFAULT_OUTPUT_DIR = OUTPUT_ROOT / "outputs" / "tianpuyue"
+LOG_DIR = OUTPUT_ROOT / "outputs" / "logs"
+
+
+def setup_logging() -> None:
+    if logger.handlers:
+        return
+    trace_filter = _TraceIdFilter()
+    log_fmt = "%(asctime)s [%(trace_id)s] %(levelname)s %(message)s"
+    fmt = logging.Formatter(log_fmt, datefmt="%Y-%m-%d %H:%M:%S")
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    today = datetime.now().strftime("%Y%m%d")
+    file_handler = logging.FileHandler(LOG_DIR / f"{today}.log", encoding="utf-8")
+    file_handler.setFormatter(fmt)
+    file_handler.addFilter(trace_filter)
+    logger.addHandler(file_handler)
+    error_handler = logging.FileHandler(LOG_DIR / f"{today}.error.log", encoding="utf-8")
+    error_handler.setFormatter(fmt)
+    error_handler.addFilter(trace_filter)
+    error_handler.setLevel(logging.ERROR)
+    logger.addHandler(error_handler)
+    logger.setLevel(logging.INFO)
 
 DUMMY_CALLBACK_URL = "https://example.com/callback"
 
@@ -111,6 +164,7 @@ def wait_for_music_task(
 
         if status != last_status:
             print(f"纯音乐任务状态: {status}")
+            log_params("纯音乐任务状态", item_id=item_id, status=status)
             last_status = status
 
         if status in ("succeeded", "main_succeeded", "part_failed"):
@@ -172,6 +226,7 @@ def wait_for_song_task(
 
         if status != last_status:
             print(f"歌曲任务状态: {status}")
+            log_params("歌曲任务状态", item_id=item_id, status=status)
             last_status = status
 
         if status in ("succeeded", "main_succeeded", "part_failed"):
@@ -224,6 +279,7 @@ def wait_for_lyrics_task(
 
         if status != last_status:
             print(f"歌词任务状态: {status}")
+            log_params("歌词任务状态", item_id=item_id, status=status)
             last_status = status
 
         if status == "succeeded":
@@ -247,9 +303,12 @@ def extract_audio_url(item: dict[str, Any]) -> str:
 
 def download_file(url: str, output_path: Path) -> Path:
     output_path.parent.mkdir(parents=True, exist_ok=True)
+    log_params("文件下载开始", url=url, output_path=str(output_path.name))
     request = Request(url, method="GET")
     with urlopen(request) as response:
         output_path.write_bytes(response.read())
+    size = output_path.stat().st_size
+    log_params("文件下载完成", url=url, output_path=str(output_path.name), size=size)
     return output_path
 
 

@@ -6,7 +6,9 @@ from __future__ import annotations
 
 import argparse
 
-from common import pretty_json, query_video_task
+from common import log_params, pretty_json, query_video_task, setup_logging
+
+setup_logging()
 
 
 def parse_args() -> argparse.Namespace:
@@ -17,7 +19,9 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    log_params("查询视频状态", juzi_id=args.juzi_id)
     response = query_video_task(args.juzi_id)
+    log_params("查询视频状态完成", juzi_id=args.juzi_id)
     print(pretty_json(response))
 
 
