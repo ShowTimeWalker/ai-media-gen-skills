@@ -10,7 +10,6 @@
 | **short-video-script-master** | 剧本创作大师，通过结构化对话引导完成核心框架定调和故事创作 |
 | **video-prompt-craft** | 引导用户逐步写出专业的 AI 视频生成提示词 |
 | **doubao-all-in-one** | 使用豆包（火山引擎）生成图片或视频 |
-| **juzi-image-video-generation** | 使用橘子 AI 生成图片或视频 |
 | **tianpuyue-music** | 使用天谱乐 AI 生成纯音乐、歌曲或歌词 |
 | **ffmpeg-multimedia-editing** | 使用 FFmpeg 进行视频剪辑、拼接、转码、音频处理等 20 种操作 |
 | **qiniu-object-storage** | 上传文件到七牛对象存储，返回可交付的下载链接 |
@@ -26,7 +25,6 @@
 | 供应商 | 用途 | 官网 |
 |---|---|---|
 | 豆包（火山引擎） | 图片生成、视频生成 | [火山引擎](https://www.volcengine.com/docs/82379/1399008?lang=zh) |
-| 橘子 AI | 图片生成、视频生成 | [橘子 AI](https://www.juziaigc.com/) |
 | 天谱乐 | 音乐生成、歌曲生成、歌词创作 | [天谱乐](https://platform.tianpuyue.cn/home) |
 | 七牛云 | 对象存储、文件分发 | [七牛云](https://www.qiniu.com/) |
 
@@ -47,7 +45,6 @@
 |---|---|
 | doubao-api-docs | 豆包（火山引擎）API 文档 |
 | hailuo-video | 海螺视频 API 文档 |
-| juzi | 橘子 AI API 文档 |
 | tianpule | 天谱乐 API 文档 |
 | openclaw-skills | OpenClaw 技能开发文档 |
 | openclaw-workspace | OpenClaw 工作空间文档 |
@@ -60,8 +57,6 @@
 outputs/
 ├── doubao/images/          # 豆包图片
 ├── doubao/videos/          # 豆包视频
-├── juzi/images/            # 橘子图片
-├── juzi/videos/            # 橘子视频
 ├── tianpuyue/music/        # 天谱乐纯音乐
 ├── tianpuyue/songs/        # 天谱乐歌曲
 ├── tianpuyue/lyrics/       # 天谱乐歌词
@@ -85,12 +80,6 @@ outputs/
 | 变量 | 必填 | 默认值 | 说明 |
 |---|---|---|---|
 | `ARK_API_KEY` | 是 | — | 火山引擎 Ark API 密钥 |
-
-### 橘子 AI — 使用橘子生图/生视频时需要
-
-| 变量 | 必填 | 默认值 | 说明 |
-|---|---|---|---|
-| `JUZI_API_KEY` | 是 | — | 橘子 AI API 密钥 |
 
 ### 天谱乐 — 使用天谱乐生成音乐/歌曲/歌词时需要
 

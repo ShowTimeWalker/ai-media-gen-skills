@@ -44,7 +44,7 @@ metadata:
   → 交付
 ```
 
-### 异步流程（juzi、tianpuyue）
+### 异步流程（tianpuyue）
 
 通过**一次性定时任务**实现轮询，不使用脚本内部 sleep 循环，也不使用周期性定时任务。每次轮询是一个独立的一次性定时任务，由上一次轮询的结果触发创建：当前轮询发现任务仍在进行中时，计算下一次斐波那契间隔，创建一个新的一次性定时任务。触发后查询状态，根据结果决定下一步继续创建一次性定时任务还是结束。
 
@@ -89,14 +89,6 @@ Step 3: 下载
 
 ### 完成判定
 
-**Juzi（图片、视频）：**
-- 状态字段：`response.data.status`
-- 成功：`"succeeded"`
-- 失败：`"failed"`
-- 结果提取：
-  - 视频 URL：`response.data.juzi_url`
-  - 图片 URL：`response.data.sai_url[0].url`
-
 **Tianpuyue（音乐、歌曲、歌词）：**
 - 状态字段：`item.status`
 - 成功：`"succeeded"` / `"main_succeeded"` / `"part_failed"`
@@ -124,16 +116,12 @@ Step 3: 下载
 |--------|--------|------|--------|--------|-------|----------|
 | 1 | doubao | 同步 | text_to_image | ✓ | — | — |
 | 1 | doubao | 同步 | image_to_image | ✓ | — | — |
-| 2 | juzi | 异步 | text_to_image | ✓ | ✓ | ✓ |
-| 2 | juzi | 异步 | image_to_image | ✓ | ✓ | ✓ |
-
 ### 视频 (video)
 
 | 优先级 | 供应商 | 模式 | 子类型 | create | query | download |
 |--------|--------|------|--------|--------|-------|----------|
 | 1 | doubao | 异步 | text_to_video | ✓ | ✓ | ✓ |
 | 1 | doubao | 异步 | image_to_video | ✓ | ✓ | ✓ |
-| 2 | juzi | 异步 | text_to_video | ✓ | ✓ | ✓ |
 
 **Doubao 视频（Seedance）完成判定：**
 - 状态字段：`status`
@@ -179,7 +167,7 @@ Step 3: 下载
 
 以下情况应覆盖默认行为：
 
-- 用户明确指定供应商（如"用豆包生成"、"用橘子"）
+- 用户明确指定供应商（如"用豆包生成"、"用天谱乐"）
 - 用户明确要求"只保存本地"或"不要上传"
 - 用户指定了特定模型、尺寸、比例等参数
 - 用户提供了参考图片（走 image_to_image 子类型）

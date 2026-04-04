@@ -1,4 +1,0 @@
-interface:
-  display_name: "Juzi Image Video Generation"
-  short_description: "Generate Juzi images or videos, query task status, and download results locally."
-  default_prompt: "Use $juzi_image_video_generation when the user explicitly wants Juzi image/video generation or when a workflow needs a Juzi provider."

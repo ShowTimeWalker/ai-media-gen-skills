@@ -9,7 +9,7 @@ import json
 
 from common import build_private_download_url, build_public_url, load_config
 
-DEFAULT_OBJECT_KEY = "juzi/d477a35b-bb65-44f1-8e14-0bfb8b36fa84-20260326-134923.mp4"
+DEFAULT_OBJECT_KEY = "doubao/example-video.mp4"
 DEFAULT_EXPIRES_IN = 600
 
 
