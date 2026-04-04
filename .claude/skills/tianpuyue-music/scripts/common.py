@@ -312,8 +312,10 @@ def download_file(url: str, output_path: Path) -> Path:
     return output_path
 
 
-def default_output_path(scene: str, item_id: str, suffix: str) -> Path:
-    return ensure_scene_output_dir(scene) / f"{item_id}{suffix}"
+def default_output_path(scene: str, item_id: str, suffix: str, name: str = "") -> Path:
+    timestamp = datetime.now().strftime("%Y%m%d%H%M")
+    stem = f"{name}_{timestamp}" if name else f"{item_id}_{timestamp}"
+    return ensure_scene_output_dir(scene) / f"{stem}{suffix}"
 
 
 def pretty_json(data: dict[str, Any]) -> str:

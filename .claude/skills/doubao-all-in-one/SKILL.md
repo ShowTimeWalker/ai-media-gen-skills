@@ -53,7 +53,8 @@ metadata:
 
 ```shell
 uv run python $DOUBAO_SKILL_DIR/scripts/text_to_image.py \
-  --prompt "一张电影感写实人像海报，光影强烈，构图干净"
+  --prompt "一张电影感写实人像海报，光影强烈，构图干净" \
+  --name "写实人像海报"
 ```
 
 ### 图生图
@@ -61,7 +62,8 @@ uv run python $DOUBAO_SKILL_DIR/scripts/text_to_image.py \
 ```shell
 uv run python $DOUBAO_SKILL_DIR/scripts/image_to_image.py \
   --image resources/images/climb1.jpeg \
-  --prompt "保留主体动作，改为日落暖光的写实摄影风格"
+  --prompt "保留主体动作，改为日落暖光的写实摄影风格" \
+  --name "日落暖光人像"
 ```
 
 ### 文生视频（创建 + 轮询 + 下载一步完成）
@@ -69,6 +71,7 @@ uv run python $DOUBAO_SKILL_DIR/scripts/image_to_image.py \
 ```shell
 uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
   --prompt "写实风格，晴朗的蓝天之下，一大片白色的雏菊花田，镜头逐渐拉近，最终定格在一朵雏菊花的特写上，花瓣上有几颗晶莹的露珠" \
+  --name "雏菊花田特写" \
   --ratio 16:9 --duration 5 --poll
 ```
 
@@ -77,6 +80,7 @@ uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
 ```shell
 uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
   --prompt "女孩抱着狐狸，女孩睁开眼，温柔地看向镜头" \
+  --name "女孩抱狐狸" \
   --image-url "https://example.com/first_frame.png" \
   --role first_frame --ratio adaptive --duration 5 --poll
 ```
@@ -85,7 +89,7 @@ uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
 
 ```shell
 uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
-  --prompt "小猫对着镜头打哈欠" --ratio 16:9 --duration 5
+  --prompt "小猫对着镜头打哈欠" --name "猫咪打哈欠" --ratio 16:9 --duration 5
 ```
 
 ### 创建任务 + Webhook 回调（替代轮询）
@@ -96,7 +100,7 @@ uv run python $DOUBAO_SKILL_DIR/scripts/webhook_server.py
 
 # 再创建任务，传入回调地址（不传则自动检测本机 8888 端口）
 uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
-  --prompt "小猫对着镜头打哈欠" --ratio 16:9 --duration 5
+  --prompt "小猫对着镜头打哈欠" --name "猫咪打哈欠" --ratio 16:9 --duration 5
 ```
 
 ---
@@ -108,6 +112,7 @@ uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
 | 参数 | 说明 | 文生图 | 图生图 |
 |------|------|--------|--------|
 | `--prompt` | 提示词 | 是 | 是 |
+| `--name` | 文件名描述（不超过 10 个中文字） | 否 | 否 |
 | `--model` | 模型 ID，默认 `doubao-seedream-5-0-260128` | 否 | 否 |
 | `--image` | 输入图片路径或 URL，可多次传 | - | 是 |
 | `--size` | 输出尺寸：2K / 3K / 4K / 2048x2048，默认 2K | 否 | 否 |
@@ -152,6 +157,7 @@ uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
 | 参数 | 说明 | 必需 |
 |------|------|------|
 | `--prompt` | 提示词 | 是 |
+| `--name` | 文件名描述（不超过 10 个中文字） | 否 |
 | `--model` | 模型 ID，默认 `doubao-seedance-1-5-pro-251215` | 否 |
 | `--image-url` | 图片 URL（可多次传），配合 `--role` 使用 | 否 |
 | `--role` | 图片角色：`first_frame` / `last_frame` | 否 |
@@ -267,9 +273,12 @@ uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
    优化说明：
    - [具体补充了什么，如"补充了风格描述：莫奈油画风格"]
 
+   文件名标题：[不超过 10 个中文字的内容简述，如"雪中小猫玩耍"]
+
    优化后提示词：
    [完整提示词]
    ```
+   - **文件名标题**：在优化提示词时同时生成一个简短标题，不超过 10 个中文字，**调用脚本时必须通过 `--name` 参数传入**。标题应概括画面核心内容，如"雪中小猫玩耍""金色麦田奔跑""日落海边漫步"
 
 ### 提示词质量检查清单
 
@@ -325,9 +334,12 @@ uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
    - [具体补充了什么，如"补充了运动描述：金毛犬在麦田中快速奔跑"]
    - [具体补充了什么，如"补充了环境描述：金色麦田，阳光从侧面照射"]
 
+   文件名标题：[不超过 10 个中文字的内容简述，如"金毛麦田奔跑"]
+
    优化后提示词：
    [完整提示词]
    ```
+   - **文件名标题**：在优化提示词时同时生成一个简短标题，不超过 10 个中文字，**调用脚本时必须通过 `--name` 参数传入**。标题应概括画面核心内容，如"金毛麦田奔跑""猫咪打哈欠""海边日落漫步"
 ### 必须拒绝的情况
 
 - 主体完全缺失（如"生成一个视频""做个动画"）

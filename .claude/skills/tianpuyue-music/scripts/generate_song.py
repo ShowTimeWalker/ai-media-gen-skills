@@ -33,6 +33,7 @@ DEFAULT_PROMPT = (
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="天谱乐歌曲生成并下载到本地")
     parser.add_argument("--prompt", default=DEFAULT_PROMPT, help="音乐描述提示词")
+    parser.add_argument("--name", default="", help="文件名描述，不超过 10 个中文字")
     parser.add_argument("--model", default=DEFAULT_MODEL, help="模型名称")
     parser.add_argument("--lyrics", default=None, help="自定义歌词（为空时自动生成）")
     parser.add_argument("--voice-id", default=None, help="演唱声音 ID")
@@ -54,7 +55,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     pipeline_start = time.monotonic()
-    log_params("歌曲生成开始", model=args.model, prompt=args.prompt, voice_id=args.voice_id)
+    log_params("歌曲生成开始", model=args.model, prompt=args.prompt, voice_id=args.voice_id, name=args.name)
     create_response = create_song_task(
         prompt=args.prompt,
         model=args.model,
@@ -72,7 +73,7 @@ def main() -> None:
     )
     log_params("歌曲生成成功", item_id=item_id)
     audio_url = extract_audio_url(item)
-    local_path = default_output_path("songs", item_id, ".mp3")
+    local_path = default_output_path("songs", item_id, ".mp3", name=args.name)
     download_file(audio_url, local_path)
 
     total_elapsed = round(time.monotonic() - pipeline_start, 3)

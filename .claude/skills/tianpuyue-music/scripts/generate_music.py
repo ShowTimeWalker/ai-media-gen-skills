@@ -34,6 +34,7 @@ DEFAULT_PROMPT = (
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="天谱乐纯音乐生成并下载到本地")
     parser.add_argument("--prompt", default=DEFAULT_PROMPT, help="音乐描述提示词")
+    parser.add_argument("--name", default="", help="文件名描述，不超过 10 个中文字")
     parser.add_argument("--model", default=DEFAULT_MODEL, help="模型名称")
     parser.add_argument(
         "--poll-interval",
@@ -53,7 +54,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     pipeline_start = time.monotonic()
-    log_params("纯音乐生成开始", model=args.model, prompt=args.prompt)
+    log_params("纯音乐生成开始", model=args.model, prompt=args.prompt, name=args.name)
     create_response = create_music_task(prompt=args.prompt, model=args.model)
     item_id = create_response["data"]["item_ids"][0]
     log_params("纯音乐任务已创建", item_id=item_id)
@@ -66,7 +67,7 @@ def main() -> None:
     )
     log_params("纯音乐生成成功", item_id=item_id)
     audio_url = extract_audio_url(item)
-    local_path = default_output_path("music", item_id, ".mp3")
+    local_path = default_output_path("music", item_id, ".mp3", name=args.name)
     download_file(audio_url, local_path)
 
     total_elapsed = round(time.monotonic() - pipeline_start, 3)

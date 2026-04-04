@@ -30,6 +30,7 @@ DEFAULT_PROMPT = (
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="豆包图生图")
     parser.add_argument("--prompt", default=DEFAULT_PROMPT, help="图生图提示词")
+    parser.add_argument("--name", default="", help="文件名描述，不超过 10 个中文字")
     parser.add_argument("--model", default=DEFAULT_MODEL, help="模型 ID")
     parser.add_argument(
         "--image",
@@ -74,9 +75,9 @@ def main() -> None:
     pipeline_start = time.monotonic()
     args = parse_args()
     trace_id = get_trace_id()
-    log_params("图生图开始", model=args.model, size=args.size, prompt=args.prompt, images=args.images)
+    log_params("图生图开始", model=args.model, size=args.size, prompt=args.prompt, images=args.images, name=args.name)
     client = create_client()
-    output_path = args.output or default_output_path("images", "image_to_image")
+    output_path = args.output or default_output_path("images", "image_to_image", name=args.name)
 
     # Resolve images
     images = args.images

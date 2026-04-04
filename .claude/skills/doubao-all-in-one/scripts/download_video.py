@@ -22,6 +22,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--url", required=True, help="视频下载 URL")
     parser.add_argument("--output", help="输出文件路径，默认写入 outputs/doubao/videos/")
     parser.add_argument("--scene", default="text_to_video", help="场景子目录")
+    parser.add_argument("--name", default="", help="文件名描述，不超过 10 个中文字")
     return parser.parse_args()
 
 
@@ -29,12 +30,12 @@ def main() -> None:
     pipeline_start = time.monotonic()
     args = parse_args()
     trace_id = get_trace_id()
-    log_params("下载视频开始", url=args.url)
+    log_params("下载视频开始", url=args.url, name=args.name)
 
     if args.output:
         output_path = Path(args.output)
     else:
-        output_path = default_output_path("videos", args.scene, suffix=".mp4")
+        output_path = default_output_path("videos", args.scene, suffix=".mp4", name=args.name)
 
     download_start = time.monotonic()
     download_file(args.url, output_path)

@@ -89,6 +89,7 @@ def resolve_callback_url(manual_url: str | None) -> str | None:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="豆包 Seedance 视频生成")
     parser.add_argument("--prompt", default=DEFAULT_PROMPT, help="提示词")
+    parser.add_argument("--name", default="", help="文件名描述，不超过 10 个中文字")
     parser.add_argument("--model", default=DEFAULT_MODEL, help="模型 ID")
     parser.add_argument(
         "--image-url",
@@ -226,7 +227,7 @@ def main() -> None:
     if args.last_frame_url:
         image_refs.append(args.last_frame_url)
     log_params(
-        "视频任务开始", scene=scene, model=args.model, prompt=args.prompt,
+        "视频任务开始", scene=scene, model=args.model, prompt=args.prompt, name=args.name,
         ratio=args.ratio, duration=args.duration, resolution=args.resolution or "480p",
         generate_audio=args.generate_audio or "(API默认true)",
         service_tier=args.service_tier or "(API默认default/在线)",
@@ -312,9 +313,7 @@ def main() -> None:
     print(f"视频生成成功，开始下载...")
     log_params("视频生成成功", task_id=task_id, poll_elapsed=round(poll_elapsed, 3))
 
-    output_path = default_output_path("videos", scene, suffix=".mp4")
-    # Use task_id as part of filename for traceability
-    output_path = output_path.with_stem(f"{output_path.stem}_{task_id[:12]}")
+    output_path = default_output_path("videos", scene, suffix=".mp4", name=args.name)
     download_file(video_url, output_path)
     log_params("视频下载完成", path=str(output_path.name))
 

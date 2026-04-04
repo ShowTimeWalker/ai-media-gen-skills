@@ -29,6 +29,7 @@ DEFAULT_PROMPT = (
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="天谱乐歌词生成")
     parser.add_argument("--prompt", default=DEFAULT_PROMPT, help="歌词生成的提示文本")
+    parser.add_argument("--name", default="", help="文件名描述，不超过 10 个中文字")
     parser.add_argument("--song-model", default=DEFAULT_SONG_MODEL, help="适配的歌曲模型名称")
     parser.add_argument(
         "--poll-interval",
@@ -48,7 +49,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     pipeline_start = time.monotonic()
-    log_params("歌词生成开始", prompt=args.prompt, song_model=args.song_model)
+    log_params("歌词生成开始", prompt=args.prompt, song_model=args.song_model, name=args.name)
     create_response = create_lyrics_task(
         prompt=args.prompt,
         song_model=args.song_model,
@@ -67,7 +68,7 @@ def main() -> None:
     title = item.get("title", "")
     lyric = item.get("lyric", "")
 
-    local_path = default_output_path("lyrics", item_id, ".md")
+    local_path = default_output_path("lyrics", item_id, ".md", name=args.name)
     local_path.write_text(f"# {title}\n\n{lyric}", encoding="utf-8")
 
     total_elapsed = round(time.monotonic() - pipeline_start, 3)

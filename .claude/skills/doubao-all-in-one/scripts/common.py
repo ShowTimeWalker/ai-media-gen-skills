@@ -110,9 +110,10 @@ def ensure_output_dir(*parts: str) -> Path:
     return target_dir
 
 
-def default_output_path(*parts: str, suffix: str = ".png") -> Path:
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    return ensure_output_dir(*parts) / f"{timestamp}{suffix}"
+def default_output_path(*parts: str, suffix: str = ".png", name: str = "") -> Path:
+    timestamp = datetime.now().strftime("%Y%m%d%H%M")
+    stem = f"{name}_{timestamp}" if name else timestamp
+    return ensure_output_dir(*parts) / f"{stem}{suffix}"
 
 
 # ---------------------------------------------------------------------------

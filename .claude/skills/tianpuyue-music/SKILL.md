@@ -32,9 +32,9 @@ metadata:
 
 设 `TP_SKILL_DIR` 为 `.claude/skills/tianpuyue_music` 的绝对路径：
 
-- 纯音乐生成（完整流程）：`uv run --python python $TP_SKILL_DIR/scripts/generate_music.py --prompt "..."`
-- 歌曲生成（完整流程）：`uv run --python python $TP_SKILL_DIR/scripts/generate_song.py --prompt "..."`
-- 歌词生成（完整流程）：`uv run --python python $TP_SKILL_DIR/scripts/generate_lyrics.py --prompt "..."`
+- 纯音乐生成（完整流程）：`uv run --python python $TP_SKILL_DIR/scripts/generate_music.py --prompt "..." --name "忧伤钢琴曲"`
+- 歌曲生成（完整流程）：`uv run --python python $TP_SKILL_DIR/scripts/generate_song.py --prompt "..." --name "夏日海边"`
+- 歌词生成（完整流程）：`uv run --python python $TP_SKILL_DIR/scripts/generate_lyrics.py --prompt "..." --name "青春离别"`
 - 纯音乐状态查询：`uv run --python python $TP_SKILL_DIR/scripts/query_music_status.py --item-id <ID>`
 - 歌曲状态查询：`uv run --python python $TP_SKILL_DIR/scripts/query_song_status.py --item-id <ID>`
 - 歌词状态查询：`uv run --python python $TP_SKILL_DIR/scripts/query_lyrics_status.py --item-id <ID>`
@@ -46,6 +46,7 @@ metadata:
 | 参数 | 必需 | 说明 |
 |------|------|------|
 | `--prompt` | 是 | 音乐描述提示词，可包含节奏、调性、和弦、时长等 |
+| `--name` | 否 | 文件名描述，不超过 10 个中文字 |
 | `--model` | 否 | 模型名称，默认 `TemPolor i3.5` |
 | `--poll-interval` | 否 | 轮询间隔秒数，默认 15 |
 | `--timeout` | 否 | 超时秒数，默认 900 |
@@ -55,6 +56,7 @@ metadata:
 | 参数 | 必需 | 说明 |
 |------|------|------|
 | `--prompt` | 是 | 音乐描述提示词 |
+| `--name` | 否 | 文件名描述，不超过 10 个中文字 |
 | `--model` | 否 | 模型名称，默认 `TemPolor v4.5` |
 | `--lyrics` | 否 | 自定义歌词（为空时自动生成） |
 | `--voice-id` | 否 | 演唱声音 ID，参考 `references/voice_id_map.md` |
@@ -66,6 +68,7 @@ metadata:
 | 参数 | 必需 | 说明 |
 |------|------|------|
 | `--prompt` | 是 | 歌词生成的提示文本 |
+| `--name` | 否 | 文件名描述，不超过 10 个中文字 |
 | `--song-model` | 否 | 适配的歌曲模型名称，默认 `TemPolor v4.5` |
 | `--poll-interval` | 否 | 轮询间隔秒数，默认 10 |
 | `--timeout` | 否 | 超时秒数，默认 300 |
