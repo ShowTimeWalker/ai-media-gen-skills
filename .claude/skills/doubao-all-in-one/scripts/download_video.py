@@ -12,7 +12,7 @@ import json
 import time
 from pathlib import Path
 
-from common import PROJECT_ROOT, default_output_path, download_file, get_trace_id, log_params, setup_logging
+from common import OUTPUT_ROOT, default_output_path, download_file, get_trace_id, log_params, setup_logging
 
 setup_logging()
 
@@ -46,7 +46,7 @@ def main() -> None:
         "type": "video",
         "provider": "doubao",
         "trace_id": trace_id,
-        "local_path": str(output_path.relative_to(PROJECT_ROOT)),
+        "local_path": str(output_path.relative_to(OUTPUT_ROOT)),
         "source_url": args.url,
         "timing": {
             "total_elapsed": round(total_elapsed, 3),

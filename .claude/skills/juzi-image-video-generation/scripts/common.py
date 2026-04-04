@@ -9,9 +9,9 @@ from urllib.error import HTTPError
 from urllib.parse import urlencode, urlparse
 from urllib.request import Request, urlopen
 
+OUTPUT_ROOT = Path(os.environ.get("OUTPUT_ROOT", "~/")).expanduser().resolve()
 BASE_URL = "http://juziaigc.com"
-PROJECT_ROOT = Path(__file__).resolve().parents[4]
-DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "outputs" / "juzi"
+DEFAULT_OUTPUT_DIR = OUTPUT_ROOT / "outputs" / "juzi"
 
 
 def load_api_key() -> str:

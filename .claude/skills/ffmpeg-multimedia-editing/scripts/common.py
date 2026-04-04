@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -15,8 +16,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-PROJECT_ROOT = Path(__file__).resolve().parents[4]
-DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "outputs" / "ffmpeg"
+OUTPUT_ROOT = Path(os.environ.get("OUTPUT_ROOT", "~/")).expanduser().resolve()
+DEFAULT_OUTPUT_DIR = OUTPUT_ROOT / "outputs" / "ffmpeg"
 
 VIDEO_EXTS = {".mp4", ".webm", ".mov", ".avi", ".mkv", ".flv", ".wmv", ".ts", ".m4v", ".3gp"}
 AUDIO_EXTS = {".mp3", ".wav", ".flac", ".ogg", ".aac", ".m4a", ".wma", ".opus", ".ape"}

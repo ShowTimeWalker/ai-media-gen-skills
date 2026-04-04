@@ -8,7 +8,7 @@ import argparse
 import json
 
 from common import (
-    PROJECT_ROOT,
+    OUTPUT_ROOT,
     create_music_task,
     default_output_path,
     download_file,
@@ -63,7 +63,7 @@ def main() -> None:
         "type": "music",
         "provider": "tianpuyue",
         "item_id": item_id,
-        "local_path": str(local_path.relative_to(PROJECT_ROOT)),
+        "local_path": str(local_path.relative_to(OUTPUT_ROOT)),
         "source_url": audio_url,
         "title": item.get("title", ""),
         "style": item.get("style", ""),

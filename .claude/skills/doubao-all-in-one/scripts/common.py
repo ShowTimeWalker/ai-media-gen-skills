@@ -53,10 +53,10 @@ class _TraceIdFilter(logging.Filter):
         return True
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[4]
+OUTPUT_ROOT = Path(os.environ.get("OUTPUT_ROOT", "~/")).expanduser().resolve()
 BASE_URL = "https://ark.cn-beijing.volces.com/api/v3"
-DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "outputs" / "doubao"
-LOG_DIR = PROJECT_ROOT / "outputs" / "logs"
+DEFAULT_OUTPUT_DIR = OUTPUT_ROOT / "outputs" / "doubao"
+LOG_DIR = OUTPUT_ROOT / "outputs" / "logs"
 
 
 def setup_logging() -> None:
@@ -245,7 +245,7 @@ def save_image_results(
         saved = save_image_payload(item, path)
         results.append({
             "index": index,
-            "local_path": str(saved.relative_to(PROJECT_ROOT)),
+            "local_path": str(saved),
             "size": str(size) if size else "",
         })
     return results

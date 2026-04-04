@@ -14,12 +14,11 @@ from pathlib import Path
 
 from volcenginesdkarkruntime.types.images import OptimizePromptOptions, SequentialImageGenerationOptions
 
-from common import PROJECT_ROOT, create_client, default_output_path, generate_image_with_fallback, get_trace_id, log_params, resolve_image_source, save_image_results, setup_logging
+from common import create_client, default_output_path, generate_image_with_fallback, get_trace_id, log_params, resolve_image_source, save_image_results, setup_logging
 
 setup_logging()
 
 DEFAULT_MODEL = "doubao-seedream-5-0-260128"
-DEFAULT_IMAGE_PATH = PROJECT_ROOT / "resources" / "images" / "climb1.jpeg"
 DEFAULT_PROMPT = (
     "保持人物主体和攀岩动作不变。"
     "将整体画面调整为日落时分的自然暖光效果。"
@@ -36,6 +35,7 @@ def parse_args() -> argparse.Namespace:
         "--image",
         action="append",
         dest="images",
+        required=True,
         help="输入图片路径或 URL，可多次传",
     )
     parser.add_argument("--size", default="2K", help="输出尺寸，如 2K、3K、4K 或 2048x2048，默认 2K")
@@ -74,12 +74,12 @@ def main() -> None:
     pipeline_start = time.monotonic()
     args = parse_args()
     trace_id = get_trace_id()
-    log_params("图生图开始", model=args.model, size=args.size, prompt=args.prompt, images=args.images or [str(DEFAULT_IMAGE_PATH)])
+    log_params("图生图开始", model=args.model, size=args.size, prompt=args.prompt, images=args.images)
     client = create_client()
     output_path = args.output or default_output_path("images", "image_to_image")
 
     # Resolve images
-    images = args.images or [str(DEFAULT_IMAGE_PATH)]
+    images = args.images
     resolved_images = [resolve_image_source(img) for img in images]
 
     # Build kwargs

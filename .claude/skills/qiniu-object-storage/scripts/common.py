@@ -14,7 +14,8 @@ from urllib.request import Request, urlopen
 
 DEFAULT_UPLOAD_DOMAIN = "https://upload-z2.qiniup.com"
 
-PROJECT_ROOT = Path(__file__).resolve().parents[4]
+OUTPUT_ROOT = Path(os.environ.get("OUTPUT_ROOT", "~/")).expanduser().resolve()
+
 ENV_FIELD_MAP = {
     "access_key": "QINIU_ACCESS_KEY",
     "secret_key": "QINIU_SECRET_KEY",

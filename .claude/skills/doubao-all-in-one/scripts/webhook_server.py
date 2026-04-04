@@ -17,9 +17,9 @@ from uuid import uuid4
 
 from flask import Flask, request, jsonify
 
-PROJECT_ROOT = Path(__file__).resolve().parents[4]
-DEFAULT_DB_PATH = PROJECT_ROOT / "outputs" / "doubao" / "video_tasks.db"
-TOKEN_FILE = PROJECT_ROOT / "outputs" / "doubao" / ".webhook_token"
+OUTPUT_ROOT = Path(os.environ.get("OUTPUT_ROOT", "~/")).expanduser().resolve()
+DEFAULT_DB_PATH = OUTPUT_ROOT / "outputs" / "doubao" / "video_tasks.db"
+TOKEN_FILE = OUTPUT_ROOT / "outputs" / "doubao" / ".webhook_token"
 
 
 def _generate_token() -> str:

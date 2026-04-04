@@ -14,7 +14,7 @@ from pathlib import Path
 
 from volcenginesdkarkruntime.types.images import OptimizePromptOptions, SequentialImageGenerationOptions
 
-from common import PROJECT_ROOT, create_client, default_output_path, generate_image_with_fallback, get_trace_id, log_params, save_image_results, setup_logging
+from common import create_client, default_output_path, generate_image_with_fallback, get_trace_id, log_params, save_image_results, setup_logging
 
 setup_logging()
 

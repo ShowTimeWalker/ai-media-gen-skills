@@ -15,7 +15,7 @@ import time
 from typing import Any
 
 from common import (
-    PROJECT_ROOT,
+    OUTPUT_ROOT,
     create_client,
     create_video_task,
     default_output_path,
@@ -52,7 +52,7 @@ def get_local_ip() -> str:
 
 def _read_webhook_token() -> str | None:
     """Read the webhook token from the file written by webhook_server.py."""
-    token_path = PROJECT_ROOT / "outputs" / "doubao" / ".webhook_token"
+    token_path = OUTPUT_ROOT / "outputs" / "doubao" / ".webhook_token"
     if token_path.exists():
         token = token_path.read_text(encoding="utf-8").strip()
         if token:
@@ -327,7 +327,7 @@ def main() -> None:
         "trace_id": trace_id,
         "task_id": task_id,
         "used_model": args.model,
-        "local_path": str(output_path.relative_to(PROJECT_ROOT)),
+        "local_path": str(output_path.relative_to(OUTPUT_ROOT)),
         "source_url": video_url,
         "resolution": final.get("resolution", ""),
         "ratio": final.get("ratio", ""),

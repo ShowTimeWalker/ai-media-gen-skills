@@ -12,6 +12,7 @@ metadata:
         - py
       env:
         - ARK_API_KEY
+        - OUTPUT_ROOT
     primaryEnv: ARK_API_KEY
     pythonDeps:
       - "volcengine-python-sdk[ark]"
@@ -122,6 +123,8 @@ uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
 
 ### 本地输出目录
 
+所有路径相对于 `OUTPUT_ROOT`（由环境变量注入，兜底为用户主目录）：
+
 - `outputs/doubao/images/text_to_image/`
 - `outputs/doubao/images/image_to_image/`
 
@@ -170,6 +173,8 @@ uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
 | `--callback-url` | Webhook 回调地址；不传时自动检测 | 否 |
 
 ### 本地输出目录
+
+所有路径相对于 `OUTPUT_ROOT`（由环境变量注入，兜底为用户主目录）：
 
 - `outputs/doubao/videos/text_to_video/`
 - `outputs/doubao/videos/first_frame_to_video/`
@@ -342,6 +347,7 @@ uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
 ## 配置
 
 - 环境变量：`ARK_API_KEY`（必需，未设置时直接报错）
+- 环境变量：`OUTPUT_ROOT`（可选，输出根目录，支持 `~` 展开，默认为用户主目录）
 
 ## 短剧批量视频生成
 

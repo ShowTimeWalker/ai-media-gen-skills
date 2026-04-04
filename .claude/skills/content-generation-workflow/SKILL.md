@@ -1,7 +1,17 @@
 ---
-name: content_generation_workflow
+name: content-generation-workflow
 description: 统一内容生成工作流，编排图片、视频、音乐等多种内容的生成与交付。当用户提到"工作流""流水线""编排"时引用（无论是否同时指定供应商）；当用户表达内容生成需求但未指定供应商时引用；当工作流选择供应商后调用对应原子能力 skill。
-metadata: {"openclaw":{"requires":{"bins":["uv"],"anyBins":["python","python3","py"]}}}
+metadata:
+  openclaw:
+    requires:
+      bins:
+        - uv
+      anyBins:
+        - python
+        - python3
+        - py
+      env:
+        - OUTPUT_ROOT
 ---
 
 # 内容生成工作流

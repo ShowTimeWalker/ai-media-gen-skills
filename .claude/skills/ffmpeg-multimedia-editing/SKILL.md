@@ -12,6 +12,8 @@ metadata:
         - python
         - python3
         - py
+      env:
+        - OUTPUT_ROOT
 ---
 
 # FFmpeg 多媒体编辑工具箱
@@ -81,7 +83,7 @@ uv run --no-project --python python $FFMPEG_SKILL_DIR/scripts/video_subtitle.py 
 
 ## 输出约定
 
-- 本地输出目录：`outputs/ffmpeg/<operation>/`
+- 本地输出目录：`outputs/ffmpeg/<operation>/`（相对于 `OUTPUT_ROOT`，默认为项目根目录）
 - 所有脚本输出 JSON 至少包含：
   - `type` — `video` / `audio` / `image`
   - `operation` — 操作名称（如 `subtitle`, `concat`, `trim`）
@@ -92,6 +94,7 @@ uv run --no-project --python python $FFMPEG_SKILL_DIR/scripts/video_subtitle.py 
 ## 配置
 
 - 依赖：`ffmpeg`（full build 8.1+）和 `ffprobe`，需在 PATH 中可用
+- 环境变量：`OUTPUT_ROOT`（可选，输出根目录，支持 `~` 展开，默认为用户主目录）
 - 无需环境变量或外部 API 密钥
 - 所有操作在本地执行，不涉及网络传输
 

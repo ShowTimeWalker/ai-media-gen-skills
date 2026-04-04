@@ -12,6 +12,7 @@ metadata:
         - py
       env:
         - TIANPUYUE_API_KEY
+        - OUTPUT_ROOT
     primaryEnv: TIANPUYUE_API_KEY
 ---
 
@@ -71,7 +72,7 @@ metadata:
 
 ## 输出约定
 
-- 本地输出目录：
+- 本地输出目录（相对于 `OUTPUT_ROOT`，默认为项目根目录）：
   - `outputs/tianpuyue/music/`
   - `outputs/tianpuyue/songs/`
   - `outputs/tianpuyue/lyrics/`
@@ -93,6 +94,7 @@ metadata:
 
 - 环境变量：`TIANPUYUE_API_KEY`（必需，未设置时直接报错）
 - 环境变量：`TIANPUYUE_CALLBACK_URL`（可选，轮询模式下使用占位值即可）
+- 环境变量：`OUTPUT_ROOT`（可选，输出根目录，支持 `~` 展开，默认为用户主目录）
 
 ## 协作方式
 

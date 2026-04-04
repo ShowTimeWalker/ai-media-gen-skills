@@ -1,5 +1,5 @@
 ---
-name: juzi_image_video_generation
+name: juzi-image-video-generation
 description: 使用橘子 AI 生成图片或视频，将结果保存到本地。当用户需要生成图片或视频时引用；当用户提到"橘子""Juzi""juzi"时引用；当用户已有 juzi_id 需要查询任务进度或下载结果时引用。当用户同时提到"工作流""流水线""编排"时，不应直接引用此 skill，应优先让 content_generation_workflow 统一调度。
 metadata:
   openclaw:
@@ -12,6 +12,7 @@ metadata:
         - py
       env:
         - JUZI_API_KEY
+        - OUTPUT_ROOT
     primaryEnv: JUZI_API_KEY
 ---
 
@@ -38,7 +39,7 @@ metadata:
 
 ## 输出约定
 
-- 本地输出目录：
+- 本地输出目录（相对于 `OUTPUT_ROOT`，默认为项目根目录）：
   - `outputs/juzi/images/`
   - `outputs/juzi/videos/`
 - 输出 JSON 至少包含：
@@ -51,6 +52,7 @@ metadata:
 ## 配置
 
 - 环境变量：`JUZI_API_KEY`（必需，未设置时直接报错）
+- 环境变量：`OUTPUT_ROOT`（可选，输出根目录，支持 `~` 展开，默认为用户主目录）
 
 ## 协作方式
 

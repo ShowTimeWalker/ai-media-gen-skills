@@ -9,9 +9,9 @@ from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
+OUTPUT_ROOT = Path(os.environ.get("OUTPUT_ROOT", "~/")).expanduser().resolve()
 BASE_URL = "https://api.tianpuyue.cn"
-PROJECT_ROOT = Path(__file__).resolve().parents[4]
-DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "outputs" / "tianpuyue"
+DEFAULT_OUTPUT_DIR = OUTPUT_ROOT / "outputs" / "tianpuyue"
 
 DUMMY_CALLBACK_URL = "https://example.com/callback"
 

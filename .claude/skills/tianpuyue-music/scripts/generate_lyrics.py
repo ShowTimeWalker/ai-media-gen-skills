@@ -8,10 +8,9 @@ import argparse
 import json
 
 from common import (
-    PROJECT_ROOT,
+    OUTPUT_ROOT,
     create_lyrics_task,
     default_output_path,
-    pretty_json,
     wait_for_lyrics_task,
 )
 
@@ -65,7 +64,7 @@ def main() -> None:
         "type": "lyrics",
         "provider": "tianpuyue",
         "item_id": item_id,
-        "local_path": str(local_path.relative_to(PROJECT_ROOT)),
+        "local_path": str(local_path.relative_to(OUTPUT_ROOT)),
         "title": title,
         "lyric": lyric,
         "task_info": item,
