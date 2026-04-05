@@ -81,8 +81,19 @@ uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
 uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
   --prompt "女孩抱着狐狸，女孩睁开眼，温柔地看向镜头" \
   --name "女孩抱狐狸" \
-  --image-url "https://example.com/first_frame.png" \
-  --role first_frame --ratio adaptive --duration 5 --poll
+  --first-frame-url "https://example.com/first_frame.png" \
+  --ratio adaptive --duration 5 --poll
+```
+
+### 首帧+尾帧图生视频
+
+```shell
+uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
+  --prompt "女孩抱着狐狸，女孩睁开眼，温柔地看向镜头" \
+  --name "女孩抱狐狸" \
+  --first-frame-url "https://example.com/first_frame.png" \
+  --last-frame-url "https://example.com/last_frame.png" \
+  --ratio adaptive --duration 5 --poll
 ```
 
 ### 仅创建任务（异步工作流场景）
@@ -159,8 +170,8 @@ uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
 | `--prompt` | 提示词 | 是 |
 | `--name` | 文件名描述（不超过 10 个中文字） | 否 |
 | `--model` | 模型 ID，默认 `doubao-seedance-1-5-pro-251215` | 否 |
-| `--image-url` | 图片 URL（可多次传），配合 `--role` 使用 | 否 |
-| `--role` | 图片角色：`first_frame` / `last_frame` | 否 |
+| `--first-frame-url` | 首帧图片 URL 或本地路径 | 否 |
+| `--last-frame-url` | 尾帧图片 URL 或本地路径 | 否 |
 | `--ratio` | 宽高比：16:9, 4:3, 1:1, 3:4, 9:16, 21:9, adaptive | 否，默认 16:9 |
 | `--duration` | 视频时长（秒）：2~12（1.5 pro 支持 -1 由模型自选） | 否，默认 5 |
 | `--resolution` | 分辨率：480p, 720p, 1080p（1.0 lite 参考图不支持 1080p） | 否，默认 480p |
@@ -359,23 +370,6 @@ uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
 
 - 环境变量：`ARK_API_KEY`（必需，未设置时直接报错）
 - 环境变量：`OUTPUT_ROOT`（可选，输出根目录，支持 `~` 展开，默认为用户主目录）
-
-## 短剧批量视频生成
-
-当用户请求为短剧的多个 clip（C01、C02…）批量生成视频时，遵循以下规则：
-
-### 一 clip 一请求
-
-- 每个 clip（CXX）是**一个完整的视频生成请求**，不得按分镜（sub-shot）拆分为多次请求
-- 分镜仅用于提示词规划（描述运镜变化、景别切换等），最终合并为一条 prompt 提交给模型
-- 示例：C01 有 2 个分镜（C01-1、C01-2），仍只调用一次 `create_video_task.py --duration 8`
-
-### 输出目录与文件名
-
-- 视频生成完成后，**必须**将文件从脚本默认输出目录复制到项目的视频生成目录
-- 输出路径：`outputs/scripts/{项目名}/video_generation/{篇章}/CXX.MP4`
-  - 例如：`outputs/scripts/chong_sheng_zhui_qi_20260401/video_generation/nightmare/C01.MP4`
-- 项目名和篇章名从用户提供的视频生成指令文档路径中推断
 
 ## 协作方式
 
