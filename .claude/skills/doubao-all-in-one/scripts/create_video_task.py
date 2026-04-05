@@ -92,20 +92,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--name", default="", help="文件名描述，不超过 10 个中文字")
     parser.add_argument("--model", default=DEFAULT_MODEL, help="模型 ID")
     parser.add_argument(
-        "--image-url",
-        action="append",
-        dest="image_urls",
-        help="图片 URL 或本地路径，可多次传；配合 --role 使用",
+        "--first-frame-url",
+        help="首帧图片 URL 或本地路径（图生视频）",
     )
     parser.add_argument(
         "--last-frame-url",
-        help="尾帧图片 URL 或本地路径（用于首尾帧图生视频场景）",
-    )
-    parser.add_argument(
-        "--role",
-        default="first_frame",
-        choices=["first_frame", "last_frame"],
-        help="图片角色（需配合 --image-url）",
+        help="尾帧图片 URL 或本地路径（首尾帧图生视频）",
     )
     parser.add_argument("--ratio", default=DEFAULT_RATIO, help="宽高比：16:9, 4:3, 1:1, 3:4, 9:16, 21:9, adaptive")
     parser.add_argument("--duration", type=int, default=DEFAULT_DURATION, help="视频时长（秒）：2~12，默认 5")
@@ -178,41 +170,35 @@ def parse_args() -> argparse.Namespace:
 
 def build_content(
     prompt: str,
-    image_urls: list[str] | None = None,
+    first_frame_url: str | None = None,
     last_frame_url: str | None = None,
-    role: str = "first_frame",
 ) -> list[dict[str, Any]]:
     """Build the content array for the API request."""
     content: list[dict[str, Any]] = [
         {"type": "text", "text": prompt}
     ]
-    if image_urls:
-        for url in image_urls:
-            item: dict[str, Any] = {
-                "type": "image_url",
-                "image_url": {"url": resolve_image_source(url)},
-            }
-            if role:
-                item["role"] = role
-            content.append(item)
+    if first_frame_url:
+        content.append({
+            "type": "image_url",
+            "image_url": {"url": resolve_image_source(first_frame_url)},
+            "role": "first_frame",
+        })
     if last_frame_url:
-        item: dict[str, Any] = {
+        content.append({
             "type": "image_url",
             "image_url": {"url": resolve_image_source(last_frame_url)},
             "role": "last_frame",
-        }
-        content.append(item)
+        })
     return content
 
 
 def determine_scene(
-    image_urls: list[str] | None,
-    role: str | None = None,
+    first_frame_url: str | None = None,
     last_frame_url: str | None = None,
 ) -> str:
-    if not image_urls and not last_frame_url:
+    if not first_frame_url and not last_frame_url:
         return "text_to_video"
-    if last_frame_url or role == "last_frame" or (len(image_urls) > 1):
+    if last_frame_url:
         return "first_last_frame_to_video"
     return "first_frame_to_video"
 
@@ -221,9 +207,11 @@ def main() -> None:
     pipeline_start = time.monotonic()
     args = parse_args()
     client = create_client()
-    content = build_content(args.prompt, args.image_urls, args.last_frame_url, args.role)
-    scene = determine_scene(args.image_urls, args.role, args.last_frame_url)
-    image_refs = args.image_urls or []
+    content = build_content(args.prompt, args.first_frame_url, args.last_frame_url)
+    scene = determine_scene(args.first_frame_url, args.last_frame_url)
+    image_refs = []
+    if args.first_frame_url:
+        image_refs.append(args.first_frame_url)
     if args.last_frame_url:
         image_refs.append(args.last_frame_url)
     log_params(
@@ -313,7 +301,7 @@ def main() -> None:
     print(f"视频生成成功，开始下载...")
     log_params("视频生成成功", task_id=task_id, poll_elapsed=round(poll_elapsed, 3))
 
-    output_path = default_output_path("videos", scene, suffix=".mp4", name=args.name)
+    output_path = default_output_path("videos", scene, suffix=".mp4", name=args.name, tag=args.resolution or "480p")
     download_file(video_url, output_path)
     log_params("视频下载完成", path=str(output_path.name))
 

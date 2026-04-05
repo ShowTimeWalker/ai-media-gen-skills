@@ -1,6 +1,6 @@
 ---
 name: doubao-all-in-one
-description: 使用豆包（火山引擎 Ark）生成图片或视频，将结果保存到本地。当用户提到"豆包生图""豆包图片""豆包生视频""豆包视频""Doubao""Seedance""火山引擎图片""火山引擎视频"时引用。
+description: 使用豆包（火山引擎 Ark）生成图片或视频，将结果保存到本地。当用户提到"豆包生图""豆包图片""豆包生视频""豆包视频""Doubao""Seedance""火山引擎图片""火山引擎视频""即梦视频""即梦""Jimeng"时引用。
 metadata:
   openclaw:
     requires:
@@ -44,6 +44,11 @@ metadata:
 - 取消/删除任务：`uv run python $DOUBAO_SKILL_DIR/scripts/delete_video_task.py`
 - 下载视频：`uv run python $DOUBAO_SKILL_DIR/scripts/download_video.py`
 - Webhook 回调服务器：`uv run python $DOUBAO_SKILL_DIR/scripts/webhook_server.py`
+
+### 即梦 3.0 视频
+
+- 创建即梦视频任务：`uv run python $DOUBAO_SKILL_DIR/scripts/create_jimeng_video.py`
+- 查询即梦视频任务：`uv run python $DOUBAO_SKILL_DIR/scripts/query_jimeng_video.py`
 
 ---
 
@@ -112,6 +117,41 @@ uv run python $DOUBAO_SKILL_DIR/scripts/webhook_server.py
 # 再创建任务，传入回调地址（不传则自动检测本机 8888 端口）
 uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
   --prompt "小猫对着镜头打哈欠" --name "猫咪打哈欠" --ratio 16:9 --duration 5
+```
+
+### 即梦文生视频（720p）
+
+```shell
+uv run python $DOUBAO_SKILL_DIR/scripts/create_jimeng_video.py \
+  --prompt "写实风格，晴朗的蓝天之下，一大片白色的雏菊花田，镜头逐渐拉近，最终定格在一朵雏菊花的特写上" \
+  --name "雏菊花田特写" --poll
+```
+
+### 即梦文生视频（1080p）
+
+```shell
+uv run python $DOUBAO_SKILL_DIR/scripts/create_jimeng_video.py \
+  --prompt "写实风格，晴朗的蓝天之下，一大片白色的雏菊花田，镜头逐渐拉近" \
+  --name "雏菊花田特写" --resolution 1080p --poll
+```
+
+### 即梦首帧图生视频
+
+```shell
+uv run python $DOUBAO_SKILL_DIR/scripts/create_jimeng_video.py \
+  --prompt "女孩睁开眼，温柔地看向镜头" \
+  --name "女孩睁眼" \
+  --first-frame-url "https://example.com/first_frame.png" --poll
+```
+
+### 即梦首帧+尾帧图生视频
+
+```shell
+uv run python $DOUBAO_SKILL_DIR/scripts/create_jimeng_video.py \
+  --prompt "女孩从睡梦中慢慢醒来，睁开眼睛" \
+  --name "女孩醒来" \
+  --first-frame-url "https://example.com/first_frame.png" \
+  --last-frame-url "https://example.com/last_frame.png" --poll
 ```
 
 ---
@@ -265,6 +305,17 @@ uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
 |------|----------|------|
 | Seedance 1.5 Pro | `doubao-seedance-1-5-pro-251215` | 最高质量，支持有声视频、样片模式、返回尾帧、4~12秒 |
 
+### 即梦 3.0 视频模型
+
+| 模式 | 分辨率 | req_key | 特点 |
+|------|--------|---------|------|
+| 文生视频 | 720p | `jimeng_t2v_v30` | 默认首选 |
+| 文生视频 | 1080p | `jimeng_t2v_v30_1080p` | 高清渲染 |
+| 首帧图生视频 | 720p | `jimeng_i2v_first_v30` | 宽高比由图片决定 |
+| 首帧图生视频 | 1080p | `jimeng_i2v_first_v30_1080` | 高清渲染 |
+| 首尾帧图生视频 | 720p | `jimeng_i2v_first_tail_v30` | 尾帧需与首帧比例一致 |
+| 首尾帧图生视频 | 1080p | `jimeng_i2v_first_tail_v30_1080` | 高清渲染 |
+
 ---
 
 ## 提示词最佳实践（图片，强制）
@@ -366,10 +417,55 @@ uv run python $DOUBAO_SKILL_DIR/scripts/create_video_task.py \
 
 ---
 
+## 提示词最佳实践（即梦 3.0 视频，强制）
+
+调用即梦视频生成脚本前，**必须**先读取 `references/jimeng_3_0_prompt_guide.md`，并对照其中的**提示词质量检查清单**审核用户的提示词。
+
+### 参数约束
+
+- **分辨率默认 720p**：除非用户明确要求 1080p（如"高清""1080p""全高清"），否则**不得**传 `--resolution` 参数，直接使用脚本默认的 720p
+- **不支持手动指定宽高比**：即梦 3.0 文生视频有 `--aspect-ratio` 参数（默认 16:9），图生视频由图片决定宽高比
+
+### 执行规则
+
+1. **必须读取参考文档**：每次生成即梦视频前，先读取 `references/jimeng_3_0_prompt_guide.md`
+2. **提示词公式**：主体 + 运动 + 环境（非必须）+ 运镜/切镜（非必须）+ 美学描述（非必须）
+3. **不支持音频**：即梦 3.0 不支持声音生成，提示词中不应包含对话/音效/BGM 相关描述
+4. **质量检查与处理策略**：对照检查清单逐项审核
+   - **缺少主体**：**必须拒绝执行**，返回 JSON 格式的拒绝信息，自行优化后请用户确认再执行
+   - **其他不合规项**（缺少运动描述、缺少环境、切镜不清晰等）：**直接按最佳实践指南自动补充优化**，向用户展示优化后的提示词并说明补充了哪些内容，然后直接执行
+5. **自动优化格式**：
+   ```
+   优化说明：
+   - [具体补充了什么]
+
+   文件名标题：[不超过 10 个中文字的内容简述]
+
+   优化后提示词：
+   [完整提示词]
+   ```
+   - **文件名标题**：在优化提示词时同时生成一个简短标题，不超过 10 个中文字，**调用脚本时必须通过 `--name` 参数传入**
+
+### 必须拒绝的情况
+
+- 主体完全缺失（如"生成一个视频""做个动画"）
+- 主体不明确且无法推断（如"一个东西在动"）
+
+### 应自动补充的情况
+
+- 缺少运动描述 → 根据主体特性补充合理的动作和运动方式
+- 缺少环境描述 → 根据主体和场景补充环境信息
+- 多人场景角色特征不可区分 → 为每个角色补充唯一标识特征
+- 包含切镜但未区分镜头编号或景别 → 补充镜头编号和景别描述
+- 包含声音/对话/音效描述 → 移除声音相关描述，仅保留视觉内容
+
+---
+
 ## 配置
 
-- 环境变量：`ARK_API_KEY`（必需，未设置时直接报错）
+- 环境变量：`ARK_API_KEY`（Seedance 视频和图片生成必需，未设置时直接报错）
 - 环境变量：`OUTPUT_ROOT`（可选，输出根目录，支持 `~` 展开，默认为用户主目录）
+- 即梦 3.0 凭据：从 `api_key/jimeng.json` 读取 `access_key` 和 `secret_key`（也可通过环境变量 `VOLC_ACCESS_KEY` / `VOLC_SECRET_KEY` 覆盖）
 
 ## 协作方式
 
