@@ -42,6 +42,9 @@
 - `release/characters.md` 优先聚合 `state/character_state.md` 与 `state/relationship_graph.md`
 - `release/worldbook.md` 优先聚合 `state/rule_log.md` 与 `state/timeline.md`
 - `release/toc.md` 优先聚合 `state/plot_graph.md` 与章节摘要
+- 对 `release/release_version.md`、`release/synopsis.md`、`release/toc.md` 在输出前执行轻度去AI味清洗
+- 去AI味清洗规则遵循 `reference/de_ai_style_guard.md`，且不得改动设定与事实
+- 清洗后必须做一次 state 与正文一致性复核，确保口径一致
 - 若 `state/*` 与正文不一致，先回到阶段六修复后再生成发布包
 
 ## 收尾检查
