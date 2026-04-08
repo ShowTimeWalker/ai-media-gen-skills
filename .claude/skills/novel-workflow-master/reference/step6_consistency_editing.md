@@ -10,6 +10,12 @@
 - `blueprint.md`
 - `story/story.md`
 - `chapters/draft/chXX.md`
+- `state/timeline.md`
+- `state/character_state.md`
+- `state/relationship_graph.md`
+- `state/plot_graph.md`
+- `state/rule_log.md`
+- `state/change_log.md`
 
 ## 输出
 
@@ -33,12 +39,16 @@
 - P1：建议修（影响阅读体验）
 - P2：可选优化（风格层面）
 
-每条问题包含：问题描述、定位章节、影响范围、修复建议。
+每条问题包含：问题描述、定位章节、影响范围、修复建议、关联状态条目 ID（如 `CHAR_*`/`EVT_*`/`ARC_*`/`FORESHADOW_*`/`RULE_*`）。
 
 `retcon_tasks.md` 按任务清单输出：
 
 - [ ] Task01：修复内容
 - [ ] Task02：修复内容
+
+建议任务格式：
+
+- [ ] TaskXX：修复内容（章节：chXX，状态条目：`ID`，优先级：P0/P1/P2）
 
 ## 门禁规则
 

@@ -7,7 +7,16 @@
 ## 输入
 
 - `framework.md`
+- `blueprint.md`
+- `story/story.md`
+- `story/arcs/arcXX_<卷名>.md`
 - `chapters/outline/chXX.md`
+- `state/timeline.md`
+- `state/character_state.md`
+- `state/relationship_graph.md`
+- `state/plot_graph.md`
+- `state/rule_log.md`
+- `state/change_log.md`
 
 ## 输出
 
@@ -31,6 +40,11 @@
 - `story/story.md`
 - 对应卷文件 `story/arcs/arcXX_<卷名>.md`
 - 当前章蓝图 `chapters/outline/chXX.md`
+- `state/timeline.md`
+- `state/character_state.md`
+- `state/relationship_graph.md`
+- `state/plot_graph.md`
+- `state/rule_log.md`
 
 **滚动上下文**（每章必读）：
 - 最近 10 章正文（`chapters/draft`）
@@ -47,6 +61,11 @@
 ## 逐章推进策略
 
 - 每完成 1 章立即做章后一致性检查
+- 每完成 1 章必须回写状态文件：
+  - `state/timeline.md`
+  - `state/character_state.md`
+  - `state/plot_graph.md`
+  - `state/change_log.md`
 - 章后输出：
   - 本章关键推进点
   - 与前章承接检查结果
@@ -76,3 +95,8 @@
 2. 重写某一章
 3. 回到阶段四调整蓝图
 4. 进入阶段六一致性校对
+
+硬门禁补充：
+
+- 若本章完成后未回写 `state/*`，不得进入下一章。
+- 若 `state/*` 与正文冲突，必须先修正状态文件或重写本章后再继续。

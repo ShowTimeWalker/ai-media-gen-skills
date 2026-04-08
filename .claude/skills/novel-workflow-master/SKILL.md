@@ -53,6 +53,27 @@ metadata:
 - 阶段四按章顺序推进：`ch01 -> ch02 -> ...`，后一章蓝图必须参考前一章蓝图与最新主线状态。
 - 阶段五按章顺序推进：`ch01 -> ch02 -> ...`，正文生成时必须加载固定种子上下文与最近章节上下文窗口（详见 `reference/step5_draft_writing.md`）。
 
+## 状态中枢层（drafting 期间）
+
+从阶段四开始启用 `state/` 目录，作为创作过程中的活文档中枢。阶段四、五、六、七都要读取 `state/*`，阶段五每章写作后必须回写 `state/*` 再进入下一章。
+
+标准状态文件：
+
+- `state/timeline.md`
+- `state/character_state.md`
+- `state/relationship_graph.md`
+- `state/plot_graph.md`
+- `state/rule_log.md`
+- `state/change_log.md`
+
+统一 ID 规范：
+
+- 角色：`CHAR_*`
+- 事件：`EVT_*`
+- 主线/支线：`ARC_*`
+- 伏笔：`FORESHADOW_*`
+- 规则：`RULE_*`
+
 ## 测试模式
 
 用户在创意入口输入「测试模式」「测试」或「test」时触发。测试模式固定参数（中篇，30 章，单章目标 1500-2200 字），从阶段三开始全程自动生成直至完成，不与用户逐步互动。默认输出：完整主线 + 30 章章节蓝图 + 30 章正文 + 一致性报告 + 发布包。
@@ -104,6 +125,13 @@ outputs/novels/<书名>_<yyyyMMdd_HHmm>/
       ch01.md
     draft/
       ch01.md
+  state/
+    timeline.md
+    character_state.md
+    relationship_graph.md
+    plot_graph.md
+    rule_log.md
+    change_log.md
   editing/
     consistency_report.md
     retcon_tasks.md

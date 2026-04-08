@@ -12,6 +12,12 @@
 - `chapters/draft/chXX.md`
 - `editing/consistency_report.md`
 - `editing/retcon_tasks.md`（若已处理则同步状态）
+- `state/timeline.md`
+- `state/character_state.md`
+- `state/relationship_graph.md`
+- `state/plot_graph.md`
+- `state/rule_log.md`
+- `state/change_log.md`
 
 ## 输出
 
@@ -30,6 +36,13 @@
 - `characters.md`：角色速查（身份、动机、关系、关键事件）
 - `worldbook.md`：世界观与规则速查
 - `toc.md`：卷-章目录及一句话摘要
+
+发布包生成口径：
+
+- `release/characters.md` 优先聚合 `state/character_state.md` 与 `state/relationship_graph.md`
+- `release/worldbook.md` 优先聚合 `state/rule_log.md` 与 `state/timeline.md`
+- `release/toc.md` 优先聚合 `state/plot_graph.md` 与章节摘要
+- 若 `state/*` 与正文不一致，先回到阶段六修复后再生成发布包
 
 ## 收尾检查
 
