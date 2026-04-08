@@ -17,6 +17,7 @@ metadata:
 | 阶段 | 参考文件 | 用途 |
 |------|---------|------|
 | 阶段一 | `reference/step1_ideation_and_framework.md` | 创意入口与核心框架：确认类型、读者、叙事方式、核心冲突，生成 `framework.md` |
+| 阶段一 | `reference/tomato_hot_themes.md` | 番茄热门题材灵感参考：按男女频与关键词给出高潜主题与开篇钩子 |
 | 阶段二 | `reference/step2_scale_and_blueprint.md` | 规格与结构骨架：确定短/中/长篇方案，生成 `blueprint.md` |
 | 阶段三 | `reference/step3_story_and_arcs.md` | 主线与篇章故事：生成主线文件和各卷/篇章剧情文件 |
 | 阶段四 | `reference/step4_chapter_outlines.md` | 章节蓝图：逐章卡片（章目标、冲突、信息增量、伏笔、章钩子） |
@@ -119,7 +120,7 @@ metadata:
 
 ### 阶段二：规格与结构骨架
 
-基于框架选择小说规格（短篇/中篇/长篇），确认总章数、总字数、卷结构和节奏曲线，输出 `blueprint.md`。必须等待用户确认后进入阶段三。
+基于框架选择小说规格（短篇/中篇/长篇/超长篇），确认总章数、总字数、卷结构和节奏曲线，输出 `blueprint.md`。规格模板最高支持约 100 万字规模。必须等待用户确认后进入阶段三。
 
 ### 阶段三：主线与篇章故事
 
