@@ -24,6 +24,7 @@ metadata:
 | 阶段五 | `reference/step5_draft_writing.md` | 正文生成：按批次生成章节正文并提供续写/重写闸门 |
 | 阶段六 | `reference/step6_consistency_editing.md` | 一致性校对：人物、时间线、规则、伏笔、视角、文风偏移检查 |
 | 阶段七 | `reference/step7_release_package.md` | 定稿与发布包：卷汇总、简介、角色表、世界观速查、目录 |
+| 阶段八 | `reference/step8_multi_view_validation.md` | 轻量多视角校验：编辑/读者/平台/合规四视角发布前检查 |
 | 全自动化模式 | `reference/full_auto_mode.md` | 全自动化模式规范：阶段一正常构思后，阶段二至七自动推进，不限制篇幅 |
 | 去AI味规则 | `reference/de_ai_style_guard.md` | 去AI味轻度修订规范：正文与发布包的自动清洗边界、禁改项与验收项 |
 | 测试模式 | `reference/test_mode.md` | 测试模式规范：固定参数、自动推进范围、输出边界和优先级 |
@@ -152,6 +153,10 @@ metadata:
 ### 阶段七：定稿与发布包
 
 整合发布材料，输出 `release/` 目录（卷汇总、作品简介、角色表、世界观速查、章节目录），并区分发布版与作者工作版。
+
+### 阶段八：轻量多视角校验（补充层）
+
+阶段八是作者主流程后的补充检查层，不替代阶段一至七。用于在发布前快速做四视角风险扫描（编辑/读者/平台/合规），输出校验报告与快速修订清单，不强制自动改文。
 
 ## 输出目录约定
 

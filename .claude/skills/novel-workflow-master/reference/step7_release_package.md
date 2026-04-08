@@ -53,6 +53,8 @@
 2. 卷名与目录一致
 3. 发布版不含内部标注
 4. 关键伏笔在目录摘要中可追踪
+5. 发布前建议执行 `reference/step8_multi_view_validation.md` 并查看 `editing/step8_validation_report.md`
+6. 若 STEP8 存在 P0 问题，不建议直接发布
 
 ## 完成提示模板
 
