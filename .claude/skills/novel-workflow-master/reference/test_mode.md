@@ -2,7 +2,7 @@
 
 ## 概述
 
-测试模式用于快速验证“从框架到正文再到一致性报告”的链路是否可用。触发后采用固定参数，并减少交互轮次。
+测试模式用于一次性跑通“从框架到发布包”的完整链路。触发后采用固定参数并全自动推进，直至全量产物生成完成。
 
 ## 触发方式
 
@@ -25,10 +25,10 @@
 | 阶段一 | 完整 6 维确认并反复迭代 | 简化确认（题材 + 一句话灵感）后生成框架 |
 | 阶段二 | 用户参与规格与结构设计 | 自动套用中篇模板 |
 | 阶段三 | 逐卷确认 | 自动按卷串行生成主线与卷摘要 |
-| 阶段四 | 章节蓝图串行推进 | 自动按章串行生成前 6 章蓝图 |
-| 阶段五 | 正文串行逐章生成 | 自动按章串行生成前 3 章正文（含上下文窗口） |
+| 阶段四 | 章节蓝图串行推进 | 自动按章串行生成全书 30 章蓝图 |
+| 阶段五 | 正文串行逐章生成 | 自动按章串行生成全书 30 章正文（含上下文窗口） |
 | 阶段六 | 人工决定何时校对 | 自动生成一致性报告 |
-| 阶段七 | 正常进入发布包 | 测试模式默认不进入阶段七 |
+| 阶段七 | 正常进入发布包 | 自动生成发布包（发布版 + 作者工作版） |
 
 ## 串行与上下文窗口规则
 
@@ -51,29 +51,36 @@ outputs/novels/<书名>_<yyyyMMdd_HHmm>/
   framework.md
   blueprint.md
   story/story.md
-  story/arcs/arc01_*.md
-  chapters/outline/ch01.md ~ ch06.md
-  chapters/draft/ch01.md ~ ch03.md
+  story/arcs/arc*.md
+  chapters/outline/ch01.md ~ ch30.md
+  chapters/draft/ch01.md ~ ch30.md
   editing/consistency_report.md
   editing/retcon_tasks.md
+  release/release_version.md
+  release/author_working_version.md
+  release/synopsis.md
+  release/characters.md
+  release/worldbook.md
+  release/toc.md
 ```
 
 ## 完成报告模板
 
 ```markdown
-测试模式已完成，已验证小说工作流核心链路。
+测试模式已完成，已完成全量一次性生成。
 
 本次产出：
 - 核心框架：framework.md
 - 结构蓝图：blueprint.md
 - 主线与卷摘要：story/
-- 章节蓝图：前 6 章
-- 正文：前 3 章
+- 章节蓝图：全书 30 章
+- 正文：全书 30 章
 - 一致性报告：editing/consistency_report.md
+- 发布包：release/
 
 下一步建议：
-1. 切回正常流程继续补全全书
-2. 先处理 retcon 任务再扩写后续章节
+1. 人工抽检关键章节连贯性和伏笔回收
+2. 基于 retcon 清单做定向修订后再发布
 ```
 
 ## 冲突处理优先级
