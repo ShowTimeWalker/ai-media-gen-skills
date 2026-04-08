@@ -31,6 +31,7 @@
 | 阶段四：生产脚本 | 4A全局参数确认 + 4B分镜表确认，按篇章推进 | 自动生成第一集完整分镜表 |
 | 阶段五：图片提示词 | 5A角色参考图确认 + 5B场景参考图确认 + 5C关键帧确认 | 自动生成全部（≤5角色 + ≤5场景 + 第一集全部关键帧） |
 | 阶段六：视频指令 | 6A组装确认 + 6B指令确认 | 自动生成第一集全部视频指令 |
+| 阶段七：并行生成 | — | 并行子Agent生成角色/场景参考图 → 并行子Agent生成第一集关键帧 |
 | 用户互动 | 每个环节都需要确认 | 阶段一简化互动后，全程自动直至完成 |
 
 ## 测试模式完整流程
@@ -84,7 +85,33 @@
 - 基于关键帧和分镜表，为第一集所有片段生成视频生成指令
 - 包含：参考概览表、角色语音规格、分镜表（含首尾帧标注）
 
-**不等待用户确认**，全部内容写入文件后输出完成报告。
+**不等待用户确认**，全部内容写入文件后进入阶段六。
+
+### 阶段六：并行生成执行
+
+> 本阶段调用外部 API 进行实际图片生成，使用子 Agent（Agent tool）并行执行。阶段五产出的 prompt 文件是本阶段的输入。
+
+**6A — 并行生成角色与场景参考图**
+
+将所有角色参考图和场景参考图合并为一批，**在同一条消息中并行启动子 Agent**：
+- 每个子 Agent 负责生成 1 张参考图（角色或场景）
+- 子 Agent 调用 doubao-all-in-one skill 的文生图能力，传入 prompt 文本和输出路径
+- 同一批子 Agent 必须在同一条消息中全部启动
+- **等待全部子 Agent 完成后**，验证生成结果，再进入 6B
+
+**6B — 并行生成第一集关键帧**
+
+6A 全部完成后，**在同一条消息中并行启动子 Agent**：
+- 按片段拆分任务，每个子 Agent 负责一个片段的首帧 + 末帧生成
+- 子 Agent 调用 doubao-all-in-one skill 的文生图能力，传入 prompt 文本和参考图路径
+- 同一批子 Agent 必须在同一条消息中全部启动
+- **等待全部子 Agent 完成后**，输出完成报告
+
+**子 Agent 规范**：
+- 使用 Agent tool，`subagent_type: "general-purpose"`
+- 每个子 Agent 的 prompt 必须包含：生成任务描述、prompt 文本、输出路径、图片尺寸（9:16 / 720p）
+- 子 Agent 完成后将图片保存到 `reference_images/` 目录下对应子目录
+- 如果某个子 Agent 失败，记录错误信息并继续其余任务，最终在完成报告中汇总
 
 ## 输出文件清单
 
@@ -103,8 +130,16 @@ outputs/dramas/<标题>_<yyyyMMdd_HHmm>/
   reference_images/
     characters_prompt.md                                    # 角色参考图 prompt（≤5）
     scenes_prompt.md                                        # 场景参考图 prompt（≤5）
+    characters/                                             # 角色参考图（实际生成）
+      [角色名].png                                          # 每角色 1 张
+    scenes/                                                 # 场景参考图（实际生成）
+      [场景名].png                                          # 每场景 1 张
     Chapter1_第一章/
       E01.md                                                # 第一集全部关键帧 prompt
+      E01/                                                  # 第一集关键帧图片（实际生成）
+        C01_first.png / C01_last.png
+        C02_first.png / C02_last.png
+        ...
   video_generation/
     Chapter1_第一章/
       E01.md                                                # 第一集全部视频指令
@@ -130,7 +165,10 @@ outputs/dramas/<标题>_<yyyyMMdd_HHmm>/
 - `production_scripts/Chapter1_*/E01.md` — 第一集完整分镜表
 - `reference_images/characters_prompt.md` — [X]个角色参考图 prompt
 - `reference_images/scenes_prompt.md` — [X]个场景参考图 prompt
+- `reference_images/characters/*.png` — [X]个角色参考图（已生成）
+- `reference_images/scenes/*.png` — [X]个场景参考图（已生成）
 - `reference_images/Chapter1_*/E01.md` — 第一集全部关键帧 prompt
+- `reference_images/Chapter1_*/E01/*.png` — 第一集全部关键帧图片（已生成）
 - `video_generation/Chapter1_*/E01.md` — 第一集全部视频指令
 
 **下一步**：
