@@ -2,7 +2,7 @@
 
 ## 适用范围
 
-- 阶段五：`chapters/draft/*.md`
+- 阶段五：`chapters/draft/卷X_序号_ch起始-ch结束.md`
 - 阶段七：`release/release_version.md`、`release/synopsis.md`、`release/toc.md`
 
 ## 核心目标

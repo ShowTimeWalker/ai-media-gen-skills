@@ -140,11 +140,11 @@ metadata:
 
 ### 阶段四：章节蓝图
 
-基于阶段三内容按章节顺序生成逐章卡片，输出 `chapters/outline/chXX.md`。必须严格按 `ch01 -> ch02 -> ...` 推进。
+基于阶段三内容按章节顺序生成逐章卡片，输出 `chapters/outline/卷X_序号_ch起始-ch结束.md`（每文件最多10章）。必须严格按 `ch01 -> ch02 -> ...` 推进。
 
 ### 阶段五：正文生成
 
-按章节顺序生成 `chapters/draft/chXX.md`，每章生成前都要读取固定种子上下文与最近 10 章正文（不足 10 章时读取已有章节）。
+按章节顺序生成 `chapters/draft/卷X_序号_ch起始-ch结束.md`（每文件最多10章），每章生成前都要读取固定种子上下文与最近 10 章正文（不足 10 章时读取已有章节）。
 
 ### 阶段六：一致性校对与修订建议
 
@@ -170,9 +170,15 @@ outputs/novels/<书名>_<yyyyMMdd_HHmm>/
       arc01_<卷名>.md
   chapters/
     outline/
-      ch01.md
+      卷一_01_ch01-ch10.md
+      卷一_02_ch11-ch19.md
+      卷二_01_ch20-ch29.md
+      ...
     draft/
-      ch01.md
+      卷一_01_ch01-ch10.md
+      卷一_02_ch11-ch19.md
+      卷二_01_ch20-ch29.md
+      ...
   state/
     timeline.md
     character_state.md
@@ -184,10 +190,22 @@ outputs/novels/<书名>_<yyyyMMdd_HHmm>/
     consistency_report.md
     retcon_tasks.md
   release/
-    release_version.md
+    release/
+      release_卷一_01_ch01-ch10.md
+      release_卷一_02_ch11-ch19.md
+      release_卷二_01_ch20-ch29.md
+      ...
     author_working_version.md
     synopsis.md
     characters.md
     worldbook.md
     toc.md
 ```
+
+### 文件组织规范
+
+- **outline/、draft/、release/** 三个目录的文件命名保持一致
+- 每个 MD 文件最多包含 **10 个章节**，超出时另起一个文件
+- 文件命名格式：`<卷名>_<序号>_ch<起始>-ch<结束>.md`（如 `卷一_01_ch01-ch10.md`）
+- 不同卷必须另起文件，**不跨卷合并**
+- 章节编号使用全局连续编号（ch01、ch02、...），不按卷重新从1开始

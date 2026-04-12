@@ -9,7 +9,7 @@
 - `framework.md`
 - `blueprint.md`
 - `story/story.md`
-- `chapters/draft/chXX.md`
+- `chapters/draft/卷X_序号_ch起始-ch结束.md`
 - `state/timeline.md`
 - `state/character_state.md`
 - `state/relationship_graph.md`

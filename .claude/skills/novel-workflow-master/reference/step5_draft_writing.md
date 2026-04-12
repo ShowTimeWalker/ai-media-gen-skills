@@ -10,7 +10,7 @@
 - `blueprint.md`
 - `story/story.md`
 - `story/arcs/arcXX_<卷名>.md`
-- `chapters/outline/chXX.md`
+- `chapters/outline/卷X_序号_ch起始-ch结束.md`（当前章蓝图所在文件）
 - `state/timeline.md`
 - `state/character_state.md`
 - `state/relationship_graph.md`
@@ -39,7 +39,7 @@
 - `blueprint.md`
 - `story/story.md`
 - 对应卷文件 `story/arcs/arcXX_<卷名>.md`
-- 当前章蓝图 `chapters/outline/chXX.md`
+- 当前章蓝图 `chapters/outline/卷X_序号_ch起始-ch结束.md`
 - `state/timeline.md`
 - `state/character_state.md`
 - `state/relationship_graph.md`

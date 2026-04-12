@@ -9,7 +9,7 @@
 - `framework.md`
 - `blueprint.md`
 - `story/story.md`
-- `chapters/draft/chXX.md`
+- `chapters/draft/卷X_序号_ch起始-ch结束.md`
 - `editing/consistency_report.md`
 - `editing/retcon_tasks.md`（若已处理则同步状态）
 - `state/timeline.md`

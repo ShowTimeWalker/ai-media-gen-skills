@@ -60,8 +60,8 @@ outputs/novels/<书名>_<yyyyMMdd_HHmm>/
   blueprint.md
   story/story.md
   story/arcs/arc*.md
-  chapters/outline/ch01.md ~ ch30.md
-  chapters/draft/ch01.md ~ ch30.md
+  chapters/outline/卷X_序号_ch起始-ch结束.md（每文件最多10章）
+  chapters/draft/卷X_序号_ch起始-ch结束.md（每文件最多10章）
   editing/consistency_report.md
   editing/retcon_tasks.md
   release/release_version.md
@@ -76,8 +76,8 @@ outputs/novels/<书名>_<yyyyMMdd_HHmm>/
 
 仅当以下条件全部满足，才允许输出“测试模式已完成”：
 
-1. `chapters/draft/ch01.md` 到 `chapters/draft/ch30.md` 全部存在
-2. `chapters/outline/ch01.md` 到 `chapters/outline/ch30.md` 全部存在
+1. `chapters/draft/卷X_序号_ch起始-ch结束.md` 全部存在（每文件最多10章，共3-4个文件覆盖ch01-ch30）
+2. `chapters/outline/卷X_序号_ch起始-ch结束.md` 全部存在（每文件最多10章，共3-4个文件覆盖ch01-ch30）
 3. `release/release_version.md`、`release/author_working_version.md`、`release/synopsis.md`、`release/characters.md`、`release/worldbook.md`、`release/toc.md` 全部存在
 4. `editing/consistency_report.md` 与 `editing/retcon_tasks.md` 存在
 
@@ -86,8 +86,8 @@ outputs/novels/<书名>_<yyyyMMdd_HHmm>/
 ## 中断恢复规则（自动续跑）
 
 - 若执行中断或落盘不完整，必须自动扫描缺失文件并从最小缺失项继续生成：
-  - 缺章节蓝图：从最小缺失 `outline/chNN.md` 开始补齐至 `ch30.md`
-  - 缺正文：从最小缺失 `draft/chNN.md` 开始补齐至 `ch30.md`
+  - 缺章节蓝图：从最小缺失章节的 `outline/` 文件开始补齐至 ch30
+  - 缺正文：从最小缺失章节的 `draft/` 文件开始补齐至 ch30
   - 缺发布包：补齐 `release/*` 全部关键文件
 - 恢复过程只输出“当前缺失项 + 正在补齐进度”，不请求用户确认继续。
 
