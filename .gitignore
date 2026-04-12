@@ -7,3 +7,5 @@ outputs/
 .venv/
 CLAUDE.md
 AGENTS.md
+.playwright/
+.playwright-cli/
