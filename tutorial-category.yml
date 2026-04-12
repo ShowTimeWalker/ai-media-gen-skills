@@ -1,0 +1,149 @@
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - img [ref=e7] [cursor=pointer]
+    - generic [ref=e33]:
+      - generic [ref=e34]:
+        - link "作家福利" [ref=e36] [cursor=pointer]:
+          - /url: /welfare
+        - link "作家课堂" [ref=e38] [cursor=pointer]:
+          - /url: /writer/zone/tutorial?enter_tutorial=class_zone
+        - link "帮助中心" [ref=e40] [cursor=pointer]:
+          - /url: /writer/zone/help
+      - generic [ref=e43]:
+        - generic [ref=e44] [cursor=pointer]: 登录
+        - generic [ref=e45] [cursor=pointer]: 注册
+  - generic [ref=e48]:
+    - generic [ref=e50] [cursor=pointer]:
+      - img [ref=e52]
+      - img [ref=e54]
+    - generic [ref=e56]:
+      - generic [ref=e57] [cursor=pointer]: 平台宝典
+      - generic [ref=e58] [cursor=pointer]: 新手专区
+      - generic [ref=e59] [cursor=pointer]: 品类指南
+      - generic [ref=e60] [cursor=pointer]: 写作技巧
+      - generic [ref=e61] [cursor=pointer]: 大神专访
+    - generic [ref=e62]:
+      - generic [ref=e235]:
+        - img [ref=e237] [cursor=pointer]
+        - generic [ref=e238]:
+          - generic [ref=e239]: 开篇写对，拉新翻倍！专业编审团队教你做精修投放
+          - generic [ref=e240]: 适用对象：所有品类
+      - generic [ref=e242]:
+        - img [ref=e244] [cursor=pointer]
+        - generic [ref=e245]:
+          - generic [ref=e246]: 爆款新书怎么写？吃透这四点，直接抓住读者！
+          - generic [ref=e247]: 适用对象：所有品类
+      - generic [ref=e249]:
+        - img [ref=e251] [cursor=pointer]
+        - generic [ref=e252]:
+          - generic [ref=e253]: 拉新向写作全攻略！从噱头到世界观一次性讲透！
+          - generic [ref=e254]: 适用对象：偏男频，女频可参考
+      - generic [ref=e256]:
+        - img [ref=e258] [cursor=pointer]
+        - generic [ref=e259]:
+          - generic [ref=e260]: 编辑说 | 一篇让你看懂番茄榜单新风向！
+          - generic [ref=e261]: 适用对象：所有品类
+      - generic [ref=e263]:
+        - img [ref=e265] [cursor=pointer]
+        - generic [ref=e266]:
+          - generic [ref=e267]: 从选题到框架，《十八岁太奶奶》原著作者独家爆款秘诀！
+          - generic [ref=e268]: 适用对象：所有品类
+      - generic [ref=e270]:
+        - img [ref=e272] [cursor=pointer]
+        - generic [ref=e273]:
+          - generic [ref=e274]: 3月改编风向标｜短剧×漫剧爆款题材拆解！
+          - generic [ref=e275]: 适用对象：所有品类
+      - generic [ref=e277]:
+        - img [ref=e279] [cursor=pointer]
+        - generic [ref=e280]:
+          - generic [ref=e281]: 一篇读懂IP改编，让你搞懂常识少走弯路！
+          - generic [ref=e282]: 带大家快速搞懂IP改编的基础常识，帮你找准方向、抓住机会！
+      - generic [ref=e284]:
+        - img [ref=e286] [cursor=pointer]
+        - generic [ref=e287]:
+          - generic [ref=e288]: 2月改编风向标｜什么样的作品更易被改编？
+          - generic [ref=e289]: 短剧、漫剧2月改编风向是什么？一节全知道！
+      - generic [ref=e291]:
+        - img [ref=e293] [cursor=pointer]
+        - generic [ref=e294]:
+          - generic [ref=e295]: 长篇标签风向标：代嫁代娶超高看点
+          - generic [ref=e296]: 代嫁代娶到底要怎么写？核心看点是什么？本篇课程，帮你扩展思路！
+      - generic [ref=e298]:
+        - img [ref=e300] [cursor=pointer]
+        - generic [ref=e301]:
+          - generic [ref=e302]: 长篇标签风向标：欢迎来到惊悚游戏
+          - generic [ref=e303]: 惊悚游戏值不值得写？怎么才能写好？本篇课程一次讲清！
+      - generic [ref=e305]:
+        - img [ref=e307] [cursor=pointer]
+        - generic [ref=e309]:
+          - generic [ref=e310]: "番茄历史课: 秦汉的出行"
+          - generic [ref=e311]: 北京师范大学历史学院副教授-曲柄睿主讲：行秦汉古道，从交通网与行旅仪式里唤醒历史文脉
+      - generic [ref=e313]:
+        - img [ref=e315] [cursor=pointer]
+        - generic [ref=e317]:
+          - generic [ref=e318]: "番茄历史课: 历史地理在小说中的运用"
+          - generic [ref=e319]: 中国社会科学院古代史研究所副研究员-李鸣飞主讲：探元史中外，以历史地理焕活叙事创作
+      - generic [ref=e321]:
+        - img [ref=e323] [cursor=pointer]
+        - generic [ref=e325]:
+          - generic [ref=e326]: "番茄历史课: 明清北京城旅行路线推介"
+          - generic [ref=e327]: 国家图书馆古籍馆研究馆员-任昳霏主讲：曼行北京城，循古道山河品历史风华
+      - generic [ref=e329]:
+        - img [ref=e331] [cursor=pointer]
+        - generic [ref=e333]:
+          - generic [ref=e334]: "番茄历史课: 苏东坡的足迹与诗文"
+          - generic [ref=e335]: 中央美术学院人文学院副教授-耿朔主讲：以山河为笺，解读苏轼的诗文人生
+      - generic [ref=e337]:
+        - img [ref=e339] [cursor=pointer]
+        - generic [ref=e341]:
+          - generic [ref=e342]: "番茄历史课: 清朝人怎么出远门"
+          - generic [ref=e343]: 国家图书馆研究馆员-郑小悠主讲：漫谈清朝远行，从历史地理里解锁新灵感
+    - list [ref=e169]:
+      - listitem "上一页" [ref=e170]:
+        - img [ref=e171]
+        - text: .
+      - listitem "第 1 页" [ref=e173] [cursor=pointer]: "1"
+      - listitem "第 2 页" [ref=e174] [cursor=pointer]: "2"
+      - listitem "第 3 页" [ref=e344] [cursor=pointer]: "3"
+      - listitem "下一页" [ref=e175] [cursor=pointer]:
+        - img [ref=e176]
+        - text: .
+  - generic [ref=e179]:
+    - generic [ref=e180]:
+      - generic [ref=e181]:
+        - img [ref=e183]
+        - link "《番茄小说网用户协议》" [ref=e209] [cursor=pointer]:
+          - /url: /protocal/agreement
+        - link "《番茄小说网隐私政策》" [ref=e210] [cursor=pointer]:
+          - /url: /protocal/privacy
+        - paragraph [ref=e211]: © 2026 北京时光荏苒科技有限公司
+      - generic [ref=e212]:
+        - link "京ICP备18018851号-8" [ref=e213] [cursor=pointer]:
+          - /url: https://beian.miit.gov.cn/#/Integrated/index
+        - link "京公网安备 11010802030409号" [ref=e214] [cursor=pointer]:
+          - /url: http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010802030409
+          - text: 京公网安备 11010802030409号
+        - link "京ICP证 京B2-20200085" [ref=e216] [cursor=pointer]:
+          - /url: https://fanqienovel.com/writer/zone/licence/icp
+        - generic [ref=e217]:
+          - link "营业执照" [ref=e218] [cursor=pointer]:
+            - /url: https://fanqienovel.com/writer/zone/licence/business
+          - link "出版物经营许可证" [ref=e219] [cursor=pointer]:
+            - /url: https://fanqienovel.com/writer/zone/licence/publication
+          - link "广播电视节目制作经营许可证" [ref=e220] [cursor=pointer]:
+            - /url: https://fanqienovel.com/writer/zone/licence/radioTv
+        - generic [ref=e221]:
+          - paragraph [ref=e222]:
+            - text: 广告投放：
+            - link "www.oceanengine.com" [ref=e223] [cursor=pointer]:
+              - /url: https://www.oceanengine.com/resource/fanqie?source=fanqiepc
+          - paragraph [ref=e224]: 不良信息举报：fanqiejubao@bytedance.com
+          - paragraph [ref=e225]: 意见建议入口：番茄作家助手APP-我的-帮助与反馈-反馈历史
+          - paragraph [ref=e226]: 版权咨询：2947820142@qq.com
+    - generic [ref=e227]:
+      - generic [ref=e228]:
+        - img [ref=e229]
+        - generic [ref=e230]: 打开微信扫码关注微信公众号
+      - generic [ref=e231]:
+        - img [ref=e232]
+        - generic [ref=e233]: 打开抖音扫码关注官方帐号
